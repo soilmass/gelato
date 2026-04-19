@@ -17,7 +17,7 @@ export const metadata = {
 const navbar = (
   <Navbar
     logo={<span style={{ fontWeight: 600 }}>Gelato</span>}
-    projectLink="https://github.com/neopolitan/gelato"
+    projectLink="https://github.com/soilmass/gelato"
   />
 );
 
@@ -37,7 +37,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           navbar={navbar}
           footer={footer}
           pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/neopolitan/gelato/blob/main/docs"
+          docsRepositoryBase="https://github.com/soilmass/gelato/blob/main/docs"
           sidebar={{ defaultMenuCollapseLevel: 1 }}
         >
           {children}
