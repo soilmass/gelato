@@ -68,7 +68,7 @@ function preamble(name: string, fm: SkillFrontmatter): string {
     '',
     status,
     '',
-    `[View on GitHub](https://github.com/neopolitan/gelato/blob/main/skills/${name}/SKILL.md) · [Eval suite](https://github.com/neopolitan/gelato/tree/main/evals/${name})`,
+    `[View on GitHub](https://github.com/soilmass/gelato/blob/main/skills/${name}/SKILL.md) · [Eval suite](https://github.com/soilmass/gelato/tree/main/evals/${name})`,
     '',
     '---',
     '',

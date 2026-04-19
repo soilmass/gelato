@@ -5,22 +5,40 @@
 
 Gelato is an opinionated Claude Code plugin for full-stack TypeScript developers. Every skill it ships encodes an external methodology (web.dev, OWASP, Next.js docs, React docs, Conventional Commits, …) rather than inventing guidance. Every skill has a runnable eval whose pass rate is published back into the skill's frontmatter by the runner.
 
-## v0.1 skills
+## Shipped in v0.2.0
 
-| Skill | Phase | Type | Methodology |
+19 skills, each with a deterministic classifier eval at `pass_rate = 1.0`. 16 of 19 also carry a live LLM-as-judge rubric.
+
+| Skill | Subsystem | Phase | Type |
 | --- | --- | --- | --- |
-| [git-hygiene](/skills/git-hygiene) | build | procedural | Conventional Commits 1.0 + Chris Beams |
-| [core-web-vitals-audit](/skills/core-web-vitals-audit) | verify | metric | web.dev Core Web Vitals (2024-Q4) |
-| [rsc-boundary-audit](/skills/rsc-boundary-audit) | verify | judgment | Next.js App Router + React 19 docs |
+| [git-hygiene](/skills/git-hygiene) | foundations | build | procedural |
+| [drizzle-migrations](/skills/drizzle-migrations) | data | build | procedural |
+| [rsc-data-fetching](/skills/rsc-data-fetching) | data | build | procedural |
+| [zod-validation](/skills/zod-validation) | data | build | procedural |
+| [server-actions-vs-api](/skills/server-actions-vs-api) | server | build | judgment |
+| [form-with-server-action](/skills/form-with-server-action) | ui | build | procedural |
+| [shadcn-tailwind-v4](/skills/shadcn-tailwind-v4) | ui | build | procedural |
+| [rsc-boundary-audit](/skills/rsc-boundary-audit) | ui | verify | judgment |
+| [tdd-cycle](/skills/tdd-cycle) | testing | verify | procedural |
+| [playwright-e2e](/skills/playwright-e2e) | testing | verify | procedural |
+| [core-web-vitals-audit](/skills/core-web-vitals-audit) | performance | verify | metric |
+| [bundle-budget](/skills/bundle-budget) | performance | verify | judgment |
+| [metadata-and-og](/skills/metadata-and-og) | seo | verify | procedural |
+| [security-headers](/skills/security-headers) | security | build | procedural |
+| [auth-flow-review](/skills/auth-flow-review) | security | verify | judgment |
+| [structured-logging](/skills/structured-logging) | observability | run | procedural |
+| [sentry-setup](/skills/sentry-setup) | observability | run | procedural |
+| [event-taxonomy-and-instrumentation](/skills/event-taxonomy-and-instrumentation) | analytics | run | judgment |
+| [ci-cd-next-on-vercel](/skills/ci-cd-next-on-vercel) | deployment | run | procedural |
 
-Twelve more skills are scoped for v0.2+. See the [v0.1 skill list](https://github.com/neopolitan/gelato/blob/main/SKILLS.md) on GitHub.
+Deferred sub-skills and full release notes: see the [CHANGELOG](https://github.com/soilmass/gelato/blob/main/CHANGELOG.md) on GitHub.
 
 ## The differentiator
 
-Every skill has a **published, runnable, passing eval**. That is the claim that separates Gelato from every other Claude Code skill suite. See the [Eval Spec](https://github.com/neopolitan/gelato/blob/main/EVAL_SPEC.md) for the runner architecture.
+Every skill has a **published, runnable, passing eval**. That is the claim that separates Gelato from every other Claude Code skill suite. See the [Eval Spec](https://github.com/soilmass/gelato/blob/main/EVAL_SPEC.md) for the runner architecture.
 
 ## The dogmatic stack
 
 Bun · Next.js 15+ App Router · Turborepo · Biome · Drizzle · Supabase/Neon · Upstash Redis · Auth.js · Zod · shadcn/ui + Radix · Tailwind v4 · Vitest · Playwright · Lighthouse CI · Sentry · Axiom · PostHog · Vercel · Renovate · Doppler · Semgrep · Socket.dev · Arcjet.
 
-See the [tool manifest](https://github.com/neopolitan/gelato/blob/main/TOOL_MANIFEST.md) for exact versions. Don't substitute.
+See the [tool manifest](https://github.com/soilmass/gelato/blob/main/TOOL_MANIFEST.md) for exact versions. Don't substitute.
