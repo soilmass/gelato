@@ -1,0 +1,15 @@
+---
+filename: app/[locale]/page.tsx
+reason: next-intl imported; JSX uses t() wrappers — no hardcoded English.
+---
+import { useTranslations } from 'next-intl';
+
+export default function Page() {
+  const t = useTranslations('home');
+  return (
+    <section>
+      <h1>{t('welcome')}</h1>
+      <p>{t('readMore')}</p>
+    </section>
+  );
+}

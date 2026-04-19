@@ -1,0 +1,15 @@
+---
+class: hardcoded-string-with-i18n-lib-present
+filename: app/[locale]/about.tsx
+reason: "@lingui/react imported but JSX has hardcoded English."
+---
+import { Trans } from '@lingui/react';
+
+export default function About() {
+  return (
+    <article>
+      <h1>About the team</h1>
+      <p>We ship software every day.</p>
+    </article>
+  );
+}

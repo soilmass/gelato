@@ -1,0 +1,12 @@
+---
+class: safe
+filename: components/header.tsx
+reason: Component with hardcoded English but no i18n import — rule inactive.
+---
+export function Header() {
+  return (
+    <header>
+      <h1>Welcome to the blog</h1>
+    </header>
+  );
+}

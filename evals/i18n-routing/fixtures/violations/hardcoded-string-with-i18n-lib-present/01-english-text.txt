@@ -1,0 +1,15 @@
+---
+class: hardcoded-string-with-i18n-lib-present
+filename: app/[locale]/page.tsx
+reason: next-intl imported, JSX contains hardcoded English sentence.
+---
+import { useTranslations } from 'next-intl';
+
+export default function Page() {
+  return (
+    <section>
+      <h1>Welcome to the blog</h1>
+      <p>Read more posts.</p>
+    </section>
+  );
+}
