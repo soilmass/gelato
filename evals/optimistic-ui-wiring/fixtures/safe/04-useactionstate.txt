@@ -1,0 +1,23 @@
+---
+reason: addOptimistic inside useActionState action callback — transition semantics automatic.
+---
+'use client';
+import { useActionState, useOptimistic } from 'react';
+import { createTodo } from './actions';
+
+export function Todos({ initial }: { initial: string[] }) {
+  const [items, setItems] = useActionState(async (_: string[], formData: FormData) => {
+    const text = String(formData.get('text'));
+    addOptimistic(text);
+    return await createTodo(formData);
+  }, initial);
+
+  const [optimistic, addOptimistic] = useOptimistic(
+    items,
+    (state, value: string) => [...state, value],
+  );
+
+  return (
+    <ul>{optimistic.map((t) => <li key={t}>{t}</li>)}</ul>
+  );
+}

@@ -1,0 +1,25 @@
+---
+class: direct-mutation
+reason: Reducer assigns state.<field> — mutation, not return.
+---
+'use client';
+import { useOptimistic } from 'react';
+
+export function Counter({ data }: { data: { count: number } }) {
+  const [optimistic, addOptimistic] = useOptimistic(
+    data,
+    (state, delta: number) => {
+      state.count = state.count + delta;
+      return state;
+    },
+  );
+  return (
+    <form action={async () => {
+      addOptimistic(1);
+      await fetch('/api/inc', { method: 'POST' });
+    }}>
+      <button>+1</button>
+      <p>{optimistic.count}</p>
+    </form>
+  );
+}

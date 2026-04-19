@@ -1,0 +1,17 @@
+---
+class: addoptimistic-fire-and-forget
+reason: addOptimistic called directly from an onClick handler with no transition.
+---
+'use client';
+import { useOptimistic } from 'react';
+
+export function LikeButton({ post }: { post: { id: string; likes: number } }) {
+  const [optimistic, addOptimistic] = useOptimistic(
+    post,
+    (state, delta: number) => ({ ...state, likes: state.likes + delta }),
+  );
+
+  return (
+    <button onClick={() => addOptimistic(1)}>♥ {optimistic.likes}</button>
+  );
+}

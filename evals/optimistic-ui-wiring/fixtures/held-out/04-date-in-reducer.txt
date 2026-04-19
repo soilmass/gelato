@@ -1,0 +1,21 @@
+---
+class: impure-reducer
+reason: Reducer constructs a new Date() — considered impure (non-deterministic).
+---
+'use client';
+import { useOptimistic } from 'react';
+
+export function Notes({ items }: { items: { id: string; at: Date }[] }) {
+  const [optimistic, addOptimistic] = useOptimistic(
+    items,
+    (state, text: string) => [...state, { id: crypto.randomUUID(), text, at: new Date() }],
+  );
+  return (
+    <form action={async (fd) => {
+      addOptimistic(String(fd.get('text')));
+      await fetch('/api/notes', { method: 'POST', body: fd });
+    }}>
+      <button>Add</button>
+    </form>
+  );
+}

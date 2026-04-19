@@ -1,0 +1,20 @@
+---
+class: useoptimistic-without-transition
+reason: addOptimistic called in a plain async function with no transition or action wrapper.
+---
+'use client';
+import { useOptimistic } from 'react';
+
+export function Likes({ post }: { post: { id: string; likes: number } }) {
+  const [optimistic, addOptimistic] = useOptimistic(
+    post,
+    (state, delta: number) => ({ ...state, likes: state.likes + delta }),
+  );
+
+  async function toggle(delta: number) {
+    addOptimistic(delta);
+    await fetch(`/api/likes/${post.id}`, { method: 'POST' });
+  }
+
+  return <button type="button">♥ {optimistic.likes}</button>;
+}

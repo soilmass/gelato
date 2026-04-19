@@ -1,0 +1,25 @@
+---
+reason: Named reducer is pure and returns a new array via spread.
+---
+'use client';
+import { useOptimistic } from 'react';
+
+function reducer(state: string[], value: string): string[] {
+  return [...state, value];
+}
+
+export function Inbox({ items }: { items: string[] }) {
+  const [optimistic, addOptimistic] = useOptimistic(items, reducer);
+  return (
+    <form
+      action={async (fd) => {
+        const v = String(fd.get('text'));
+        addOptimistic(v);
+        await fetch('/api/save', { method: 'POST', body: fd });
+      }}
+    >
+      <button>Add</button>
+      <ul>{optimistic.map((x) => <li key={x}>{x}</li>)}</ul>
+    </form>
+  );
+}

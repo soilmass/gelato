@@ -1,0 +1,7 @@
+---
+class: safe
+reason: Not a client component — no useOptimistic rules apply.
+---
+export function ServerList({ items }: { items: string[] }) {
+  return <ul>{items.map((x) => <li key={x}>{x}</li>)}</ul>;
+}
