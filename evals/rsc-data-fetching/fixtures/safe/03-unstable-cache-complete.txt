@@ -1,0 +1,14 @@
+---
+expected: safe
+reason: unstable_cache called with all three required arguments (fn, keyParts, options-with-tags).
+---
+import { unstable_cache } from 'next/cache';
+import { db } from '@/lib/db';
+import { posts } from '@/lib/schema';
+import { eq } from 'drizzle-orm';
+
+export const getPostBySlug = unstable_cache(
+  async (slug: string) => db.select().from(posts).where(eq(posts.slug, slug)).limit(1),
+  ['post-by-slug'],
+  { revalidate: 60, tags: ['posts'] },
+);

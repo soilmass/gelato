@@ -1,0 +1,13 @@
+---
+expected: safe
+reason: POST / PATCH / DELETE mutations are implicitly uncached. Classifier must not flag them as missing-cache-strategy.
+---
+'use server';
+
+export async function deletePost(id: string) {
+  const response = await fetch(`https://api.example.com/posts/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
+  });
+  return response.ok;
+}

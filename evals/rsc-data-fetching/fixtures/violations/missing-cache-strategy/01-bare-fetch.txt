@@ -1,0 +1,8 @@
+---
+class: missing-cache-strategy
+reason: Fetch in a Server Component with no cache or next option. Next 15 defaults to no-store — every render re-fetches.
+---
+export default async function Page() {
+  const posts = await fetch('https://api.example.com/posts').then((r) => r.json());
+  return <PostList posts={posts} />;
+}

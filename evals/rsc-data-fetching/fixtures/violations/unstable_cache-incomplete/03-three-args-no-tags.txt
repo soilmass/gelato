@@ -1,0 +1,12 @@
+---
+class: unstable_cache-incomplete
+reason: Three arguments passed, but the options object is missing tags. revalidate without tags still allows time-based invalidation; but imperative invalidation via revalidateTag becomes impossible.
+---
+import { unstable_cache } from 'next/cache';
+import { db } from '@/lib/db';
+
+export const getStats = unstable_cache(
+  async () => db.select().from(stats).limit(1),
+  ['stats'],
+  { revalidate: 300 },
+);

@@ -1,0 +1,10 @@
+---
+class: missing-cache-strategy
+reason: Options object is present (headers) but declares no cache intent. Same failure mode as no options at all.
+---
+export default async function Page() {
+  const data = await fetch('https://api.example.com/secure', {
+    headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
+  }).then((r) => r.json());
+  return <SecureView data={data} />;
+}

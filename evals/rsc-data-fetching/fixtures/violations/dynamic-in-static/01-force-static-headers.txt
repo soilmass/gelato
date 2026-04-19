@@ -1,0 +1,12 @@
+---
+class: dynamic-in-static
+reason: force-static declared, but headers() is a dynamic API. Next throws at build time.
+---
+import { headers } from 'next/headers';
+
+export const dynamic = 'force-static';
+
+export default async function Page() {
+  const h = await headers();
+  return <p>UA: {h.get('user-agent')}</p>;
+}

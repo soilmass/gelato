@@ -1,0 +1,15 @@
+---
+class: conflicting-revalidate
+reason: Segment declares revalidate=300; one fetch agrees, another uses 30. Any divergence is a misconfigured segment.
+---
+export const revalidate = 300;
+
+export default async function Page() {
+  const posts = await fetch('https://api.example.com/posts', {
+    next: { revalidate: 300, tags: ['posts'] },
+  }).then((r) => r.json());
+  const breaking = await fetch('https://api.example.com/breaking', {
+    next: { revalidate: 30 },
+  }).then((r) => r.json());
+  return <Feed posts={posts} breaking={breaking} />;
+}

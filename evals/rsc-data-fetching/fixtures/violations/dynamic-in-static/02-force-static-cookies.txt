@@ -1,0 +1,13 @@
+---
+class: dynamic-in-static
+reason: force-static + cookies() call. Same failure mode as headers() — dynamic API invalidates the static declaration.
+---
+import { cookies } from 'next/headers';
+
+export const dynamic = 'force-static';
+
+export default async function Page() {
+  const c = await cookies();
+  const session = c.get('session');
+  return <p>Session: {session?.value ?? 'none'}</p>;
+}

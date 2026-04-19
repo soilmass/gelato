@@ -1,0 +1,12 @@
+---
+class: conflicting-revalidate
+reason: Segment revalidate=3600 is overridden by per-fetch revalidate=60. Author likely wanted 1-hour cache; Next takes min(3600, 60) = 60.
+---
+export const revalidate = 3600;
+
+export default async function Page() {
+  const posts = await fetch('https://api.example.com/posts', {
+    next: { revalidate: 60 },
+  }).then((r) => r.json());
+  return <PostList posts={posts} />;
+}

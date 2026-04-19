@@ -1,0 +1,10 @@
+---
+expected: safe
+reason: Build-time cache via force-cache; deterministic content, no revalidation needed.
+---
+export default async function Page() {
+  const config = await fetch('https://cdn.example.com/config.json', {
+    cache: 'force-cache',
+  }).then((r) => r.json());
+  return <ConfigView config={config} />;
+}
