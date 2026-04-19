@@ -27,6 +27,7 @@
     "prepare": "lefthook install || true"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.2",
     "@biomejs/biome": "1.9.4",
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.9",
@@ -38,6 +39,7 @@
     "@lhci/cli": "^0.14.0",
     "@playwright/test": "^1.48.2",
     "@types/bun": "^1.1.14",
+    "axe-core": "^4.11.3",
     "lefthook": "^1.8.5",
     "promptfoo": "^0.90.0",
     "publint": "^0.2.12",

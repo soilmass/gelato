@@ -33,3 +33,17 @@ export {
   runSkillOnFixtures,
   runSkillWithClaude,
 } from './claude.ts';
+
+export type { JsxOpenTag } from './tsx-classifier.ts';
+
+export {
+  extractClassNames,
+  hasUseClient,
+  hasUseServer,
+  isFencedCode,
+  iterateJsxOpenTags,
+  matchCloseBrace,
+  matchCloseParen,
+  parseJsxAttrs,
+  stripComments,
+} from './tsx-classifier.ts';
