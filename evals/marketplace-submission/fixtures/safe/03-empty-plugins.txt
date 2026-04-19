@@ -1,0 +1,8 @@
+---
+reason: Empty plugins array is a validator warning, not an error.
+---
+{
+  "name": "future-tools",
+  "owner": { "name": "Coming Soon" },
+  "plugins": []
+}

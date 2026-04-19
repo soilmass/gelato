@@ -1,0 +1,8 @@
+---
+class: marketplace-missing-required-field
+reason: "`plugins` is missing entirely."
+---
+{
+  "name": "no-plugins-key",
+  "owner": { "name": "Somebody" }
+}

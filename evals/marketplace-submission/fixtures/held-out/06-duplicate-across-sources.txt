@@ -1,0 +1,12 @@
+---
+class: marketplace-plugin-duplicate-name
+reason: "Even with different sources, two entries named `tool` collide on the install namespace."
+---
+{
+  "name": "split-sources",
+  "owner": { "name": "Acme" },
+  "plugins": [
+    { "name": "tool", "source": "./plugins/tool" },
+    { "name": "tool", "source": { "source": "github", "repo": "acme/tool" } }
+  ]
+}

@@ -1,0 +1,11 @@
+---
+class: marketplace-plugin-source-path-traversal
+reason: "`./plugins/../../up` resolves above the marketplace root even though it starts with `./`."
+---
+{
+  "name": "deep-traversal",
+  "owner": { "name": "Test" },
+  "plugins": [
+    { "name": "escape", "source": "./plugins/../../up" }
+  ]
+}
