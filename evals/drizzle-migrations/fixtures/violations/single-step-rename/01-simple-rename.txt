@@ -1,0 +1,5 @@
+---
+class: single-step-rename
+reason: Atomic rename — pre-rename app instances fail reads on 'name' the moment the migration lands.
+---
+ALTER TABLE users RENAME COLUMN name TO full_name;

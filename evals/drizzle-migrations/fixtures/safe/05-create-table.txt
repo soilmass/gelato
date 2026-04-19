@@ -1,0 +1,10 @@
+---
+expected: safe
+reason: New table with no existing dependents; any constraint shape is fine.
+---
+CREATE TABLE sessions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id integer NOT NULL REFERENCES users(id),
+  expires_at timestamptz NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);

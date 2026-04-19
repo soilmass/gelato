@@ -1,0 +1,8 @@
+---
+expected: safe
+reason: Two-step foreign-key add that avoids a full-table lock; VALIDATE runs afterward in a separate migration.
+---
+ALTER TABLE orders
+  ADD CONSTRAINT orders_user_id_fkey
+  FOREIGN KEY (user_id) REFERENCES users(id)
+  NOT VALID;

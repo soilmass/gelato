@@ -1,0 +1,25 @@
+# Promptfoo config for drizzle-migrations LLM-as-judge rubrics.
+#
+# v0.1 of this skill ships no qualitative assertions — the three Hard
+# Thresholds are Postgres-mechanical and the deterministic SQL classifier
+# carries the signal end-to-end. This file exists so the eval's rubric
+# references resolve to a known path if a v0.2 follow-up wires one up.
+#
+# Candidate v0.2 rubric:
+#   - `implementability` — generated remediation advice for a single-step
+#     rename is a complete three-migration sequence with correct app-state
+#     transitions between deploys (not "split this into three migrations"
+#     as prose).
+
+description: drizzle-migrations LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []

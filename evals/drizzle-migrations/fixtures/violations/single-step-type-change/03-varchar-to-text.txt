@@ -1,0 +1,5 @@
+---
+class: single-step-type-change
+reason: Even a varchar(n) → text change is a TYPE change and forces a rewrite on most Postgres versions.
+---
+ALTER TABLE posts ALTER COLUMN slug TYPE text;

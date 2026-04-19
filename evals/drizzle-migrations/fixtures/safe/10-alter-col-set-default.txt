@@ -1,0 +1,5 @@
+---
+expected: safe
+reason: Changes only the default for future inserts; existing rows untouched; no column shape change.
+---
+ALTER TABLE users ALTER COLUMN role SET DEFAULT 'member';

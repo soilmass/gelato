@@ -1,0 +1,5 @@
+---
+class: single-step-rename
+reason: Table rename has the same failure mode as column rename — pre-deploy queries reference the old name.
+---
+ALTER TABLE users RENAME COLUMN preferences TO settings_json;

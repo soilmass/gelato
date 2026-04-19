@@ -1,0 +1,5 @@
+---
+expected: safe
+reason: Additive column with no NOT NULL constraint; existing rows default to NULL silently, new rows can omit.
+---
+ALTER TABLE users ADD COLUMN phone_number text;

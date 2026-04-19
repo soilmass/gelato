@@ -1,0 +1,5 @@
+---
+expected: safe
+reason: The phrase 'DROP COLUMN' appears inside a string literal in an INSERT statement, not as a statement keyword. A classifier without string-stripping would false-positive.
+---
+INSERT INTO migration_notes (message) VALUES ('Planned for Q3: DROP COLUMN legacy_id, to be split into expand/contract first.');

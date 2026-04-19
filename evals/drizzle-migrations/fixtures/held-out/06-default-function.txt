@@ -1,0 +1,5 @@
+---
+expected: safe
+reason: NOT NULL with DEFAULT using a function expression (now()). A classifier that only matches literal defaults like DEFAULT false would false-positive.
+---
+ALTER TABLE users ADD COLUMN last_login_at timestamptz NOT NULL DEFAULT now();

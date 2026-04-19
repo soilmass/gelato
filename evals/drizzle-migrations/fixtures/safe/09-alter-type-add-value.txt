@@ -1,0 +1,5 @@
+---
+expected: safe
+reason: Postgres 12+ supports additive enum value additions in a single statement without locking columns that reference the type.
+---
+ALTER TYPE subscription_status ADD VALUE 'trialing';

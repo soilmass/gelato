@@ -1,0 +1,5 @@
+---
+expected: safe
+reason: Unique index built without taking a write lock — canonical Postgres zero-downtime pattern.
+---
+CREATE UNIQUE INDEX CONCURRENTLY users_email_uniq ON users (email);

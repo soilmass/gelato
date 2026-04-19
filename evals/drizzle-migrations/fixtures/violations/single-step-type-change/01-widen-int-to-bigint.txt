@@ -1,0 +1,5 @@
+---
+class: single-step-type-change
+reason: ALTER COLUMN TYPE rewrites the whole column under a table lock on most Postgres versions; app code typed to the old width breaks.
+---
+ALTER TABLE users ALTER COLUMN id TYPE bigint;

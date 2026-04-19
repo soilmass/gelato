@@ -1,0 +1,5 @@
+---
+expected: safe
+reason: DROP DEFAULT is not a column drop — it removes the default clause only. A classifier matching loosely on 'DROP' would false-positive.
+---
+ALTER TABLE users ALTER COLUMN role DROP DEFAULT;

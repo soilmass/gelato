@@ -1,0 +1,5 @@
+---
+expected: safe
+reason: Additive column add with a supplied default; existing rows get the default, no NOT NULL trip.
+---
+ALTER TABLE users ADD COLUMN email_verified boolean DEFAULT false NOT NULL;
