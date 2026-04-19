@@ -1,0 +1,10 @@
+---
+reason: "Every array entry starts with ./ — passes the relative-path rule."
+---
+{
+  "name": "array-paths",
+  "version": "2.1.3",
+  "skills": ["./skills/", "./extras/"],
+  "commands": ["./commands/deploy.md", "./commands/rollback.md"],
+  "agents": ["./agents/reviewer.md"]
+}

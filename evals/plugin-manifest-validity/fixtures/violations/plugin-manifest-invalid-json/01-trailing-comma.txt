@@ -1,0 +1,8 @@
+---
+class: plugin-manifest-invalid-json
+reason: Trailing comma after last key — JSON.parse throws.
+---
+{
+  "name": "my-plugin",
+  "version": "1.0.0",
+}

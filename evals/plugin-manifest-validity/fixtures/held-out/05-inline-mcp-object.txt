@@ -1,0 +1,14 @@
+---
+class: safe
+reason: Inline mcpServers object is exempt from the ./ rule (same as inline hooks).
+---
+{
+  "name": "inline-mcp",
+  "version": "1.0.0",
+  "mcpServers": {
+    "plugin-db": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/servers/db-server",
+      "args": ["--config", "${CLAUDE_PLUGIN_ROOT}/config.json"]
+    }
+  }
+}

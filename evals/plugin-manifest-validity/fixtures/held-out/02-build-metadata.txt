@@ -1,0 +1,8 @@
+---
+class: safe
+reason: "`1.0.0+gelato.sha.abc` is valid semver (build metadata suffix)."
+---
+{
+  "name": "build-meta",
+  "version": "1.0.0+gelato.sha.abc"
+}

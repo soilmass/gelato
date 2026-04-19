@@ -1,0 +1,8 @@
+---
+class: plugin-name-not-kebab-case
+reason: Underscores are not allowed — the name is used in component namespacing.
+---
+{
+  "name": "my_plugin",
+  "version": "1.0.0"
+}
