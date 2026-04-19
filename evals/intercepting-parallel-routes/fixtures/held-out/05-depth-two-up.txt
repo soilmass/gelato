@@ -1,0 +1,14 @@
+---
+class: safe
+reason: "(..)(..)photo walks two segments up; base exists two levels above."
+---
+// FILE: app/layout.tsx
+export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</>; }
+// FILE: app/photo/[id]/page.tsx
+export default function Photo() { return <img />; }
+// FILE: app/feed/nested/(..)(..)photo/[id]/page.tsx
+export default function Modal() { return <dialog>…</dialog>; }
+// FILE: app/feed/nested/page.tsx
+export default function Nested() { return <ul>…</ul>; }
+// FILE: app/feed/page.tsx
+export default function Feed() { return <ul>…</ul>; }

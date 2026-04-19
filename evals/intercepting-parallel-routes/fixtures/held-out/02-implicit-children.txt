@@ -1,0 +1,8 @@
+---
+class: safe
+reason: "@children is implicit; no @ folder named children should ever exist."
+---
+// FILE: app/layout.tsx
+export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</>; }
+// FILE: app/page.tsx
+export default function Page() { return <h1>hi</h1>; }

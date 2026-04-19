@@ -1,0 +1,12 @@
+---
+class: slot-without-layout-prop
+reason: "Nested @analytics slot not destructured in nested layout."
+---
+// FILE: app/layout.tsx
+export default function Root({ children }: { children: React.ReactNode }) { return <>{children}</>; }
+// FILE: app/dashboard/layout.tsx
+export default function DashboardLayout({ children }: { children: React.ReactNode }) { return <>{children}</>; }
+// FILE: app/dashboard/@analytics/default.tsx
+export default function D() { return null; }
+// FILE: app/dashboard/@analytics/page.tsx
+export default function A() { return <p>analytics</p>; }

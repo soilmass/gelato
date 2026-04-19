@@ -1,0 +1,16 @@
+---
+class: parallel-missing-default
+reason: "@feed slot has page.tsx but no default.tsx."
+---
+// FILE: app/layout.tsx
+export default function Layout({
+  children,
+  feed,
+}: {
+  children: React.ReactNode;
+  feed: React.ReactNode;
+}) {
+  return <>{children}{feed}</>;
+}
+// FILE: app/@feed/page.tsx
+export default function FeedPage() { return <ul>…</ul>; }

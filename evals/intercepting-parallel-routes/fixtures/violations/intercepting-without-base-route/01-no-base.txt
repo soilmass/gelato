@@ -1,0 +1,10 @@
+---
+class: intercepting-without-base-route
+reason: "(..)photo intercepts app/photo, but app/photo does not exist anywhere."
+---
+// FILE: app/layout.tsx
+export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</>; }
+// FILE: app/feed/page.tsx
+export default function Feed() { return <ul>…</ul>; }
+// FILE: app/feed/(..)photo/[id]/page.tsx
+export default function PhotoModal() { return <dialog>…</dialog>; }

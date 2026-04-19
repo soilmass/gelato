@@ -1,0 +1,10 @@
+---
+class: safe
+reason: "(...)photo resolves to app/photo from anywhere — base exists at root."
+---
+// FILE: app/layout.tsx
+export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</>; }
+// FILE: app/photo/[id]/page.tsx
+export default function Photo() { return <img />; }
+// FILE: app/dashboard/feed/(...)photo/[id]/page.tsx
+export default function DeepModal() { return <dialog>…</dialog>; }

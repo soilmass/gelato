@@ -1,0 +1,12 @@
+---
+class: intercepting-prefix-depth-mismatch
+reason: "(.)photo from feed/ tries to intercept feed/photo which does not exist; photo exists as a sibling of feed — (..)photo would be correct."
+---
+// FILE: app/layout.tsx
+export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</>; }
+// FILE: app/feed/page.tsx
+export default function Feed() { return <ul>…</ul>; }
+// FILE: app/feed/(.)photo/[id]/page.tsx
+export default function Modal() { return <dialog>…</dialog>; }
+// FILE: app/photo/[id]/page.tsx
+export default function Photo() { return <img />; }

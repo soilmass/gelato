@@ -1,0 +1,16 @@
+---
+class: slot-without-layout-prop
+reason: "@modal slot exists but parent layout destructures only children."
+---
+// FILE: app/layout.tsx
+export default function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <>{children}</>;
+}
+// FILE: app/@modal/default.tsx
+export default function Default() { return null; }
+// FILE: app/@modal/page.tsx
+export default function ModalPage() { return <dialog>Hi</dialog>; }

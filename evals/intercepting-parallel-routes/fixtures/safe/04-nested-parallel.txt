@@ -1,0 +1,21 @@
+---
+reason: "Nested parallel slot — dashboard layout destructures analytics."
+---
+// FILE: app/layout.tsx
+export default function Root({ children }: { children: React.ReactNode }) { return <>{children}</>; }
+// FILE: app/dashboard/layout.tsx
+export default function DashboardLayout({
+  children,
+  analytics,
+}: {
+  children: React.ReactNode;
+  analytics: React.ReactNode;
+}) {
+  return <>{children}{analytics}</>;
+}
+// FILE: app/dashboard/@analytics/default.tsx
+export default function Default() { return null; }
+// FILE: app/dashboard/@analytics/page.tsx
+export default function Analytics() { return <section>charts</section>; }
+// FILE: app/dashboard/page.tsx
+export default function Dashboard() { return <h1>Dashboard</h1>; }
