@@ -12,6 +12,7 @@
     "./judge": "./src/judge.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.90.0",
     "@gelato/schema": "workspace:*",
     "chrome-launcher": "^1.2.1",
     "gray-matter": "^4.0.3",
