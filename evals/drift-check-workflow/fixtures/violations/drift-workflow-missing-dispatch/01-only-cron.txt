@@ -1,0 +1,20 @@
+---
+class: drift-workflow-missing-dispatch
+reason: No workflow_dispatch — humans can't ad-hoc trigger.
+---
+name: Drift — Example
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+
+concurrency:
+  group: drift-example
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: curl -fsSL https://example.com/spec -o /tmp/spec.html

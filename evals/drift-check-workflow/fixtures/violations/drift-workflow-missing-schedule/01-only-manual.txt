@@ -1,0 +1,19 @@
+---
+class: drift-workflow-missing-schedule
+reason: Only workflow_dispatch — no cron means drift is never auto-detected.
+---
+name: Drift — Example
+
+on:
+  workflow_dispatch: {}
+
+concurrency:
+  group: drift-example
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: curl -fsSL https://example.com/spec -o /tmp/spec.html

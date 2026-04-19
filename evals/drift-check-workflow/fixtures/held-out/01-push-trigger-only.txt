@@ -1,0 +1,21 @@
+---
+class: drift-workflow-missing-schedule
+reason: Push trigger is not a schedule — drift still never auto-runs on a cadence.
+---
+name: Drift — Example
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: drift-example
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: curl -fsSL https://example.com/spec -o /tmp/spec.html

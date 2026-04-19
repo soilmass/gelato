@@ -1,0 +1,33 @@
+---
+reason: Full end-to-end drift flow — fetch, diff, open PR. Includes snapshot commit step.
+---
+name: Drift — WCAG 2.2
+
+on:
+  schedule:
+    - cron: '45 2 * * 1'
+  workflow_dispatch: {}
+
+concurrency:
+  group: drift-wcag-22
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch WCAG 2.2
+        run: curl -fsSL https://www.w3.org/TR/WCAG22/ -o /tmp/wcag22.html
+      - name: Diff against snapshot
+        id: diff
+        run: |
+          diff skills/a11y-mechanical-audit/references/wcag22.html /tmp/wcag22.html \
+            | tee /tmp/drift.patch
+      - name: Open PR on drift
+        if: failure()
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore(drift): wcag 2.2 snapshot update"
+          branch: chore/drift-wcag-22-${{ github.run_id }}

@@ -1,0 +1,17 @@
+---
+class: drift-workflow-missing-concurrency
+reason: No concurrency group — overlapping runs can double-open PRs.
+---
+name: Drift — Example
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch: {}
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: curl -fsSL https://example.com/spec -o /tmp/spec.html

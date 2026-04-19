@@ -1,0 +1,23 @@
+---
+reason: Uses wget instead of curl — still satisfies the fetch rule.
+---
+name: Drift — HTTP Spec
+
+on:
+  schedule:
+    - cron: '30 5 * * 1'
+  workflow_dispatch: {}
+
+concurrency:
+  group: drift-http-spec
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch RFC 9110
+        run: wget -q https://www.rfc-editor.org/rfc/rfc9110.txt -O /tmp/rfc9110.txt
+      - name: Diff
+        run: diff skills/http-client/references/rfc9110.txt /tmp/rfc9110.txt || true

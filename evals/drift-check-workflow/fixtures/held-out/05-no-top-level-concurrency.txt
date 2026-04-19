@@ -1,0 +1,19 @@
+---
+class: drift-workflow-missing-concurrency
+reason: "Concurrency block is nested inside a job, not at top level — still counts as missing for our rule."
+---
+name: Drift — Example
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch: {}
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: curl -fsSL https://example.com/spec -o /tmp/spec.html
+      - name: Fake step with concurrency in string
+        run: echo "this is not a concurrency block"

@@ -1,0 +1,21 @@
+---
+class: drift-workflow-missing-checkout
+reason: No actions/checkout — no local snapshot to diff against.
+---
+name: Drift — Example
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch: {}
+
+concurrency:
+  group: drift-example
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch
+        run: curl -fsSL https://example.com/spec -o /tmp/spec.html
