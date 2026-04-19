@@ -1,11 +1,11 @@
-# Promptfoo config for auth-flow-review LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for auth-flow-review LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. A v0.2 `session-architecture`
-# rubric would judge whether a JWT-vs-cookie decision is well-founded given
-# the app's threat model. A second v0.2 rubric could score auth-flow
-# completeness (rate-limit? MFA? lockout? audit log?) against ASVS v4.
+# One rubric per SKILL.md § Evaluation:
+#   - session-architecture — judges whether a JWT-vs-cookie decision
+#     is well-founded given the app's threat model (CSRF posture,
+#     token-revocation needs, cross-device session requirements).
 
-description: auth-flow-review LLM-as-judge rubrics (deferred to v0.2)
+description: auth-flow-review LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -14,6 +14,79 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is a session-architecture decision for a Next.js
+    15 app: a stated threat model followed by a choice between a
+    server-side session cookie and a stateless JWT. Assess whether
+    the choice is well-founded against the threat model, or whether
+    it's a cargo-culted pick with no trade-off analysis.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: session-architecture
+    vars:
+      content: |
+        Threat model:
+          - Multi-tenant SaaS; an admin revoking a user's access
+            must take effect within 5 minutes company-wide
+          - Users sign in on multiple devices; sign-out on one
+            should NOT terminate other sessions
+          - CSRF-sensitive mutations happen via Server Actions
+            (Next.js handles CSRF via action IDs)
+          - No offline / long-lived PWA use case
+          - Regulatory requirement: complete audit trail of every
+            session termination
+
+        Decision: server-side session cookie
+        (not a stateless JWT).
+
+        Rationale:
+          - Revocation within 5 minutes is incompatible with
+            long-lived JWTs. A session cookie backed by a Redis
+            store lets us tombstone a session in ≤1 second.
+          - Per-device sessions map cleanly to the store's
+            (userId, deviceId) key — simple to list and terminate
+            individually without cascading across the user's other
+            devices.
+          - Server Actions already handle CSRF; sameSite=Lax + the
+            action-ID check covers mutations without a separate
+            CSRF token layer.
+          - Audit trail is trivially produced by logging the
+            Redis delete operations; no need to derive it from
+            blacklist-based JWT revocation.
+          - JWT trade-offs (stateless scale, no store lookup
+            on every request) don't matter here: the app is not
+            bandwidth-limited and the Redis hit adds ~1ms.
+
+        Implementation:
+          - Auth.js v5 with a Credentials provider + database
+            session strategy
+          - Redis or Postgres-backed session store
+          - Cookie flags: httpOnly, secure, sameSite: 'lax',
+            7-day maxAge
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the decision:
+            - names the threat-model properties that drove the
+              pick (revocation latency, multi-device, CSRF, audit,
+              offline use, regulatory)
+            - explicitly addresses the trade-offs of the NOT-chosen
+              option (why JWT's stateless-scale benefit doesn't
+              matter here)
+            - ties each threat-model property to a concrete aspect
+              of the chosen architecture (Redis for revocation,
+              per-device key for targeted sign-out, etc.)
+            - includes the implementation specifics the decision
+              implies (cookie flags, store choice, session
+              strategy)
+          Score 0 when the decision is stated without a threat
+          model, when "JWT vs cookie" is picked by default /
+          fashion, or when trade-offs of the rejected option are
+          not engaged. Score 0.5 when the decision ties to SOME
+          threat-model properties but misses others, or when the
+          rejected option is dismissed without analysis.

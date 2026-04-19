@@ -1,10 +1,11 @@
-# Promptfoo config for structured-logging LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for structured-logging LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. A v0.2 `log-design-quality`
-# rubric would judge whether log messages are useful during incident response
-# (consistent verbs, right cardinality, no log-spam at info level).
+# One rubric per SKILL.md § Evaluation:
+#   - log-design-quality — judges whether a handler's log calls are
+#     useful during incident response: consistent verbs, right
+#     cardinality, no log-spam at info level.
 
-description: structured-logging LLM-as-judge rubrics (deferred to v0.2)
+description: structured-logging LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -13,6 +14,71 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is a Next.js 15 server handler with structured
+    logging. Assess whether the logs would be useful during an
+    incident — consistent verbs, the right cardinality per level,
+    no log-spam — or whether they'd produce noise that drowns the
+    signal.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: log-design-quality
+    vars:
+      content: |
+        import { logger } from '@/lib/logger';
+        import { nanoid } from 'nanoid';
+        import { db, posts } from '@/lib/db';
+        import * as Sentry from '@sentry/nextjs';
+
+        export async function POST(req: Request) {
+          const requestId = nanoid();
+          const log = logger.child({ requestId, route: 'posts.create' });
+
+          log.info({ method: 'POST' }, 'posts.create begin');
+
+          try {
+            const body = await req.json();
+            const [row] = await db
+              .insert(posts)
+              .values(body)
+              .returning({ id: posts.id });
+            log.info(
+              { postId: row.id, bodyBytes: JSON.stringify(body).length },
+              'posts.create success',
+            );
+            return Response.json({ ok: true, postId: row.id });
+          } catch (err) {
+            log.error({ err }, 'posts.create failed');
+            Sentry.captureException(err);
+            return Response.json({ ok: false }, { status: 500 });
+          }
+        }
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the logging design:
+            - emits exactly one begin / one terminal log per
+              request (not three begins, not a log per branch) —
+              the right cardinality for info level
+            - uses consistent verbs across the life of the request
+              ("posts.create begin" / "posts.create success" /
+              "posts.create failed") — same noun, status suffix
+              varies, easy to grep
+            - attaches a correlation ID (requestId) via a child
+              logger so every log for the request shares the key
+            - reserves error-level for actual failures (caught
+              exceptions), not for info-level business events
+            - includes per-log fields that would be useful in a
+              query ("which request?", "which postId?", "how
+              large was the body?") without being PII
+          Score 0 when every branch has its own info log (spam),
+          when verbs drift across the request, when the
+          correlation ID is missing, or when error-level is used
+          for routine events. Score 0.5 when SOME of the properties
+          hold (e.g. correlation ID present but log verbs
+          inconsistent).

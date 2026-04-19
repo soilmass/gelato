@@ -1,11 +1,11 @@
-# Promptfoo config for tdd-cycle LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for tdd-cycle LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. The "fuzzy half" (per the
-# roadmap flag) is the test-meaningfulness rubric: does the assertion
-# exercise genuine behavior, or is it tautological ("mock returns X,
-# function returns X, assert X")? A v0.2 rubric will attempt this.
+# One rubric per SKILL.md § Evaluation:
+#   - unit-test-meaningfulness — judges whether a Vitest unit /
+#     integration test asserts against genuine behavior rather than
+#     tautologies ("mock returns X, function returns X, assert X").
 
-description: tdd-cycle LLM-as-judge rubrics (deferred to v0.2)
+description: tdd-cycle LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -14,6 +14,71 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is a Vitest unit or integration test. Assess
+    whether the assertion exercises genuine behavior — a property
+    that would break if the implementation were wrong — versus a
+    tautology where the test and the code under test are so
+    entangled that passing tells you nothing.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: unit-test-meaningfulness
+    vars:
+      content: |
+        import { describe, it, expect, vi } from 'vitest';
+        import { calculateInvoiceTotal } from './billing';
+
+        describe('calculateInvoiceTotal', () => {
+          it('sums line items with tax and shipping', () => {
+            const invoice = {
+              lineItems: [
+                { qty: 2, unitPrice: 1000 },
+                { qty: 1, unitPrice: 500 },
+              ],
+              taxRate: 0.08,
+              shippingCents: 700,
+            };
+            const total = calculateInvoiceTotal(invoice);
+
+            // Subtotal = 2500, tax = 200, shipping = 700 → 3400
+            expect(total).toBe(3400);
+          });
+
+          it('applies discount before tax', () => {
+            const invoice = {
+              lineItems: [{ qty: 1, unitPrice: 10000 }],
+              taxRate: 0.1,
+              shippingCents: 0,
+              discountPercent: 20,
+            };
+            // Subtotal 10000 → after 20% discount 8000 → tax 800 → total 8800
+            expect(calculateInvoiceTotal(invoice)).toBe(8800);
+          });
+        });
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the test:
+            - asserts a specific computed result (3400, 8800) that
+              would break if the rule under test (tax-after-discount,
+              shipping-flat) were implemented wrong
+            - uses realistic input shapes a caller would actually
+              pass, not minimal stubs that bypass the code path
+            - exercises multiple branches of the logic across tests
+              (baseline, discount branch, etc.)
+            - has zero mocks of the function under test or its
+              pure dependencies — only genuine input → output
+              assertions
+          Score 0 when assertions are tautological (mock returns X,
+          function returns X, assert X), when the test mirrors the
+          implementation one-to-one (restating the source instead
+          of testing behavior), or when the test passes trivially
+          because every non-obvious branch is mocked away. Score
+          0.5 when the test asserts real values but misses branches
+          or uses over-simplified inputs that don't exercise the
+          rule in a realistic shape.

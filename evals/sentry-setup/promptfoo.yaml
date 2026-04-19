@@ -1,11 +1,12 @@
-# Promptfoo config for sentry-setup LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for sentry-setup LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. A v0.2 `alert-coverage`
-# rubric would judge whether critical paths are adequately instrumented
-# (all mutating Server Actions have captureException, all webhooks have
-# error boundaries reaching Sentry).
+# One rubric per SKILL.md § Evaluation:
+#   - alert-coverage — judges whether critical paths are adequately
+#     instrumented: mutating Server Actions have captureException,
+#     webhook handlers have error boundaries reaching Sentry, tagged
+#     scope distinguishes user-facing errors from background jobs.
 
-description: sentry-setup LLM-as-judge rubrics (deferred to v0.2)
+description: sentry-setup LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -14,6 +15,79 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is a Sentry instrumentation audit across the
+    critical paths of a Next.js 15 app. Assess whether every
+    business-critical entry point (Server Actions, route handlers,
+    webhooks, cron jobs) has appropriate error-capture coverage,
+    with scope tagging that distinguishes user-facing from
+    background failures.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: alert-coverage
+    vars:
+      content: |
+        Critical-path instrumentation audit:
+
+          Server Actions (mutating):
+            ✓ createPost       — captureException + scope.setTag('area', 'posts')
+            ✓ deletePost       — captureException + scope.setTag('area', 'posts')
+            ✓ subscribe        — captureException + scope.setTag('area', 'billing')
+            ✓ cancelSubscription — captureException +
+                                     scope.setTag('area', 'billing')
+            ✓ updateProfile    — captureException + scope.setTag('area', 'profile')
+
+          Webhook handlers:
+            ✓ /api/webhooks/stripe
+                — captureException inside the event.type switch's
+                  default branch; scope.setTag('area', 'webhook-stripe')
+            ✓ /api/webhooks/github
+                — same pattern; scope.setTag('area', 'webhook-github')
+
+          Cron jobs (Vercel Cron):
+            ✓ /api/cron/digest-email
+                — captureException with scope.setTag('area', 'cron') +
+                  scope.setTag('job', 'digest-email')
+            ✓ /api/cron/reconcile-subscriptions
+                — same pattern
+
+          Read-only route handlers (GET):
+            — intentionally NOT instrumented at the handler level;
+              Sentry's automatic instrumentation catches unhandled
+              exceptions, and these paths have no business-logic
+              errors worth alerting on.
+
+        Dashboard setup:
+          - alert rule on error rate > 5/min, grouped by area tag,
+            paging on-call for 'billing' / 'webhook-*' areas,
+            Slack-only for 'posts' / 'profile' / 'cron'
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the instrumentation:
+            - covers every mutating Server Action with
+              captureException (not just the ones that feel
+              important)
+            - covers webhook handlers' error branches so
+              upstream-caused failures still reach Sentry even
+              when the webhook returns 200 to the provider
+            - covers cron / background jobs (failures there are
+              invisible without alerting)
+            - applies scope tags to distinguish areas (billing /
+              posts / webhook / cron) so alert routing can
+              prioritize user-facing over background
+            - explains which paths are INTENTIONALLY not
+              instrumented and why (read-only GETs)
+            - ties the coverage to alert rules (page vs. Slack
+              based on area)
+          Score 0 when coverage is gappy (some Server Actions
+          instrumented, others not), when webhooks / cron are
+          missing, or when scope tagging is absent. Score 0.5 when
+          some categories are covered but others (cron, webhooks)
+          are not, or when tags exist but aren't wired to alert
+          routing.

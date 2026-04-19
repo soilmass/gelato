@@ -40,7 +40,7 @@ metadata:
     - "bun@1.1+"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T07:16:49.169Z"
+    last_run: "2026-04-19T12:03:50.484Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Four mechanical violations (no assertion,

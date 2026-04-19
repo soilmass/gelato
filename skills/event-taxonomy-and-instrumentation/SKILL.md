@@ -41,7 +41,7 @@ metadata:
     - "bun@1.1+"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T10:24:21.989Z"
+    last_run: "2026-04-19T12:03:53.851Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Judgment skill. Four mechanical violations
