@@ -1,0 +1,14 @@
+---
+class: safe
+reason: Locator chain starting from a semantic root, then .locator('input') to scope — common pattern and not a fragile raw-CSS selector strategy.
+---
+import { test, expect } from '@playwright/test';
+
+test('modal email input', async ({ page }) => {
+  await page.goto('/settings');
+  await page.getByRole('button', { name: 'Edit email' }).click();
+  const modal = page.getByRole('dialog', { name: 'Edit email' });
+  await modal.getByLabel('New email').fill('new@example.com');
+  await modal.getByRole('button', { name: 'Save' }).click();
+  await expect(page.getByRole('alert')).toHaveText('Email updated.');
+});

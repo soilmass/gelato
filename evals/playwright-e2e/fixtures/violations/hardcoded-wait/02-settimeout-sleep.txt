@@ -1,0 +1,13 @@
+---
+class: hardcoded-wait
+reason: Manual setTimeout-based sleep inside a test body — same anti-pattern as waitForTimeout, wrapped by hand.
+---
+import { test, expect } from '@playwright/test';
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+test('search results appear', async ({ page }) => {
+  await page.goto('/search?q=react');
+  await sleep(1500);
+  await expect(page.getByRole('list')).toBeVisible();
+});

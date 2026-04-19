@@ -1,0 +1,19 @@
+---
+class: test-only-committed
+reason: test.only inside a describe block — still wins the runner's focus, still skips the rest.
+---
+import { test, expect } from '@playwright/test';
+
+test.describe('checkout', () => {
+  test('cart shows items', async ({ page }) => {
+    await page.goto('/cart');
+    await expect(page.getByRole('listitem')).toHaveCount(3);
+  });
+
+  test.only('apply coupon', async ({ page }) => {
+    await page.goto('/cart');
+    await page.getByLabel('Coupon').fill('SAVE10');
+    await page.getByRole('button', { name: 'Apply' }).click();
+    await expect(page.getByText('10% off')).toBeVisible();
+  });
+});

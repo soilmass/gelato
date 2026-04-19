@@ -1,0 +1,20 @@
+# Promptfoo config for playwright-e2e LLM-as-judge rubrics (deferred to v0.2).
+#
+# v0.1 ships the deterministic classifier only. A v0.2 `test-meaningfulness`
+# rubric would judge whether a test's assertions cover user-visible behavior
+# ("user sees their name after login") rather than shallow markers ("page
+# loaded"). A second v0.2 rubric could score test-isolation quality (fixture
+# hygiene, no cross-test state).
+
+description: playwright-e2e LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []

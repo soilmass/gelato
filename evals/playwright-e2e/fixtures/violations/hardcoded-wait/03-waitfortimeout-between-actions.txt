@@ -1,0 +1,13 @@
+---
+class: hardcoded-wait
+reason: Hardcoded wait between two click interactions — "click, sleep, click" is a classic flake pattern.
+---
+import { test, expect } from '@playwright/test';
+
+test('multi-step form', async ({ page }) => {
+  await page.goto('/checkout');
+  await page.getByRole('button', { name: 'Next' }).click();
+  await page.waitForTimeout(500);
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByRole('heading', { name: 'Payment' })).toBeVisible();
+});

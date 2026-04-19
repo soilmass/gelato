@@ -1,0 +1,11 @@
+---
+class: safe
+reason: test.only is mentioned in a comment for documentation — not actually invoked. Classifier must skip comments.
+---
+import { test, expect } from '@playwright/test';
+
+// NOTE: do NOT commit test.only — it silently skips the rest of the suite.
+test('canonical test', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('heading')).toBeVisible();
+});

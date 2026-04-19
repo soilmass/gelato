@@ -1,0 +1,10 @@
+---
+class: imperative-assertion
+reason: expect(await locator.count()).toEqual — imperative, no retry. Use toHaveCount.
+---
+import { test, expect } from '@playwright/test';
+
+test('three posts render', async ({ page }) => {
+  await page.goto('/posts');
+  expect(await page.getByRole('article').count()).toEqual(3);
+});

@@ -1,0 +1,11 @@
+---
+expected: safe
+reason: getByTestId used where no semantic locator is available (a canvas visualization). Test-id fallback is legitimate.
+---
+import { test, expect } from '@playwright/test';
+
+test('chart renders', async ({ page }) => {
+  await page.goto('/dashboard');
+  await expect(page.getByTestId('revenue-chart')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Revenue' })).toBeVisible();
+});

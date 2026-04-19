@@ -1,0 +1,11 @@
+---
+class: safe
+reason: getByTestId — the sanctioned fallback. Not a CSS selector; semantic intent preserved.
+---
+import { test, expect } from '@playwright/test';
+
+test('svg map renders', async ({ page }) => {
+  await page.goto('/map');
+  await expect(page.getByTestId('world-svg')).toBeVisible();
+  await expect(page.getByTestId('country-us')).toBeVisible();
+});

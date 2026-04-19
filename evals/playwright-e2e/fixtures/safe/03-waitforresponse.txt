@@ -1,0 +1,12 @@
+---
+expected: safe
+reason: Uses page.waitForResponse for a specific API call — not a hardcoded wait. Observable network signal.
+---
+import { test, expect } from '@playwright/test';
+
+test('posts load on dashboard', async ({ page }) => {
+  await page.goto('/dashboard');
+  await page.waitForResponse('**/api/posts');
+  await expect(page.getByRole('list', { name: 'Posts' })).toBeVisible();
+  await expect(page.getByRole('listitem')).toHaveCount(10);
+});

@@ -1,0 +1,14 @@
+---
+class: safe
+reason: waitForResponse (observable signal) — not a hardcoded wait. Classifier must not flag this.
+---
+import { test, expect } from '@playwright/test';
+
+test('api call completes', async ({ page }) => {
+  await page.goto('/feed');
+  const response = await page.waitForResponse(
+    (r) => r.url().includes('/api/feed') && r.status() === 200,
+  );
+  expect(response.ok()).toBe(true);
+  await expect(page.getByRole('article').first()).toBeVisible();
+});
