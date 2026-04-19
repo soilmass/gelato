@@ -1,0 +1,42 @@
+---
+class: frontmatter-schema-invalid
+reason: subsystem value `landing` is not in the web-dev enum — fails discriminated union.
+---
+---
+name: wrong-subsystem
+description: Test.
+license: MIT
+metadata:
+  version: "1.0"
+  core: web-dev
+  subsystem: landing
+  phase: build
+  type: procedural
+  methodology_source:
+    - name: "Test"
+      authority: "Test"
+      url: "https://example.com/"
+      version: "1.0"
+      verified: "2026-04-19"
+  stack_assumptions:
+    - "bun@1.1+"
+  eval:
+    pass_rate: null
+    last_run: null
+    n_cases: null
+  changelog: >
+    v1.0 — test
+---
+
+# wrong-subsystem
+
+## Methodology Attribution
+## Stack Assumptions
+## When to Use
+## When NOT to Use
+## Procedure
+## Tool Integration
+## Examples
+## Evaluation
+## Handoffs
+## References
