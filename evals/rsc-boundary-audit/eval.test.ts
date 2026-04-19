@@ -68,10 +68,6 @@ const EVENT_HANDLER_RE = /\bon[A-Z]\w+\s*=/;
 const HYDRATION_MISMATCH_RE =
   /(?:\bDate\.now\s*\(|\bMath\.random\s*\(|\btypeof\s+window\b|\.toLocaleTimeString\s*\(|\.toLocaleString\s*\(|\.toLocaleDateString\s*\()/;
 
-// Non-serializable props (class 3 signals). Matches `new Date()`, `new Map()`,
-// etc., plus any `new Xxx()` where Xxx is PascalCase (custom class instance).
-const NON_SERIALIZABLE_CONSTRUCTOR_RE = /\bnew\s+(?:Date|Map|Set|URL|[A-Z]\w+)\b/;
-
 // Comments the classifier strips before matching. Imperfect for strings that
 // contain `//` or `/* */` — safe for the fixture shapes in this eval set.
 function stripComments(source: string): string {
