@@ -1,0 +1,19 @@
+---
+class: missing-concurrency-cancel
+reason: Preview deploy workflow with no concurrency — multiple deploys can race on the same PR.
+---
+name: Deploy (preview)
+on: pull_request
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - run: bun install --frozen-lockfile
+      - name: Deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: bunx vercel deploy --token="$VERCEL_TOKEN"

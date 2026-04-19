@@ -1,0 +1,23 @@
+---
+class: secret-echoed-in-run
+reason: echo of a secret interpolation — writes token into the log stream.
+---
+name: Deploy
+on: pull_request
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Debug
+        run: echo "Using token ${{ secrets.VERCEL_TOKEN }}"
+      - name: Deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: bunx vercel deploy --token="$VERCEL_TOKEN"

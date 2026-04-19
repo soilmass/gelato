@@ -1,0 +1,23 @@
+---
+class: secret-echoed-in-run
+reason: env | grep prints all environment variables including secrets bound via env block.
+---
+name: CI
+on: pull_request
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dump env
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          env | grep -i key
+          echo "done"

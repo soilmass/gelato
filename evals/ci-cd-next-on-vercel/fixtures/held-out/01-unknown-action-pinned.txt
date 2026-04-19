@@ -1,0 +1,23 @@
+---
+class: safe
+reason: Less-common action (nwtgck/actions-netlify) is pinned to a version — rule applies equally to any third-party action.
+---
+name: Deploy
+on: pull_request
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - uses: nwtgck/actions-netlify@v3.0.0
+        with:
+          publish-dir: dist

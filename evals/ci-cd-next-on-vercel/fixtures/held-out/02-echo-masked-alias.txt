@@ -1,0 +1,23 @@
+---
+class: secret-echoed-in-run
+reason: Secret referenced via env var and echoed — the env var name (DEPLOY_KEY) binds to a secret. Echoing still leaks.
+---
+name: CI
+on: pull_request
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy
+        run: |
+          echo "Deploying with $DEPLOY_KEY"
+          ssh -i key.pem deploy@host
