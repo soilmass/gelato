@@ -39,9 +39,9 @@ metadata:
     - "react@19+"
     - "bun@1.1+"
   eval:
-    pass_rate: null
-    last_run: null
-    n_cases: null
+    pass_rate: 1
+    last_run: "2026-04-19T11:54:23.478Z"
+    n_cases: 4
   changelog: >
     v1.0 — initial. Four violation classes detected by a deterministic
     classifier: missing-cache-strategy, conflicting-revalidate,

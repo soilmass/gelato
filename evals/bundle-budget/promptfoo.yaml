@@ -1,11 +1,12 @@
-# Promptfoo config for bundle-budget LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for bundle-budget LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. A v0.2 `library-severity`
-# rubric would judge whether an ambiguous dep (recharts, framer-motion)
-# is "heavy in context" given its actual use in the route — things that
-# can't be captured by a fixed set.
+# One rubric per SKILL.md § Evaluation:
+#   - library-severity — judges whether an ambiguous third-party dep
+#     (recharts, framer-motion, @tanstack/react-query) is "heavy in
+#     context" given its actual use in the route. These can't be
+#     captured by the mechanical heavy-lib set.
 
-description: bundle-budget LLM-as-judge rubrics (deferred to v0.2)
+description: bundle-budget LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -14,6 +15,65 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is a bundle-analysis excerpt describing an
+    ambiguous third-party dependency in a Next.js 15 route plus how
+    the route actually uses it. Assess whether the dep is "heavy in
+    context" — i.e., its per-route cost is high enough to warrant
+    swapping, dynamic-importing, or moving to the server.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: library-severity
+    vars:
+      content: |
+        Route:     /dashboard
+        Dep:       recharts (~120 KB gz in the chunk graph)
+        Usage:     a single <LineChart> rendering 30 data points on
+                   initial load; no interactivity, no responsive
+                   legend, no tooltips.
+
+        Route totals:
+          First Load JS: 198 KB  (budget: 150 KB)
+          Shared:         82 KB  (budget: 100 KB)
+          /dashboard:    116 KB contributes to the First Load figure
+
+        Context:
+          - The <LineChart> is above the fold but on a non-critical
+            "analytics preview" panel that appears on the dashboard
+            home. Interactive tools live behind a deeper route.
+          - recharts is not in the mechanical heavy-library-in-bundle
+            list — it's a plausibly-justified dep for real charting.
+          - The static-render 30 points could be rendered as an SVG
+            sparkline in ~3 KB.
+
+        Verdict: HEAVY IN CONTEXT. recharts' per-route cost is pushing
+        /dashboard over budget; the usage shape (static, non-
+        interactive) doesn't require the full recharts runtime. Swap
+        for a purpose-built SVG sparkline component (or dynamic-
+        import recharts only when the interactive deep-dive panel
+        opens). Expected bundle delta: -100 KB on /dashboard's First
+        Load JS.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the verdict:
+            - states explicitly whether the dep is heavy IN CONTEXT
+              (not just "heavy in absolute terms")
+            - cites the route's actual usage shape (how many
+              features are used vs. how much of the dep's surface)
+            - cites the route's current First Load JS total vs. the
+              150 KB budget to justify the severity
+            - names a concrete remediation (swap for X, dynamic-
+              import with next/dynamic + ssr: false, move to
+              server-rendered SVG, or accept as tolerable)
+            - estimates a bundle delta when proposing a swap
+          Score 0 when the verdict is binary (just "heavy" or "not
+          heavy") without engagement with the usage context, or when
+          no remediation is named. Score 0.5 when the verdict is
+          correct but missing context or missing a specific
+          remediation step.

@@ -1,11 +1,11 @@
-# Promptfoo config for form-with-server-action LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for form-with-server-action LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. A v0.2 `a11y-rubric` would
-# judge whether rendered error JSX carries role="alert" and whether the
-# pending-state button has an accessible label (aria-live, etc.) — concerns
-# that are harder to classify with regex but well-suited to an LLM judge.
+# One rubric per SKILL.md § Evaluation:
+#   - a11y-rubric — judges whether rendered error JSX carries
+#     role="alert" and whether the pending-state button has an
+#     accessible label (aria-live, aria-disabled + visible state).
 
-description: form-with-server-action LLM-as-judge rubrics (deferred to v0.2)
+description: form-with-server-action LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -14,6 +14,83 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is a Next.js 15 form component that submits to a
+    Server Action. Assess its accessibility specifically around two
+    concerns: (1) do rendered error messages announce themselves to
+    assistive tech, and (2) does the submit button communicate
+    pending state in an accessible way.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: a11y-rubric
+    vars:
+      content: |
+        'use client';
+        import { useActionState } from 'react';
+        import { createPost, type CreatePostState } from './actions';
+
+        const initialState: CreatePostState = {
+          ok: false,
+          errors: {},
+          input: { title: '', body: '' },
+        };
+
+        export function CreatePostForm() {
+          const [state, formAction, pending] = useActionState(
+            createPost,
+            initialState,
+          );
+
+          return (
+            <form action={formAction} className="space-y-3">
+              <div>
+                <label htmlFor="title">Title</label>
+                <input
+                  id="title"
+                  name="title"
+                  defaultValue={state.input?.title}
+                  required
+                  aria-describedby={
+                    state.errors?.title?.length ? 'title-error' : undefined
+                  }
+                />
+                {state.errors?.title?.length ? (
+                  <p id="title-error" role="alert" className="text-red-600">
+                    {state.errors.title.join(', ')}
+                  </p>
+                ) : null}
+              </div>
+
+              <button
+                type="submit"
+                disabled={pending}
+                aria-busy={pending}
+              >
+                {pending ? 'Saving…' : 'Save'}
+              </button>
+            </form>
+          );
+        }
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the form:
+            - renders each field's error message inside an element
+              carrying role="alert" (so a screen reader announces it
+              without user focus)
+            - links the error to its input via aria-describedby when
+              the error is present
+            - communicates pending state on the submit button via BOTH
+              a visible label change (e.g. "Saving…") AND a
+              machine-readable signal (aria-busy, aria-disabled, or
+              disabled)
+          Score 0 when errors render without role="alert" AND the
+          button's pending state is invisible to assistive tech.
+          Score 0.5 when one of the two concerns is addressed but
+          not the other, or when aria-describedby is missing from
+          fields that have inline errors.

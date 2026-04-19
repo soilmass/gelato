@@ -38,7 +38,7 @@ metadata:
     - "bun@1.1+"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T06:57:42.410Z"
+    last_run: "2026-04-19T11:54:26.917Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Judgment skill. Four-threshold decision tree

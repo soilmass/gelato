@@ -40,7 +40,7 @@ metadata:
     - "bun@1.1+"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T06:27:59.950Z"
+    last_run: "2026-04-19T11:54:24.369Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Judgment skill, no Hard Thresholds. Deep procedure
