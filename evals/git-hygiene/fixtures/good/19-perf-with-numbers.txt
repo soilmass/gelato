@@ -1,0 +1,5 @@
+---
+expected: pass
+reason: perf type with a quantified improvement in the subject — imperative, under 72 chars.
+---
+perf(rsc-classifier): reduce stripComments passes by 40 percent

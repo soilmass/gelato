@@ -1,0 +1,5 @@
+---
+expected: pass
+reason: style type — formatting-only changes, no behavior change.
+---
+style: apply biome formatter to evals directory

@@ -1,0 +1,8 @@
+---
+expected: pass
+reason: Security fix with CVE reference in body. Conventional Commits allows any prose; the CVE ID stays in the body footer where it belongs.
+---
+fix(deps): bump node-dependency to patch a sandbox escape
+
+Resolves CVE-2026-12345 in node-dependency < 4.2.2. Patch is
+backwards-compatible; no API changes.

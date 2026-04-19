@@ -1,0 +1,8 @@
+---
+expected: pass
+reason: "revert with full reverted-subject quoting — `revert: \"…\"` shape is recognized by config-conventional."
+---
+revert: "feat(skills): add experimental log-aggregation skill"
+
+This reverts commit 1a2b3c4d5e. The skill scope was too close to
+structured-logging; consolidating on the latter.

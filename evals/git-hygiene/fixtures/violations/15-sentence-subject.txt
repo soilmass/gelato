@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: Sentence-case subject with trailing period — compound violation of subject-case + subject-full-stop.
+---
+feat: Add the structured-logging skill with Pino integration.

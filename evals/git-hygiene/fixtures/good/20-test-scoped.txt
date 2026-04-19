@@ -1,0 +1,5 @@
+---
+expected: pass
+reason: test type with a skill scope — adds fixtures to a specific skill's eval set.
+---
+test(auth-flow-review): add 3 held-out fixtures for password paths
