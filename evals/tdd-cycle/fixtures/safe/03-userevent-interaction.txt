@@ -1,0 +1,19 @@
+---
+expected: safe
+reason: User-event interaction test — fills a form, submits, asserts on rendered output.
+---
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { ContactForm } from './ContactForm';
+
+describe('ContactForm', () => {
+  it('submits valid input', async () => {
+    const user = userEvent.setup();
+    render(<ContactForm />);
+    await user.type(screen.getByLabelText('Email'), 'user@example.com');
+    await user.type(screen.getByLabelText('Message'), 'hello');
+    await user.click(screen.getByRole('button', { name: 'Send' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Thanks');
+  });
+});

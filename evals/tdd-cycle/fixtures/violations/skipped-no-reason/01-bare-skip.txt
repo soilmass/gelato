@@ -1,0 +1,16 @@
+---
+class: skipped-no-reason
+reason: Bare it.skip without adjacent comment or issue reference — rots into tech debt.
+---
+import { describe, it, expect } from 'vitest';
+import { toSlug } from './slug';
+
+describe('toSlug', () => {
+  it.skip('handles unicode', () => {
+    expect(toSlug('héllo')).toBe('hello');
+  });
+
+  it('handles ascii', () => {
+    expect(toSlug('hello')).toBe('hello');
+  });
+});

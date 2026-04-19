@@ -1,0 +1,13 @@
+---
+class: safe
+reason: Underscore-prefixed LOCAL variable (_result) — NOT accessing a private field on the module under test. Classifier distinguishes.
+---
+import { describe, it, expect } from 'vitest';
+import { toSlug } from './slug';
+
+describe('toSlug', () => {
+  it('slug round-trip', () => {
+    const _result = toSlug('Hello World');
+    expect(_result).toBe('hello-world');
+  });
+});

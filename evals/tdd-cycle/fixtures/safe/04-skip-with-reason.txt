@@ -1,0 +1,17 @@
+---
+expected: safe
+reason: it.skip with a reason referencing an issue — tracked known-broken, not tech debt.
+---
+import { describe, it, expect } from 'vitest';
+import { toSlug } from './slug';
+
+describe('toSlug', () => {
+  it('handles ASCII input', () => {
+    expect(toSlug('Hello World')).toBe('hello-world');
+  });
+
+  // See issue #1234 — Unicode normalization edge case.
+  it.skip('strips accents — see #1234', () => {
+    expect(toSlug('héllo wörld')).toBe('hello-world');
+  });
+});

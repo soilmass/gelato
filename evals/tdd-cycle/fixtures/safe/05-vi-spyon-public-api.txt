@@ -1,0 +1,15 @@
+---
+expected: safe
+reason: vi.spyOn on a public (non-underscored) method is fine — tests the public boundary, not internals.
+---
+import { describe, it, expect, vi } from 'vitest';
+import * as analytics from './analytics';
+import { reportPageView } from './page-view';
+
+describe('reportPageView', () => {
+  it('sends a pageview event', () => {
+    const spy = vi.spyOn(analytics, 'track');
+    reportPageView('/home');
+    expect(spy).toHaveBeenCalledWith('page_view', { path: '/home' });
+  });
+});

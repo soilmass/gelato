@@ -1,0 +1,12 @@
+---
+class: no-assertion
+reason: test() with async fetch but no expect — the test silently passes regardless of the result.
+---
+import { describe, test } from 'vitest';
+import { fetchPosts } from './api';
+
+describe('fetchPosts', () => {
+  test('fetches posts', async () => {
+    await fetchPosts();
+  });
+});

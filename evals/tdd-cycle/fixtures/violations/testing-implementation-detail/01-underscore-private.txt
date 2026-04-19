@@ -1,0 +1,14 @@
+---
+class: testing-implementation-detail
+reason: Asserts on a private helper (_splitWords) — test couples to implementation, breaks on refactor.
+---
+import { describe, it, expect, vi } from 'vitest';
+import * as normalize from './normalize';
+
+describe('normalize.toSlug', () => {
+  it('splits words before hyphenating', () => {
+    const spy = vi.spyOn(normalize, '_splitWords' as never);
+    normalize.toSlug('foo bar');
+    expect(spy).toHaveBeenCalledWith('foo bar');
+  });
+});

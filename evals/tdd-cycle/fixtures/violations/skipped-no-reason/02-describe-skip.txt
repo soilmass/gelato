@@ -1,0 +1,12 @@
+---
+class: skipped-no-reason
+reason: describe.skip with no comment — an entire test suite silently skipped.
+---
+import { describe, it, expect } from 'vitest';
+import { Paginator } from './Paginator';
+
+describe.skip('Paginator', () => {
+  it('renders a page', () => {
+    expect(Paginator).toBeDefined();
+  });
+});

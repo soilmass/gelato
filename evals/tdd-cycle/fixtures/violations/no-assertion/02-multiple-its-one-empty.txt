@@ -1,0 +1,20 @@
+---
+class: no-assertion
+reason: Three tests defined — middle one has no expect. Classifier flags any it() without an assertion.
+---
+import { describe, it, expect } from 'vitest';
+import { toSlug } from './slug';
+
+describe('toSlug', () => {
+  it('lowercases', () => {
+    expect(toSlug('HELLO')).toBe('hello');
+  });
+
+  it('hyphenates spaces', () => {
+    toSlug('hello world');
+  });
+
+  it('trims', () => {
+    expect(toSlug('  hello  ')).toBe('hello');
+  });
+});

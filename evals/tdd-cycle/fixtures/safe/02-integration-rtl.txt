@@ -1,0 +1,20 @@
+---
+expected: safe
+reason: testing-library integration test — renders through React, asserts via user-visible roles.
+---
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { PostList } from './PostList';
+
+describe('PostList', () => {
+  it('renders all posts', () => {
+    const posts = [
+      { id: '1', title: 'A', body: '' },
+      { id: '2', title: 'B', body: '' },
+      { id: '3', title: 'C', body: '' },
+    ];
+    render(<PostList posts={posts} />);
+    expect(screen.getByRole('list')).toBeInTheDocument();
+    expect(screen.getAllByRole('listitem')).toHaveLength(3);
+  });
+});

@@ -1,0 +1,12 @@
+---
+class: safe
+reason: test.only is a different anti-pattern (covered by playwright-e2e / also-not-tdd-scope here). Not a skipped-no-reason violation.
+---
+import { describe, it, expect } from 'vitest';
+import { toSlug } from './slug';
+
+describe('toSlug', () => {
+  it.only('focused', () => {
+    expect(toSlug('hello')).toBe('hello');
+  });
+});

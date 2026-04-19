@@ -1,0 +1,14 @@
+---
+class: safe
+reason: Variable named `state` used in test setup — NOT a wrapper.state() Enzyme call. Classifier must distinguish.
+---
+import { describe, it, expect } from 'vitest';
+import { reducer, type State } from './reducer';
+
+describe('reducer', () => {
+  it('updates count', () => {
+    const initial: State = { count: 0 };
+    const next = reducer(initial, { type: 'INC' });
+    expect(next.count).toBe(1);
+  });
+});

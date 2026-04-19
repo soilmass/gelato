@@ -1,0 +1,16 @@
+---
+class: safe
+reason: Assertion lives inside an expect-helper callback (async waitFor) — still counts as an expect. Not no-assertion.
+---
+import { describe, it, expect } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import { PostList } from './PostList';
+
+describe('PostList', () => {
+  it('loads posts after mount', async () => {
+    render(<PostList />);
+    await waitFor(() => {
+      expect(screen.getAllByRole('listitem')).toHaveLength(3);
+    });
+  });
+});
