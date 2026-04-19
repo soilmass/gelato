@@ -1,0 +1,10 @@
+---
+expected: safe
+reason: Explicit cache='no-store' is a legitimate intent — the author wants every render to re-fetch. Classifier must not false-positive on explicit opt-out.
+---
+export default async function LivePage() {
+  const live = await fetch('https://api.example.com/live-stream', {
+    cache: 'no-store',
+  }).then((r) => r.json());
+  return <LiveFeed data={live} />;
+}

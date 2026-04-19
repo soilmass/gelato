@@ -1,0 +1,14 @@
+---
+expected: safe
+reason: Fetch inside a helper function with explicit next.revalidate. Classifier catches intent at the call site, not the containing function type.
+---
+async function loadUsers() {
+  return fetch('https://api.example.com/users', {
+    next: { revalidate: 120, tags: ['users'] },
+  }).then((r) => r.json());
+}
+
+export default async function Page() {
+  const users = await loadUsers();
+  return <UserList users={users} />;
+}

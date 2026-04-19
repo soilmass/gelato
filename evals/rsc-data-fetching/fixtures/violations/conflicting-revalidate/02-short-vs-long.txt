@@ -1,0 +1,12 @@
+---
+class: conflicting-revalidate
+reason: Segment revalidate=60 but fetch sets revalidate=3600. Author wanted 1-hour per-fetch cache; Next takes min(60, 3600) = 60.
+---
+export const revalidate = 60;
+
+export default async function Page() {
+  const config = await fetch('https://cdn.example.com/config.json', {
+    next: { revalidate: 3600 },
+  }).then((r) => r.json());
+  return <Config data={config} />;
+}

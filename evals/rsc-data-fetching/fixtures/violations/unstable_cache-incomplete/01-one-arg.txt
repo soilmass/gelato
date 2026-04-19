@@ -1,0 +1,10 @@
+---
+class: unstable_cache-incomplete
+reason: unstable_cache called with one argument. No keyParts means colliding cache entries across different call sites; no tags means the cache can never be invalidated except by redeploy.
+---
+import { unstable_cache } from 'next/cache';
+import { db } from '@/lib/db';
+
+export const getPost = unstable_cache(async (id: string) => {
+  return db.select().from(posts).where(eq(posts.id, id)).limit(1);
+});

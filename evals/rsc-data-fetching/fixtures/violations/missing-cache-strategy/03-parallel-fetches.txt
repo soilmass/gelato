@@ -1,0 +1,11 @@
+---
+class: missing-cache-strategy
+reason: Two parallel fetches in Promise.all, both missing cache options. Multiplied failure mode.
+---
+export default async function Dashboard() {
+  const [posts, users] = await Promise.all([
+    fetch('https://api.example.com/posts').then((r) => r.json()),
+    fetch('https://api.example.com/users').then((r) => r.json()),
+  ]);
+  return <Grid posts={posts} users={users} />;
+}

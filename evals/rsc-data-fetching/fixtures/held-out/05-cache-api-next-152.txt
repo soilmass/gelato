@@ -1,0 +1,13 @@
+---
+expected: safe
+reason: Next 15.2 renamed unstable_cache to cache. Same three-argument rule — all present here. Classifier must match both names.
+---
+import { cache } from 'next/cache';
+import { db } from '@/lib/db';
+import { orders } from '@/lib/schema';
+
+export const getOrdersForUser = cache(
+  async (userId: string) => db.select().from(orders).where(eq(orders.userId, userId)),
+  ['orders-by-user'],
+  { tags: ['orders'] },
+);

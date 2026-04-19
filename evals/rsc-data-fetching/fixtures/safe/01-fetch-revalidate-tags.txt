@@ -1,0 +1,17 @@
+---
+expected: safe
+reason: Canonical pattern — fetch in a Server Component with explicit revalidate + tags; paired with a revalidateTag invalidator in the same file.
+---
+import { revalidateTag } from 'next/cache';
+
+export default async function Page() {
+  const posts = await fetch('https://api.example.com/posts', {
+    next: { revalidate: 60, tags: ['posts'] },
+  }).then((r) => r.json());
+  return <PostList posts={posts} />;
+}
+
+export async function refresh() {
+  'use server';
+  revalidateTag('posts');
+}

@@ -1,0 +1,12 @@
+---
+expected: safe
+reason: Segment revalidate matches per-fetch revalidate. Not a conflict — the author set both intentionally to the same value (possibly across multiple fetches in the segment).
+---
+export const revalidate = 60;
+
+export default async function Page() {
+  const posts = await fetch('https://api.example.com/posts', {
+    next: { revalidate: 60, tags: ['posts'] },
+  }).then((r) => r.json());
+  return <PostList posts={posts} />;
+}

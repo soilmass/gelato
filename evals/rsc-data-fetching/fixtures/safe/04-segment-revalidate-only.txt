@@ -1,0 +1,12 @@
+---
+expected: safe
+reason: Route-segment revalidate declares the default for the segment. Fetches in the segment use explicit tags but no conflicting revalidate value.
+---
+export const revalidate = 300;
+
+export default async function Dashboard() {
+  const stats = await fetch('https://api.example.com/stats', {
+    next: { tags: ['stats'] },
+  }).then((r) => r.json());
+  return <Stats data={stats} />;
+}

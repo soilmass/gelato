@@ -1,0 +1,11 @@
+---
+class: unstable_cache-incomplete
+reason: unstable_cache with keyParts but no options (no tags). Cache entries are unique per-call, but revalidateTag can never touch them.
+---
+import { unstable_cache } from 'next/cache';
+import { db } from '@/lib/db';
+
+export const getUserByEmail = unstable_cache(
+  async (email: string) => db.select().from(users).where(eq(users.email, email)).limit(1),
+  ['user-by-email'],
+);
