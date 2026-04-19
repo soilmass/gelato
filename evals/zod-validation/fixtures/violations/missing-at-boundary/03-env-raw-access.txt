@@ -1,0 +1,17 @@
+---
+class: missing-at-boundary
+reason: process.env accessed directly in application code; no env schema. A missing STRIPE_SECRET_KEY produces a runtime "cannot read properties of undefined" deep in a request instead of a startup failure.
+---
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2024-06-20',
+});
+
+export async function chargeCustomer(customerId: string, amount: number) {
+  return stripe.paymentIntents.create({
+    customer: customerId,
+    amount,
+    currency: process.env.DEFAULT_CURRENCY || 'usd',
+  });
+}

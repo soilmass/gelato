@@ -1,0 +1,20 @@
+---
+expected: safe
+reason: Third-party API response schemad at the boundary. Your schema = the contract, not the vendor's docs.
+---
+import { z } from 'zod';
+import { env } from '@/lib/env';
+
+const StripeCustomerSchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  metadata: z.record(z.string()).default({}),
+});
+
+export async function fetchCustomer(id: string) {
+  const response = await fetch(`https://api.stripe.com/v1/customers/${id}`, {
+    headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` },
+  });
+  const customer = StripeCustomerSchema.parse(await response.json());
+  return customer;
+}

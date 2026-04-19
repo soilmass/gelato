@@ -1,0 +1,19 @@
+---
+class: validation-after-consumption
+reason: sendNotification is called with unvalidated body, then Schema.parse runs — too late. The side effect already shipped.
+---
+import { z } from 'zod';
+import { NextResponse } from 'next/server';
+import { sendNotification } from '@/lib/notify';
+
+const NotifySchema = z.object({
+  user_id: z.string().uuid(),
+  message: z.string().max(500),
+});
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  await sendNotification(body);
+  NotifySchema.parse(body);
+  return NextResponse.json({ ok: true });
+}

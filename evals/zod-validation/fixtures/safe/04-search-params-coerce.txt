@@ -1,0 +1,23 @@
+---
+expected: safe
+reason: Search-param schema using z.coerce for numeric values. Safe-parse, branch on success, use data.
+---
+import { z } from 'zod';
+import { NextResponse } from 'next/server';
+import { searchPosts } from '@/lib/posts';
+
+const SearchSchema = z.object({
+  q: z.string().min(1).max(100),
+  page: z.coerce.number().int().positive().default(1),
+  pageSize: z.coerce.number().int().min(1).max(50).default(10),
+});
+
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const result = SearchSchema.safeParse(Object.fromEntries(url.searchParams));
+  if (!result.success) {
+    return NextResponse.json({ errors: result.error.flatten() }, { status: 400 });
+  }
+  const posts = await searchPosts(result.data);
+  return NextResponse.json(posts);
+}

@@ -1,0 +1,13 @@
+---
+class: missing-at-boundary
+reason: Server Action reads FormData fields directly and passes to a sender — no validation.
+---
+'use server';
+import { sendContactEmail } from '@/lib/email';
+
+export async function contact(formData: FormData) {
+  const email = formData.get('email');
+  const message = formData.get('message');
+  await sendContactEmail({ email, message });
+  return { ok: true };
+}

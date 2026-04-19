@@ -1,0 +1,18 @@
+---
+expected: safe
+reason: File is a pure helper with no input boundary — no req, no FormData, no process.env. Classifier must return safe rather than false-positive missing-at-boundary.
+---
+import { z } from 'zod';
+
+export const PostShape = z.object({
+  id: z.string().uuid(),
+  title: z.string().min(1),
+  body: z.string().min(1),
+  createdAt: z.date(),
+});
+
+export type Post = z.infer<typeof PostShape>;
+
+export function serializePost(post: Post): string {
+  return JSON.stringify({ ...post, createdAt: post.createdAt.toISOString() });
+}

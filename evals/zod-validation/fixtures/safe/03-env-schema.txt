@@ -1,0 +1,13 @@
+---
+expected: safe
+reason: Environment schema — .parse on startup is correct; missing env should hard-fail at load time, not mid-request.
+---
+import { z } from 'zod';
+
+const EnvSchema = z.object({
+  DATABASE_URL: z.string().url(),
+  STRIPE_SECRET_KEY: z.string().startsWith('sk_'),
+  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+});
+
+export const env = EnvSchema.parse(process.env);

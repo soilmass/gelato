@@ -1,0 +1,17 @@
+---
+expected: safe
+reason: A comment mentions "before parse" but the actual parse is at the top of the handler, before any side effect. Classifier must not confuse comment text with code position.
+---
+import { z } from 'zod';
+
+const Schema = z.object({ email: z.string().email() });
+
+export async function POST(req: Request) {
+  // Important: we parse before db.insert. Previous versions had the parse
+  // after the insert which was a violation-after-consumption bug; do not
+  // regress.
+  const result = Schema.safeParse(await req.json());
+  if (!result.success) return Response.json({ errors: result.error.flatten() }, { status: 400 });
+  await saveSubscription(result.data.email);
+  return Response.json({ ok: true });
+}

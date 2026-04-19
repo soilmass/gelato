@@ -1,0 +1,13 @@
+---
+class: missing-at-boundary
+reason: Route handler consumes req.json() and passes straight to db.insert — no Zod schema anywhere.
+---
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { posts } from '@/lib/schema';
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  const post = await db.insert(posts).values({ title: body.title, body: body.body }).returning();
+  return NextResponse.json(post, { status: 201 });
+}

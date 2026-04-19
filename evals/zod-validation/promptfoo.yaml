@@ -1,0 +1,19 @@
+# Promptfoo config for zod-validation LLM-as-judge rubrics (deferred to v0.2).
+#
+# v0.1 ships the deterministic classifier only. A v0.2 `error-response-quality`
+# rubric would judge whether a generated 400-response body returns actionable
+# validation errors (shape: per-field messages via .error.flatten()) rather
+# than an opaque "invalid input" string.
+
+description: zod-validation LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []

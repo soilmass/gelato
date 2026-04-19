@@ -1,0 +1,20 @@
+---
+class: validation-after-consumption
+reason: db.insert runs with raw body; schema parse happens after. If body.title is null, the insert already tripped its own error.
+---
+import { z } from 'zod';
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { posts } from '@/lib/schema';
+
+const CreatePostSchema = z.object({
+  title: z.string().min(1),
+  body: z.string().min(1),
+});
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  const post = await db.insert(posts).values(body).returning();
+  CreatePostSchema.parse(body);
+  return NextResponse.json(post, { status: 201 });
+}

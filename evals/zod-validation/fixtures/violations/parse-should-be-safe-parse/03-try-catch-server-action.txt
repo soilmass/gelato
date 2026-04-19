@@ -1,0 +1,21 @@
+---
+class: parse-should-be-safe-parse
+reason: Server Action variant — .parse inside try, catch returns a 'error' shape that loses the structured flatten data.
+---
+'use server';
+import { z } from 'zod';
+
+const Schema = z.object({
+  title: z.string().min(1),
+  body: z.string().min(1),
+});
+
+export async function createPost(formData: FormData) {
+  try {
+    const input = Schema.parse(Object.fromEntries(formData));
+    await savePost(input);
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: 'invalid' };
+  }
+}
