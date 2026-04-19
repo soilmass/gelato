@@ -1,0 +1,12 @@
+---
+class: input-no-label
+reason: Input uses placeholder as label — fails WCAG 3.3.2 / axe label.
+---
+export function SignupForm() {
+  return (
+    <form>
+      <input name="email" type="email" placeholder="Email" className="h-11 w-full" />
+      <button type="submit" className="h-11 w-24">Subscribe</button>
+    </form>
+  );
+}

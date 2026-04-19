@@ -1,0 +1,12 @@
+---
+class: img-no-alt
+reason: Two images — first has alt, second missing. Classifier flags on first missing.
+---
+export function Gallery() {
+  return (
+    <div>
+      <img src="/a.png" alt="Quarterly pass-rate chart" className="h-40 w-full" />
+      <img src="/b.png" className="h-40 w-full" />
+    </div>
+  );
+}

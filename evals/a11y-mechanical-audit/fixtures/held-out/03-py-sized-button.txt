@@ -1,0 +1,11 @@
+---
+class: safe
+reason: py-3 heuristic satisfies height axis on a text-content button; width is px-4+text.
+---
+export function CTA() {
+  return (
+    <button className="py-3 px-6 text-base font-medium">
+      Get started
+    </button>
+  );
+}

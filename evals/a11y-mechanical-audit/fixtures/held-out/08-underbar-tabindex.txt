@@ -1,0 +1,12 @@
+---
+class: tabindex-positive
+reason: tabIndex=3 is a positive integer; violates WCAG 2.4.3 regardless of element kind.
+---
+export function CustomOrder() {
+  return (
+    <div>
+      <input aria-label="First" tabIndex={3} className="h-11 w-40 px-2" />
+      <input aria-label="Second" tabIndex={0} className="h-11 w-40 px-2" />
+    </div>
+  );
+}

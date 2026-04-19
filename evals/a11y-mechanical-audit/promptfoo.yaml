@@ -1,0 +1,87 @@
+# Promptfoo config for a11y-mechanical-audit LLM-as-judge rubric.
+#
+# One rubric per SKILL.md § Evaluation:
+#   - remediation-implementability — judges whether the skill's fix
+#     guidance for each violation class is concrete enough for a mid-
+#     level frontend engineer to apply without consulting external
+#     docs, and whether the example code compiles / renders.
+
+description: a11y-mechanical-audit LLM-as-judge rubrics
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a remediation recommendation for an accessibility
+    violation in a Next.js 15 + React 19 + Tailwind v4 file. Judge
+    whether the fix is implementable as written — the engineer should
+    be able to copy it into their file with only identifier renames,
+    and the result should both compile and satisfy the named WCAG
+    success criterion.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: remediation-implementability
+    vars:
+      content: |
+        Violation class: input-no-label (WCAG 3.3.2 / axe `label`)
+
+        Original:
+          <form>
+            <input name="email" type="email" placeholder="Email" className="h-11 w-full" />
+            <button type="submit" className="h-11 w-24">Subscribe</button>
+          </form>
+
+        Fix: add a `<label>` with `htmlFor` matching an `id` on the
+        input. Keep the placeholder as a secondary hint; it is not the
+        accessible name.
+
+          <form>
+            <label htmlFor="email" className="sr-only">Email address</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Email"
+              className="h-11 w-full"
+            />
+            <button type="submit" className="h-11 w-24">Subscribe</button>
+          </form>
+
+        Why it satisfies WCAG 3.3.2:
+          - The `<label htmlFor="email">` is programmatically
+            associated with `<input id="email">`. Screen readers
+            announce "Email address, edit text" instead of just
+            "edit text".
+          - `sr-only` keeps the label visually hidden while present
+            in the accessibility tree (Tailwind utility mapped to
+            the standard `clip: rect(0,0,0,0); position: absolute`
+            sr-only idiom).
+          - The placeholder is preserved as a hint for sighted
+            users who have cleared the field, not as a substitute
+            for the accessible name.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the remediation:
+            - names the WCAG success criterion and axe rule id
+            - shows the corrected markup in full (not a snippet)
+            - explains why the fix satisfies the criterion (not just
+              "add a label")
+            - preserves surrounding constraints (keeps the placeholder
+              because it was present; keeps the submit button intact)
+            - uses idioms the reader would already know (sr-only is
+              Tailwind-canonical; htmlFor + id is HTML-canonical)
+          Score 0.5 when the fix compiles but omits one of: WCAG
+          citation, full corrected markup, or explanation.
+          Score 0 when the fix would fail to satisfy the criterion,
+          introduces a new violation, or requires extra context
+          (docs lookup) to apply.

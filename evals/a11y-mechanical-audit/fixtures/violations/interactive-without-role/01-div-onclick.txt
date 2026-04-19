@@ -1,0 +1,13 @@
+---
+class: interactive-without-role
+reason: <div> has onClick but no role, tabIndex, or onKeyDown — fails WCAG 4.1.2.
+---
+export function CloseButton({ onClose }: { onClose: () => void }) {
+  return (
+    <div onClick={onClose} className="h-11 w-11 p-2">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" />
+      </svg>
+    </div>
+  );
+}

@@ -1,0 +1,11 @@
+---
+class: safe
+reason: Custom-tag components are not flagged by the interactive-without-role rule; under-detection is the design choice.
+---
+import { IconButton } from '@/components/ui/icon-button';
+
+export function Row() {
+  return (
+    <IconButton onClick={() => {}} icon="trash" label="Delete row" />
+  );
+}
