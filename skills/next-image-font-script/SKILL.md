@@ -1,0 +1,267 @@
+---
+name: next-image-font-script
+description: >
+  Enforce Next.js 15 `next/image`, `next/font`, and `next/script`
+  discipline on a single .tsx file. Five mechanical violation
+  classes: a bare `<img>` tag under `app/` or `components/`
+  (should be `next/image`), a `next/image` `<Image>` missing both
+  `width`+`height` AND `fill`, a `page.tsx` rendering one or more
+  `<Image>` with no `priority` on any (LCP image untagged), a
+  `next/font` initializer called inside a function body instead of
+  module scope, and a `next/script` `<Script>` without an explicit
+  `strategy` prop.
+  Use when: adding an `<img>`, `<Image>`, font, or third-party
+  script to a Next.js 15 file; reviewing a PR that changes asset
+  imports; "my LCP image isn't being prioritized"; "my font
+  shifts layout on load"; "my analytics script blocks TTI".
+  Do NOT use for: Core Web Vitals threshold enforcement (→
+  core-web-vitals-audit), bundle-size budgets (→ bundle-budget),
+  runtime image transforms (out of scope), CDN-loaded scripts
+  outside `<Script>` (v0.2 candidate `third-party-scripts`).
+license: MIT
+metadata:
+  version: "1.0"
+  core: web-dev
+  subsystem: performance
+  phase: build
+  type: procedural
+  methodology_source:
+    - name: "Next.js — Image component"
+      authority: "Vercel / Next.js team"
+      url: "https://nextjs.org/docs/app/api-reference/components/image"
+      version: "Next.js 15 docs (2025)"
+      verified: "2026-04-19"
+    - name: "Next.js — Font module"
+      authority: "Vercel / Next.js team"
+      url: "https://nextjs.org/docs/app/api-reference/components/font"
+      version: "Next.js 15 docs (2025)"
+      verified: "2026-04-19"
+    - name: "Next.js — Script component"
+      authority: "Vercel / Next.js team"
+      url: "https://nextjs.org/docs/app/api-reference/components/script"
+      version: "Next.js 15 docs (2025)"
+      verified: "2026-04-19"
+  stack_assumptions:
+    - "next@15+ App Router"
+    - "react@19+"
+    - "bun@1.1+"
+  eval:
+    pass_rate: 1
+    last_run: "2026-04-19T15:07:50.334Z"
+    n_cases: 4
+  changelog: >
+    v1.0 — initial. Procedural skill. Five mechanical violation
+    classes over fixture files with a `filename:` frontmatter
+    field so the classifier can tell page files from other files
+    and apply the LCP-image rule accordingly.
+---
+
+# next-image-font-script
+
+Encodes Next.js 15 documented conventions for `next/image`, `next/font`, and `next/script`. Five rules that promote the documented LCP / CLS / TTI levers from "mentioned in the core-web-vitals-audit skill" to mechanical enforcement at PR review.
+
+---
+
+## Methodology Attribution
+
+- **Primary:** Next.js — Image component
+  - Source: [https://nextjs.org/docs/app/api-reference/components/image](https://nextjs.org/docs/app/api-reference/components/image)
+  - Version: Next.js 15 docs (2025)
+  - Verified: 2026-04-19
+- **Secondary:** Next.js — Font module
+  - Source: [https://nextjs.org/docs/app/api-reference/components/font](https://nextjs.org/docs/app/api-reference/components/font)
+  - Version: Next.js 15 docs (2025)
+  - Verified: 2026-04-19
+- **Tertiary:** Next.js — Script component
+  - Source: [https://nextjs.org/docs/app/api-reference/components/script](https://nextjs.org/docs/app/api-reference/components/script)
+  - Version: Next.js 15 docs (2025)
+  - Verified: 2026-04-19
+- **Drift-check:** _planned (v0.2 H7)._
+
+Encoded: the five rules the three Next.js docs pages explicitly call out as required (dimensions, priority, module-scope font init, explicit script strategy, prefer next/image over bare img). NOT encoded: Core Web Vitals numeric thresholds (`core-web-vitals-audit`), bundle weight concerns (`bundle-budget`), runtime image-transformation config, CDN-loaded scripts outside `<Script>` (v0.2 `third-party-scripts` candidate).
+
+---
+
+## Stack Assumptions
+
+- `next@15+` App Router
+- `react@19+`
+- `bun@1.1+`
+
+---
+
+## When to Use
+
+Activate when any of the following is true:
+- Adding an `<img>`, `<Image>`, `next/font` initializer, or `<Script>` to a Next.js file
+- Reviewing a PR that changes image/font/script usage
+- "My LCP image isn't being prioritized"
+- "My font causes layout shift on load"
+- "My analytics script blocks first contentful paint"
+
+## When NOT to Use
+
+Do NOT activate for:
+- **Core Web Vitals thresholds** — `core-web-vitals-audit` (metric enforcement)
+- **Bundle-size budgets** — `bundle-budget` (judgment enforcement)
+- **Runtime image transforms** — out of scope (Next handles via the built-in loader)
+- **CDN scripts outside `<Script>`** — v0.2 `third-party-scripts` candidate
+
+---
+
+## Procedure
+
+Fixture frontmatter carries `filename:` so the classifier can apply the LCP-image rule only on Page files.
+
+### Step 1 — No bare `<img>` under `app/` or `components/`
+
+`next/image` ships automatic optimization (WebP/AVIF, responsive srcset, lazy loading, CLS prevention). Use it instead of the raw tag.
+
+```tsx
+// RIGHT
+import Image from 'next/image';
+<Image src="/hero.jpg" alt="Hero" width={1200} height={600} />
+
+// WRONG — bare <img> skips all Next optimization
+<img src="/hero.jpg" alt="Hero" width={1200} height={600} />
+```
+
+Exempt: `<img>` inside `opengraph-image.tsx` (ImageResponse uses Satori which supports only a subset of JSX and requires `<img>`, not `<Image>`).
+
+### Step 2 — `<Image>` must have `width`+`height` OR `fill`
+
+Next refuses to render without dimensions or `fill` — either the prop pair or the fill mode is required for CLS prevention.
+
+```tsx
+// RIGHT — explicit dims
+<Image src="/avatar.png" alt="" width={40} height={40} />
+
+// RIGHT — fill + sized parent
+<div className="relative h-64">
+  <Image src="/hero.jpg" alt="Hero" fill />
+</div>
+
+// WRONG — no dims, no fill
+<Image src="/hero.jpg" alt="Hero" />
+```
+
+### Step 3 — Page files with `<Image>` must mark one `priority`
+
+The LCP image on a page should carry `priority` — Next eager-loads it. Page files (`page.tsx`) with one or more `<Image>` but no `priority` prop anywhere get flagged.
+
+```tsx
+// RIGHT — LCP candidate is explicitly priority
+export default function Page() {
+  return (
+    <>
+      <Image src="/hero.jpg" alt="Hero" width={1200} height={600} priority />
+      <Image src="/thumb.png" alt="" width={100} height={100} />
+    </>
+  );
+}
+
+// WRONG — page has an LCP candidate but none carries priority
+export default function Page() {
+  return <Image src="/hero.jpg" alt="Hero" width={1200} height={600} />;
+}
+```
+
+Non-Page files don't activate the rule — the LCP image might live elsewhere in the tree.
+
+### Step 4 — `next/font` initializers must sit at module scope
+
+Next's font optimization requires the initializer (`Inter(...)`, `Geist(...)`, `localFont(...)`) to run at module top level so the font subset is resolved at build time. Calling the initializer inside a function defeats the optimization and falls back to a client-side fetch.
+
+```tsx
+// RIGHT — module scope
+import { Inter } from 'next/font/google';
+const inter = Inter({ subsets: ['latin'] });
+
+export default function Layout({ children }) {
+  return <html className={inter.className}><body>{children}</body></html>;
+}
+
+// WRONG — initializer in a function body
+import { Inter } from 'next/font/google';
+
+export default function Layout({ children }) {
+  const inter = Inter({ subsets: ['latin'] });
+  return <html className={inter.className}><body>{children}</body></html>;
+}
+```
+
+### Step 5 — `<Script>` must carry an explicit `strategy` prop
+
+Next's `<Script>` defaults to `strategy="afterInteractive"`. The docs say every use should pick a strategy explicitly so the team's intent (beforeInteractive / afterInteractive / lazyOnload / worker) is reviewable.
+
+```tsx
+// RIGHT
+<Script src="https://widget.example/v1.js" strategy="lazyOnload" />
+
+// WRONG — no strategy prop; reviewer can't tell the intent
+<Script src="https://widget.example/v1.js" />
+```
+
+---
+
+## Tool Integration
+
+No shipped CLI.
+
+## Examples
+
+### Example 1 — `no-priority-on-lcp`
+
+**Input:** `app/page.tsx` renders three `<Image>` components, none with `priority`.
+**Output:** the LCP image will be lazy-loaded by default, hurting the metric. Fix: add `priority` to the image the author expects to be the LCP candidate (usually the above-the-fold hero).
+
+### Example 2 — `font-not-module-scope`
+
+**Input:** `import { Inter } from 'next/font/google'; export default function Layout(...) { const inter = Inter(...); return <html className={inter.className}>...</html>; }`
+**Output:** initializer runs per render; font optimization doesn't apply. Fix: hoist `const inter = Inter(...)` to module scope above the component.
+
+---
+
+## Edge Cases
+
+- **ImageResponse in `opengraph-image.tsx`:** Satori's JSX subset requires `<img>`, not `<Image>`. The classifier checks the `filename:` — a `*/opengraph-image.tsx` file is exempt from Step 1.
+- **Client components with `<img>` that came from third-party (e.g. Stripe Elements):** library-rendered `<img>` that's not under the repo's control isn't caught — the classifier only sees what's written in the file. Reviewers should decide case-by-case.
+- **`<Image>` with a dynamic `src` (e.g. from a database):** the dimension check still applies; dynamic src is fine as long as width/height are provided.
+- **`localFont` from `next/font/local`:** same module-scope rule applies. Classifier matches either import path.
+- **`<script>` (HTML) vs `<Script>` (Next):** Step 5 only checks the Next `<Script>` component; raw `<script>` tags are a `core-web-vitals-audit` / `third-party-scripts` concern.
+
+---
+
+## Evaluation
+
+See `/evals/next-image-font-script/`.
+
+**Quantitative:** ≥5 violation fixtures (one per class) at ≥95% accuracy, 0 false positives on ≥4 safe fixtures, held-out ≥90%.
+**Qualitative:** Promptfoo rubric `asset-remediation-implementability` (≥0.85).
+
+---
+
+## Handoffs
+
+- Core Web Vitals numeric enforcement → `core-web-vitals-audit`
+- Bundle-size budgets → `bundle-budget`
+- CDN-hosted scripts outside `<Script>` → v0.2 `third-party-scripts`
+- Image alt text → `a11y-mechanical-audit`
+
+---
+
+## Dependencies
+
+- **External skills:** `core-web-vitals-audit`, `bundle-budget`, `a11y-mechanical-audit`
+- **MCP servers:** none
+- **Tools required in environment:** none
+
+---
+
+## References
+
+- `references/next-asset-api.md` — the three Next.js asset-component APIs (`next/image`, `next/font`, `next/script`) with the prop contracts this skill enforces
+
+## Scripts
+
+- _(none)_

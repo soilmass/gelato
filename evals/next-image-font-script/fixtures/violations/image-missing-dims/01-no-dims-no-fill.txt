@@ -1,0 +1,10 @@
+---
+class: image-missing-dims
+filename: components/avatar.tsx
+reason: <Image> has no width/height and no fill — runtime throw.
+---
+import Image from 'next/image';
+
+export function Avatar({ src }: { src: string }) {
+  return <Image src={src} alt="" />;
+}

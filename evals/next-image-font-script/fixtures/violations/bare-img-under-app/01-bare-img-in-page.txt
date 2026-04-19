@@ -1,0 +1,12 @@
+---
+class: bare-img-under-app
+filename: app/marketing/page.tsx
+reason: Bare <img> under app/ — should be next/image.
+---
+export default function Page() {
+  return (
+    <section>
+      <img src="/hero.jpg" alt="Welcome banner" width={1200} height={600} />
+    </section>
+  );
+}

@@ -1,0 +1,19 @@
+---
+class: safe
+filename: lib/email-templates/welcome.tsx
+reason: File outside app/ and components/ — Step 1 doesn't activate. Email templates legitimately use bare <img>.
+---
+export function WelcomeEmail({ name }: { name: string }) {
+  return (
+    <table>
+      <tbody>
+        <tr>
+          <td>
+            <img src="https://cdn.example/logo.png" alt="Logo" width={120} height={40} />
+            <h1>Welcome, {name}</h1>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  );
+}

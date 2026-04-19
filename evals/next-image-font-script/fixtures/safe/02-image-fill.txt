@@ -1,0 +1,13 @@
+---
+filename: components/hero-card.tsx
+reason: Image uses fill in a sized parent — satisfies Step 2.
+---
+import Image from 'next/image';
+
+export function HeroCard({ src }: { src: string }) {
+  return (
+    <div className="relative h-64 w-full">
+      <Image src={src} alt="Cover" fill />
+    </div>
+  );
+}

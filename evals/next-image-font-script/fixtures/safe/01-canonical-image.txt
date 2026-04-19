@@ -1,0 +1,14 @@
+---
+filename: app/marketing/page.tsx
+reason: Canonical <Image> with priority on the LCP hero.
+---
+import Image from 'next/image';
+
+export default function Page() {
+  return (
+    <section>
+      <Image src="/hero.jpg" alt="Hero" width={1200} height={600} priority />
+      <Image src="/thumb.png" alt="" width={100} height={100} />
+    </section>
+  );
+}

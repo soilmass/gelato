@@ -1,0 +1,15 @@
+---
+class: script-missing-strategy
+filename: app/layout.tsx
+reason: <Script> with no strategy prop — team intent unclear, default may block TTI.
+---
+import Script from 'next/script';
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <Script src="https://cdn.example/analytics.js" />
+      {children}
+    </>
+  );
+}

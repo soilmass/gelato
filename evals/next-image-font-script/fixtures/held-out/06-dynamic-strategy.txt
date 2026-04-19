@@ -1,0 +1,18 @@
+---
+class: safe
+filename: app/layout.tsx
+reason: strategy prop is dynamic (expression) — still present, satisfies Step 5.
+---
+import Script from 'next/script';
+
+export default function Layout({ children, dev }: { children: React.ReactNode; dev: boolean }) {
+  return (
+    <>
+      <Script
+        src="https://cdn.example/analytics.js"
+        strategy={dev ? 'afterInteractive' : 'lazyOnload'}
+      />
+      {children}
+    </>
+  );
+}

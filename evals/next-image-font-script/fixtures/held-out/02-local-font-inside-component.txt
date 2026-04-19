@@ -1,0 +1,15 @@
+---
+class: font-not-module-scope
+filename: app/layout.tsx
+reason: localFont() called inside the component body — same rule as Google fonts.
+---
+import localFont from 'next/font/local';
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  const custom = localFont({ src: './my-font.woff2' });
+  return (
+    <html className={custom.className}>
+      <body>{children}</body>
+    </html>
+  );
+}
