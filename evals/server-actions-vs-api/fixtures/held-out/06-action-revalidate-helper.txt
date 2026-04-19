@@ -1,0 +1,21 @@
+---
+class: action-no-revalidation
+reason: Mutation wrapped in a try/catch, but the literal revalidatePath/revalidateTag call never appears. A helper rename is not enough — the SKILL requires the literal call.
+---
+'use server';
+import { db, posts } from '@/lib/db';
+
+async function invalidatePosts() {
+  // NOTE: this wraps revalidateTag elsewhere in the codebase, but the
+  // classifier can't follow cross-file calls. The literal revalidateTag /
+  // revalidatePath call must appear in the Server Action file.
+}
+
+export async function createPost(formData: FormData) {
+  await db.insert(posts).values({
+    title: String(formData.get('title') ?? ''),
+    body: String(formData.get('body') ?? ''),
+  });
+  await invalidatePosts();
+  return { ok: true };
+}

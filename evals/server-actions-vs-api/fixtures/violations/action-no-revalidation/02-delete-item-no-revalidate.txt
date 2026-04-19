@@ -1,0 +1,12 @@
+---
+class: action-no-revalidation
+reason: Delete Server Action — db.delete executes but no cache invalidation — the list page keeps showing the deleted item.
+---
+'use server';
+import { db, items } from '@/lib/db';
+import { eq } from 'drizzle-orm';
+
+export async function deleteItem(id: string) {
+  await db.delete(items).where(eq(items.id, id));
+  return { ok: true };
+}

@@ -1,0 +1,19 @@
+---
+class: action-no-revalidation
+reason: Mutating Server Action inserts a post and returns — no revalidateTag/revalidatePath — the /posts page will show stale data.
+---
+'use server';
+import { z } from 'zod';
+import { db, posts } from '@/lib/db';
+
+const CreatePostSchema = z.object({
+  title: z.string().min(1),
+  body: z.string().min(1),
+});
+
+export async function createPost(formData: FormData) {
+  const result = CreatePostSchema.safeParse(Object.fromEntries(formData));
+  if (!result.success) return { ok: false, errors: result.error.flatten() };
+  await db.insert(posts).values(result.data);
+  return { ok: true };
+}

@@ -1,0 +1,22 @@
+---
+class: action-for-public-api
+reason: Server Action accepts a mobile Bearer token and is documented as iOS-callable — not a stable HTTP interface, must be a route handler.
+---
+'use server';
+import { db, posts } from '@/lib/db';
+import { verifyMobileToken } from '@/lib/auth';
+
+/**
+ * Mobile-app-callable endpoint. Accepts a Bearer token.
+ * Called by our iOS client.
+ */
+export async function createPost(args: {
+  title: string;
+  body: string;
+  authToken: string;
+}) {
+  const user = await verifyMobileToken(args.authToken);
+  if (!user) throw new Error('unauthorized');
+  await db.insert(posts).values({ title: args.title, body: args.body, authorId: user.id });
+  return { ok: true };
+}

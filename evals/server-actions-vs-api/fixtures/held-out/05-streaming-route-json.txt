@@ -1,0 +1,20 @@
+---
+class: safe
+reason: Streaming JSON via ReadableStream — legitimate route handler use (Server Actions cannot stream). No formData, no mutation.
+---
+// app/api/stream/route.ts
+export async function POST(req: Request) {
+  const body = await req.json();
+  const stream = new ReadableStream({
+    async start(controller) {
+      for (let i = 0; i < body.count; i++) {
+        controller.enqueue(new TextEncoder().encode(`chunk ${i}\n`));
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      controller.close();
+    },
+  });
+  return new Response(stream, {
+    headers: { 'content-type': 'text/event-stream' },
+  });
+}

@@ -1,0 +1,20 @@
+---
+class: route-handler-for-form
+reason: Profile edit form PATCHes to a route handler reading formData — should be a Server Action so revalidate + types are end-to-end.
+---
+// app/api/profile/route.ts
+import { db, users } from '@/lib/db';
+import { eq } from 'drizzle-orm';
+import { getCurrentUserId } from '@/lib/session';
+
+export async function PATCH(req: Request) {
+  const userId = await getCurrentUserId();
+  if (!userId) return new Response('unauthorized', { status: 401 });
+
+  const form = await req.formData();
+  const name = String(form.get('name') ?? '').trim();
+  const bio = String(form.get('bio') ?? '').trim();
+
+  await db.update(users).set({ name, bio }).where(eq(users.id, userId));
+  return Response.redirect(new URL('/profile', req.url), 303);
+}

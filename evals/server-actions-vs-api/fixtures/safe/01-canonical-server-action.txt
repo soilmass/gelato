@@ -1,0 +1,21 @@
+---
+expected: safe
+reason: Canonical mutating Server Action — validates FormData, writes to DB, calls revalidateTag after the mutation.
+---
+'use server';
+import { z } from 'zod';
+import { revalidateTag } from 'next/cache';
+import { db, posts } from '@/lib/db';
+
+const CreatePostSchema = z.object({
+  title: z.string().min(1),
+  body: z.string().min(1),
+});
+
+export async function createPost(formData: FormData) {
+  const result = CreatePostSchema.safeParse(Object.fromEntries(formData));
+  if (!result.success) return { ok: false, errors: result.error.flatten() };
+  await db.insert(posts).values(result.data);
+  revalidateTag('posts');
+  return { ok: true };
+}

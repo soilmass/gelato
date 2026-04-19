@@ -1,0 +1,24 @@
+---
+class: action-no-revalidation
+reason: Update Server Action calls redirect() but never revalidates — redirect navigates, does not invalidate caches.
+---
+'use server';
+import { z } from 'zod';
+import { redirect } from 'next/navigation';
+import { db, users } from '@/lib/db';
+import { eq } from 'drizzle-orm';
+import { getCurrentUserId } from '@/lib/session';
+
+const UpdateProfileSchema = z.object({
+  name: z.string().min(1),
+  bio: z.string().max(500),
+});
+
+export async function updateProfile(formData: FormData) {
+  const userId = await getCurrentUserId();
+  if (!userId) throw new Error('unauthorized');
+  const result = UpdateProfileSchema.safeParse(Object.fromEntries(formData));
+  if (!result.success) return { ok: false, errors: result.error.flatten() };
+  await db.update(users).set(result.data).where(eq(users.id, userId));
+  redirect('/profile');
+}

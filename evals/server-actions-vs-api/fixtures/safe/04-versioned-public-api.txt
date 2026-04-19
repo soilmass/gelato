@@ -1,0 +1,34 @@
+---
+expected: safe
+reason: Versioned public API (v1) — Bearer auth, JSON body, mutating — correctly implemented as a route handler, not a Server Action.
+---
+// app/api/v1/posts/route.ts
+import { z } from 'zod';
+import { db, posts } from '@/lib/db';
+import { verifyApiToken } from '@/lib/api-auth';
+
+const CreatePostSchema = z.object({
+  title: z.string().min(1),
+  body: z.string().min(1),
+});
+
+export async function POST(req: Request) {
+  const auth = req.headers.get('authorization') ?? '';
+  if (!auth.startsWith('Bearer ')) {
+    return Response.json({ error: 'unauthorized' }, { status: 401 });
+  }
+  const token = auth.slice('Bearer '.length);
+  const user = await verifyApiToken(token);
+  if (!user) return Response.json({ error: 'unauthorized' }, { status: 401 });
+
+  const json = await req.json();
+  const result = CreatePostSchema.safeParse(json);
+  if (!result.success) {
+    return Response.json({ error: result.error.flatten() }, { status: 400 });
+  }
+  const [row] = await db
+    .insert(posts)
+    .values({ ...result.data, authorId: user.id })
+    .returning();
+  return Response.json({ post: row }, { status: 201 });
+}

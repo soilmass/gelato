@@ -1,0 +1,27 @@
+---
+class: safe
+reason: Webhook that happens to receive multipart formData (not a React form). Webhook-signature check dominates the classification.
+---
+// app/api/webhooks/vendor/route.ts
+import { verifyVendorSignature } from '@/lib/vendor-auth';
+import { db, vendorUploads } from '@/lib/db';
+
+export async function POST(req: Request) {
+  const signature = req.headers.get('x-vendor-signature');
+  if (!signature) return new Response('missing signature', { status: 401 });
+
+  const raw = await req.clone().text();
+  if (!verifyVendorSignature(raw, signature)) {
+    return new Response('invalid signature', { status: 401 });
+  }
+
+  const form = await req.formData();
+  const file = form.get('file');
+  if (!(file instanceof File)) return new Response('bad request', { status: 400 });
+
+  await db.insert(vendorUploads).values({
+    filename: file.name,
+    size: file.size,
+  });
+  return new Response(null, { status: 204 });
+}

@@ -1,0 +1,19 @@
+---
+expected: safe
+reason: Canonical public read route handler — GET returning JSON, no formData, no mutation. Legitimate route handler use.
+---
+import { db, posts } from '@/lib/db';
+import { desc } from 'drizzle-orm';
+
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const limit = Math.min(Number(url.searchParams.get('limit') ?? '50'), 100);
+
+  const rows = await db
+    .select()
+    .from(posts)
+    .orderBy(desc(posts.createdAt))
+    .limit(limit);
+
+  return Response.json({ posts: rows });
+}

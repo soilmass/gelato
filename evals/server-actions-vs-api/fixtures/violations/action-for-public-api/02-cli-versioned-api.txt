@@ -1,0 +1,22 @@
+---
+class: action-for-public-api
+reason: Server Action marketed as v1 API for CLI clients — Server Action IDs are not a stable HTTP surface; belongs in app/api/v1/*.
+---
+'use server';
+import { db, deployments } from '@/lib/db';
+import { verifyApiKey } from '@/lib/api-keys';
+
+/**
+ * v1 API — CLI-callable deployment trigger.
+ * Used by our deploy CLI (npm i -g @acme/cli).
+ */
+export async function triggerDeploy(args: { project: string; ref: string; apiKey: string }) {
+  const user = await verifyApiKey(args.apiKey);
+  if (!user) throw new Error('invalid api key');
+  await db.insert(deployments).values({
+    project: args.project,
+    ref: args.ref,
+    userId: user.id,
+  });
+  return { ok: true };
+}

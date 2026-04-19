@@ -1,0 +1,29 @@
+---
+class: action-for-public-api
+reason: Server Action accepts a Bearer token and is documented as third-party-callable — third-party integrations require a route handler.
+---
+'use server';
+import { db, webhookEvents } from '@/lib/db';
+
+/**
+ * Third-party integration endpoint. Accepts a Bearer token.
+ * Called by partner services when their data changes.
+ */
+export async function ingestPartnerEvent(args: {
+  event: string;
+  payload: unknown;
+  authorization: string;
+}) {
+  if (!args.authorization.startsWith('Bearer ')) {
+    throw new Error('missing Bearer token');
+  }
+  const token = args.authorization.slice('Bearer '.length);
+  const partner = await lookupPartnerByToken(token);
+  if (!partner) throw new Error('unauthorized');
+  await db.insert(webhookEvents).values({
+    partnerId: partner.id,
+    event: args.event,
+    payload: args.payload as object,
+  });
+  return { ok: true };
+}
