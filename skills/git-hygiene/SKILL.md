@@ -37,9 +37,9 @@ metadata:
     - "changesets for versioning"
     - "GitHub as remote"
   eval:
-    pass_rate: null
-    last_run: null
-    n_cases: null
+    pass_rate: 1
+    last_run: "2026-04-19T03:26:46.916Z"
+    n_cases: 4
   changelog: >
     v1.0 — initial. Shipped pre-built in v0.1 handoff so Claude Code uses it
     from the first commit of repo scaffolding. Eval deferred until the eval
