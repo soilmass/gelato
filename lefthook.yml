@@ -1,17 +1,24 @@
 # Lefthook configuration — see skills/git-hygiene/SKILL.md § Tool Integration.
 # Never bypass these hooks with `--no-verify`. Fix the underlying issue.
+#
+# Lefthook spawns each hook in a fresh shell whose PATH is inherited from
+# whatever invoked git (IDE, CI runner, or bare shell). The `PATH_PREFIX`
+# Bash expansion below puts `~/.bun/bin` first when the bun binary lives in
+# the conventional per-user location — no-op when it's already on PATH, safe
+# when it's not. Keeps bun / bunx resolvable across editors, GUI clients,
+# and sandboxed CI shells without per-environment tweaks.
 
 commit-msg:
   commands:
     commitlint:
-      run: bunx commitlint --edit {1}
+      run: PATH="$HOME/.bun/bin:$PATH" bunx commitlint --edit {1}
 
 pre-commit:
   parallel: true
   commands:
     biome:
       glob: '*.{ts,tsx,js,jsx,json,jsonc}'
-      run: bunx biome check --write --no-errors-on-unmatched {staged_files}
+      run: PATH="$HOME/.bun/bin:$PATH" bunx biome check --write --no-errors-on-unmatched {staged_files}
       stage_fixed: true
     gitleaks:
       # Requires the `gitleaks` binary on PATH. Install via your OS package
@@ -24,6 +31,6 @@ pre-push:
     branch-name:
       run: bash scripts/check-branch-name.sh
     typecheck:
-      run: bunx tsc --noEmit
+      run: PATH="$HOME/.bun/bin:$PATH" bunx tsc --noEmit
     validate-skills:
-      run: bun run scripts/validate-skills.ts
+      run: PATH="$HOME/.bun/bin:$PATH" bun scripts/validate-skills.ts
