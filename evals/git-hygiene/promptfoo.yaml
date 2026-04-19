@@ -1,39 +1,131 @@
-# Promptfoo config for git-hygiene qualitative eval (deferred to Step 4).
+# Promptfoo config for git-hygiene LLM-as-judge rubrics.
 #
-# The judgeWithPromptfoo harness call lands in Step 4 of BRIEF.md alongside
-# rsc-boundary-audit's first real LLM-as-judge rubric. Until then this file
-# exists so the eval test's rubric references resolve to a known path.
+# Invoked by packages/eval-harness's judgeWithPromptfoo() wrapper via
+# `bunx promptfoo eval --config <this> --filter-description <rubric>`.
+#
+# Three rubrics from SKILL.md § Evaluation:
+#   - explains-the-why  — commit bodies explain motivation, not diff
+#   - branch-naming     — <type>/<kebab-slug> shape across 11 locked types
+#   - pr-completeness   — PR descriptions carry all five mandatory fields
 
 description: git-hygiene LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
 
-prompts: []
-
 defaultTest:
   options:
     cache: true
 
+prompts:
+  - |
+    The following is a git artifact (commit message, branch name, or
+    pull-request description). Read it carefully, then return a short
+    prose assessment (2–4 sentences) of whether it follows the specific
+    git-hygiene guideline described in the grading rubric.
+
+    ---
+    {{content}}
+    ---
+
 tests:
-  - description: '"explains the why" rubric (placeholder)'
+  - description: explains-the-why
+    vars:
+      content: |
+        feat(skills): add server-actions-vs-api judgment skill
+
+        Encodes Next.js 15's documented split between Server Actions (React
+        UI mutations) and route handlers (public API, webhooks, streaming,
+        non-React callers). Judgment skill — procedure carries enforcement.
+
+        The four-criterion decision tree handles 90% of the real-world
+        friction teams hit: "should this be a Server Action or an API
+        route?" now has a mechanical answer. Without the tree, every PR
+        relitigates the question; with it, the decision is one lookup.
+
+        Sources: Next.js Server Actions docs + Route Handlers docs
+        (verified 2026-04-18).
     assert:
       - type: llm-rubric
         value: |
-          Score 0-1. 1 means the commit body explains why the change
-          was made (motivation, constraints, consequences). 0 means
-          the body only restates what the diff shows.
-  - description: '"<type>/<kebab-slug>" branch naming rubric (placeholder)'
+          Score 0.0 to 1.0. Return 1 when the commit body clearly
+          explains WHY the change was made (motivation, constraints,
+          consequences) — not just WHAT the diff changes. Specific
+          signals that raise the score: references to the problem
+          being solved, the trade-off that drove the choice, the
+          methodology source being cited, or the team pain-point
+          addressed. Score 0 when the body merely restates the subject
+          or is missing. Score 0.5 for partial coverage (restates
+          with a hint of motivation).
+
+  - description: branch-naming
+    vars:
+      content: |
+        feat/add-structured-logging
     assert:
       - type: llm-rubric
         value: |
-          Score 0-1. 1 means the suggested branch name follows
-          <type>/<kebab-slug> exactly (one of the 11 locked types,
-          then `/`, then lowercase kebab-case). 0 means any deviation.
-  - description: 'PR description completeness (placeholder)'
+          Score 0.0 to 1.0. Return 1 when the branch name follows the
+          exact pattern `<type>/<kebab-slug>` where:
+            - <type> is one of: feat, fix, docs, style, refactor, perf,
+              test, build, ci, chore, revert
+            - separator is a single forward slash
+            - <kebab-slug> is lowercase letters, digits, and hyphens only
+              (no underscores, camelCase, spaces, or punctuation)
+          Score 0 for any deviation (wrong separator, non-allowlisted
+          type, wrong case, underscores).
+
+  - description: pr-completeness
+    vars:
+      content: |
+        ## Summary
+
+        - Promote placeholder Promptfoo rubrics to real test cases with
+          canonical fixture content.
+        - Flip three `.skip` tests in eval.test.ts to live judgeWithPromptfoo
+          calls gated on isJudgeAvailable().
+
+        ## What
+
+        Three rubrics land with real content: explains-the-why (commit
+        body motivation), branch-naming (<type>/<kebab-slug>), and
+        pr-completeness (five-field PR body shape).
+
+        ## Why
+
+        Per the Direction-A plan, this is the pilot for promoting 14
+        placeholder Promptfoo configs across the Core 1 skill suite.
+        git-hygiene is the simplest target: no AST to upgrade, no
+        fixture ecosystem to build.
+
+        ## How it works
+
+        judgeWithPromptfoo() already spawns promptfoo as a subprocess.
+        Tests describe.skipIf(!isJudgeAvailable()) already guards on
+        the env var. The gap was the promptfoo.yaml content — this
+        PR fills it.
+
+        ## Testing
+
+        - `bun run eval git-hygiene` passes with pass_rate 1.0 on the
+          quantitative half; the qualitative half skips without
+          ANTHROPIC_API_KEY.
+        - Locally with a key, the three rubrics return scores ≥ 0.85 /
+          0.9 / 0.9 against the canonical content.
+
+        ## Rollback
+
+        Revert this PR and the three rubrics revert to placeholder
+        state; the quantitative eval stays green throughout.
     assert:
       - type: llm-rubric
         value: |
-          Score 0-1. 1 means the PR description has all five
-          mandatory fields: What, Why, How, Testing, Rollback.
-          Partial coverage scores proportionally.
+          Score 0.0 to 1.0. Return 1 when the PR description carries
+          all five of Gelato's mandatory fields: a Summary
+          (bullet points), a What (scope of the change), a Why
+          (motivation / rationale), a Testing section (how to verify),
+          and a Rollback section (how to revert if needed). Score
+          proportionally when some fields are present: 0.4 for two
+          fields, 0.6 for three, 0.8 for four, 1.0 for all five.
+          Score 0 when only the Summary exists or when fields are
+          present by heading only (no substantive content).

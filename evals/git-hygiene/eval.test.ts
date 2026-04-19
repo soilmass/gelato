@@ -12,10 +12,20 @@
 // the rubrics are declared as `.skip` assertions so the report shape is
 // already stable.
 
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import lint from '@commitlint/lint';
 import load from '@commitlint/load';
-import { type Fixture, isJudgeAvailable, loadFixtures } from '@gelato/eval-harness';
+import {
+  type Fixture,
+  isJudgeAvailable,
+  judgeWithPromptfoo,
+  loadFixtures,
+} from '@gelato/eval-harness';
 import { describe, expect, it } from 'vitest';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const PROMPTFOO_CONFIG = resolve(here, 'promptfoo.yaml');
 
 interface LintOutcome {
   valid: boolean;
@@ -88,18 +98,38 @@ describe('git-hygiene', () => {
     });
   });
 
-  describe.skipIf(!isJudgeAvailable())('qualitative — LLM-as-judge (Step 4)', () => {
-    it.skip('"explains the why" rubric scores ≥ 0.85', async () => {
-      // Wired in Step 4 via judgeWithPromptfoo('evals/git-hygiene/promptfoo.yaml', 'explains-the-why').
-      expect(true).toBe(true);
+  describe.skipIf(!isJudgeAvailable())('qualitative — LLM-as-judge', () => {
+    it('"explains the why" rubric scores ≥ 0.85', async () => {
+      const result = await judgeWithPromptfoo({
+        config: PROMPTFOO_CONFIG,
+        rubric: 'explains-the-why',
+      });
+      expect(
+        result.score,
+        `n=${result.nCases} reasons=${result.reasons.join(' | ')}`,
+      ).toBeGreaterThanOrEqual(0.85);
     });
 
-    it.skip('"<type>/<kebab-slug>" branch naming rubric scores ≥ 0.9', async () => {
-      expect(true).toBe(true);
+    it('"<type>/<kebab-slug>" branch naming rubric scores ≥ 0.9', async () => {
+      const result = await judgeWithPromptfoo({
+        config: PROMPTFOO_CONFIG,
+        rubric: 'branch-naming',
+      });
+      expect(
+        result.score,
+        `n=${result.nCases} reasons=${result.reasons.join(' | ')}`,
+      ).toBeGreaterThanOrEqual(0.9);
     });
 
-    it.skip('PR descriptions include all five mandatory fields (≥ 0.9)', async () => {
-      expect(true).toBe(true);
+    it('PR descriptions include all five mandatory fields (≥ 0.9)', async () => {
+      const result = await judgeWithPromptfoo({
+        config: PROMPTFOO_CONFIG,
+        rubric: 'pr-completeness',
+      });
+      expect(
+        result.score,
+        `n=${result.nCases} reasons=${result.reasons.join(' | ')}`,
+      ).toBeGreaterThanOrEqual(0.9);
     });
   });
 
