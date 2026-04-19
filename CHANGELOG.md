@@ -75,7 +75,7 @@ Every shipped skill cites named authorities in its frontmatter `methodology_sour
 
 ### Known gaps (v0.2+)
 
-- **Deferred sub-skills** (15 named): `seo-sitemap`, `structured-data` (JSON-LD), `cookie-hardening`, `subresource-integrity`, `file-upload-ux`, `visual-regression`, `axe-playwright`, `log-aggregation`, `otel-setup`, `server-metrics`, `pii-redaction`, `middleware-rate-limit`, `ab-testing`, `warehouse-etl`, `alert-coverage`.
+- **Deferred sub-skills** (19 named): `seo-sitemap`, `structured-data` (JSON-LD), `cookie-hardening`, `subresource-integrity`, `file-upload-ux`, `visual-regression`, `axe-playwright`, `log-aggregation`, `otel-setup`, `server-metrics`, `pii-redaction`, `middleware-rate-limit`, `ab-testing`, `warehouse-etl`, `alert-coverage`, `session-architecture` (JWT vs session-cookie trade-offs, surfaced in `auth-flow-review`), `third-party-scripts` (CDN-loaded libs audit, surfaced in `bundle-budget`), `progressive-deploys` (blue-green / canary, surfaced in `ci-cd-next-on-vercel`), `privacy-compliance` (GDPR / CCPA beyond the mechanical PII check, surfaced in `event-taxonomy-and-instrumentation` and `structured-logging`).
 - **AST upgrades**: `ts-morph` pilot for `rsc-boundary-audit` + `rsc-data-fetching`; `pg-query-parser` for `drizzle-migrations`. Regex classifiers are v0.1 territory and will evolve.
 - **End-user CLI**: five `bun run <name>-audit` commands marked as v0.2 candidates across the skills — promote to `packages/cli/`.
 - **Platform extensibility**: `@gelato/schema` and `@gelato/eval-harness` remain `private: true`; flipping public + publishing is a v0.2+ milestone.
