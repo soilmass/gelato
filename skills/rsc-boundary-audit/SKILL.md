@@ -147,17 +147,17 @@ Props that cross the server→client boundary must be serializable to the RSC wi
 
 A prop that violates these rules surfaces as a hydration error or a runtime panic. The skill flags these as the **`non-serializable-prop`** violation class.
 
-### Step 4 — Produce a remediation plan ordered by measured bundle-size impact
+### Step 4 — Produce a remediation plan ordered by impact
 
-Order recommended fixes by **measured bundle-size reduction per fix**, not alphabetically and not by file path. Use `@next/bundle-analyzer` (same tool as `core-web-vitals-audit`) to measure each violation's contribution to the client bundle. The audit sums the transitive weight of each client-tagged component and attributes the reduction to removing / fixing the offender.
-
-Highest-leverage fixes first. In practice, the ordering tends to be:
+Order recommended fixes by **bundle-size leverage**, not alphabetically and not by file path. The canonical class-priority order (enforced by the v0.1 eval) is:
 
 1. **`unnecessary-directive`** removals on heavily-imported wrappers — cheap fix, large win.
 2. **`barrel-import-leakage`** — breaking a leaf import so the rest of the barrel no longer reaches the client tree.
-3. **`server-only-import-in-client`** — usually a symptom of misplaced directive; often collapses into a `unnecessary-directive` fix.
+3. **`server-only-import-in-client`** — usually a symptom of misplaced directive; often collapses into an `unnecessary-directive` fix.
 4. **`non-serializable-prop`** — a boundary-shape change; more intrusive, usually smaller bundle win.
 5. **`hydration-mismatch-source`** — defensive fixes; rarely cut bytes but unblock production.
+
+**v0.1 eval scope:** the eval asserts class-priority ordering only. **Per-fixture measured bundle impact** (via `@next/bundle-analyzer` summing transitive weight of each client-tagged component) is a v0.2 refinement — landed as `feat(rsc-boundary-audit): bundle-impact measurement` alongside the ts-morph classifier upgrade. Until then, class priority is the enforced proxy; real projects should still measure their top-three offenders by hand with the analyzer before committing the remediation plan.
 
 ### Step 5 — Verify fixes do not break runtime
 

@@ -145,14 +145,14 @@ Add Lighthouse CI to the deployment pipeline with the three threshold assertions
 
 ## Hard Thresholds
 
-The eval fails this skill if any threshold is missed (source: web.dev Core Web Vitals 2024-Q4):
+The skill fails if any threshold is missed (source: web.dev Core Web Vitals 2024-Q4):
 
-- **LCP ≤ 2500 ms**
-- **INP ≤ 200 ms**
-- **CLS ≤ 0.1**
-- **Fix list ordered by leverage**, not alphabetically or by audit severity
+- **LCP ≤ 2500 ms** — Lighthouse-measurable in lab.
+- **INP ≤ 200 ms** — **field-only** as of March 2024; Lighthouse reports it as `null` in lab runs. The eval asserts on **TBT ≤ 300 ms** as Lighthouse's documented lab proxy for the same responsiveness concern. Production monitoring (PageSpeed Insights, CrUX, `web-vitals` library) is what enforces the real 200 ms INP budget on live traffic.
+- **CLS ≤ 0.1** — Lighthouse-measurable in lab.
+- **Fix list ordered by leverage**, not alphabetically or by audit severity — enforced by the eval's priority-order assertion.
 
-The three numeric thresholds are Lighthouse-measurable. The ordering threshold is enforced in the judgment-style half of the eval by inspecting the produced fix list.
+LCP and CLS are asserted directly by the eval. INP is not; see TBT substitution above.
 
 ---
 
