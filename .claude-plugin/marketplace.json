@@ -9,8 +9,8 @@
     {
       "name": "gelato",
       "source": ".",
-      "description": "The dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript. 19 skills covering foundations, data, server, UI, testing, performance, SEO, security, observability, analytics, and deployment — each with methodology citations, deterministic classifier evals, and (for 16 of 19) live LLM-as-judge rubrics.",
-      "version": "0.2.0",
+      "description": "The dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript. 32 skills covering foundations, data, server, UI, testing, performance, SEO, security, observability, analytics, and deployment — each with methodology citations, deterministic classifier evals, and live LLM-as-judge rubrics.",
+      "version": "0.3.0",
       "license": "MIT",
       "homepage": "https://gelato.dev",
       "repository": "https://github.com/soilmass/gelato",

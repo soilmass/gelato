@@ -3,11 +3,11 @@
 > The dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript.
 > A Neopolitan product.
 
-Gelato is an opinionated Claude Code plugin for full-stack TypeScript developers. Every skill it ships encodes an external methodology (web.dev, OWASP, Next.js docs, React docs, Conventional Commits, …) rather than inventing guidance. Every skill has a runnable eval whose pass rate is published back into the skill's frontmatter by the runner.
+Gelato is an opinionated Claude Code plugin for full-stack TypeScript developers. Every skill it ships encodes an external methodology (WCAG, WAI-ARIA, axe-core, web.dev, OWASP, Next.js docs, React docs, Google Search Central, schema.org, sitemaps.org, BCP 47, Radix UI, Conventional Commits, …) rather than inventing guidance. Every skill has a runnable eval whose pass rate is published back into the skill's frontmatter by the runner.
 
-## Shipped in v0.2.0
+## Shipped in v0.3.0
 
-19 skills, each with a deterministic classifier eval at `pass_rate = 1.0`. 16 of 19 also carry a live LLM-as-judge rubric.
+32 skills, each with a deterministic classifier eval at `pass_rate = 1.0`. Every skill carries a live LLM-as-judge rubric.
 
 | Skill | Subsystem | Phase | Type |
 | --- | --- | --- | --- |
@@ -19,11 +19,24 @@ Gelato is an opinionated Claude Code plugin for full-stack TypeScript developers
 | [form-with-server-action](/skills/form-with-server-action) | ui | build | procedural |
 | [shadcn-tailwind-v4](/skills/shadcn-tailwind-v4) | ui | build | procedural |
 | [rsc-boundary-audit](/skills/rsc-boundary-audit) | ui | verify | judgment |
+| [error-boundary-hygiene](/skills/error-boundary-hygiene) | ui | build | procedural |
+| [suspense-streaming-boundaries](/skills/suspense-streaming-boundaries) | ui | build | procedural |
+| [intercepting-parallel-routes](/skills/intercepting-parallel-routes) | ui | build | procedural |
+| [effect-discipline](/skills/effect-discipline) | ui | build | procedural |
+| [optimistic-ui-wiring](/skills/optimistic-ui-wiring) | ui | build | procedural |
+| [a11y-mechanical-audit](/skills/a11y-mechanical-audit) | ui | verify | judgment |
+| [radix-primitive-a11y](/skills/radix-primitive-a11y) | ui | verify | judgment |
+| [i18n-routing](/skills/i18n-routing) | ui | build | procedural |
 | [tdd-cycle](/skills/tdd-cycle) | testing | verify | procedural |
 | [playwright-e2e](/skills/playwright-e2e) | testing | verify | procedural |
+| [axe-playwright](/skills/axe-playwright) | testing | verify | procedural |
 | [core-web-vitals-audit](/skills/core-web-vitals-audit) | performance | verify | metric |
 | [bundle-budget](/skills/bundle-budget) | performance | verify | judgment |
+| [next-image-font-script](/skills/next-image-font-script) | performance | build | procedural |
 | [metadata-and-og](/skills/metadata-and-og) | seo | verify | procedural |
+| [structured-data-json-ld](/skills/structured-data-json-ld) | seo | verify | procedural |
+| [seo-sitemap-robots](/skills/seo-sitemap-robots) | seo | build | procedural |
+| [open-graph-image](/skills/open-graph-image) | seo | build | procedural |
 | [security-headers](/skills/security-headers) | security | build | procedural |
 | [auth-flow-review](/skills/auth-flow-review) | security | verify | judgment |
 | [structured-logging](/skills/structured-logging) | observability | run | procedural |

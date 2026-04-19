@@ -3,18 +3,18 @@
 > The dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript.
 > A Neopolitan product.
 
-[![Skills: 19/19](https://img.shields.io/badge/skills-19%2F19-brightgreen)](./SKILLS.md)
+[![Skills: 32/32](https://img.shields.io/badge/skills-32%2F32-brightgreen)](./SKILLS.md)
 [![Evals: passing](https://img.shields.io/badge/evals-passing-brightgreen)](./EVAL_SPEC.md)
 [![Stack: locked](https://img.shields.io/badge/stack-locked-blue)](./TOOL_MANIFEST.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](./LICENSE)
 
-Gelato is an opinionated Claude Code plugin for full-stack TypeScript developers. Every skill it ships is an encoded external methodology (web.dev, OWASP, Next.js docs, React docs, PlanetScale, Conventional Commits, …) — not invented guidance. Every skill has a runnable eval whose pass rate is written back into the skill's frontmatter by the runner on every run. One locked stack; no configuration flags.
+Gelato is an opinionated Claude Code plugin for full-stack TypeScript developers. Every skill it ships is an encoded external methodology (WCAG, WAI-ARIA, axe-core, web.dev, OWASP, Next.js docs, React docs, Google Search Central, schema.org, sitemaps.org, BCP 47, Radix UI, PlanetScale, Conventional Commits, …) — not invented guidance. Every skill has a runnable eval whose pass rate is written back into the skill's frontmatter by the runner on every run. One locked stack; no configuration flags.
 
-**What makes it different:** every skill has a published, runnable, passing eval. 16 of 19 also carry a live LLM-as-judge rubric. See `EVAL_SPEC.md` and `CHANGELOG.md`.
+**What makes it different:** every skill has a published, runnable, passing eval. Every skill carries a live LLM-as-judge rubric. See `EVAL_SPEC.md` and `CHANGELOG.md`.
 
-## Shipped in v0.2.0
+## Shipped in v0.3.0
 
-19 skills, each with a deterministic classifier eval at `pass_rate = 1.0`. The `methodology_source` in every SKILL.md cites upstream authority (OWASP, web.dev, Next.js, React, Google Search Central, …) — no invented guidance.
+32 skills, each with a deterministic classifier eval at `pass_rate = 1.0`. The `methodology_source` in every SKILL.md cites upstream authority (WCAG 2.2, WAI-ARIA APG, axe-core, OWASP, web.dev, Next.js, React, Google Search Central, schema.org, sitemaps.org, BCP 47, Radix UI, …) — no invented guidance. v0.3.0 adds the 13-skill **frontend hardening pass** (accessibility foundation, React 19 / Next.js 15 mechanics, client-side discipline, performance, SEO + i18n).
 
 ### Foundations · build
 
@@ -43,6 +43,14 @@ Gelato is an opinionated Claude Code plugin for full-stack TypeScript developers
 | [`form-with-server-action`](./skills/form-with-server-action/SKILL.md) | build | procedural | Next.js Forms + React Hook Form |
 | [`shadcn-tailwind-v4`](./skills/shadcn-tailwind-v4/SKILL.md) | build | procedural | shadcn/ui + Tailwind v4 docs |
 | [`rsc-boundary-audit`](./skills/rsc-boundary-audit/SKILL.md) | verify | judgment | Next.js Server Components + React docs |
+| [`error-boundary-hygiene`](./skills/error-boundary-hygiene/SKILL.md) | build | procedural | Next.js error-handling + React 19 error boundaries |
+| [`suspense-streaming-boundaries`](./skills/suspense-streaming-boundaries/SKILL.md) | build | procedural | Next.js streaming docs + React 19 `<Suspense>` |
+| [`intercepting-parallel-routes`](./skills/intercepting-parallel-routes/SKILL.md) | build | procedural | Next.js parallel + intercepting routes docs |
+| [`effect-discipline`](./skills/effect-discipline/SKILL.md) | build | procedural | react.dev "You Might Not Need an Effect" |
+| [`optimistic-ui-wiring`](./skills/optimistic-ui-wiring/SKILL.md) | build | procedural | React 19 `useOptimistic` reference |
+| [`a11y-mechanical-audit`](./skills/a11y-mechanical-audit/SKILL.md) | verify | judgment | WCAG 2.2 AA + WAI-ARIA APG + axe-core |
+| [`radix-primitive-a11y`](./skills/radix-primitive-a11y/SKILL.md) | verify | judgment | Radix UI primitives + WAI-ARIA APG |
+| [`i18n-routing`](./skills/i18n-routing/SKILL.md) | build | procedural | Next.js i18n + BCP 47 + Unicode CLDR |
 
 ### Testing · verify
 
@@ -50,19 +58,24 @@ Gelato is an opinionated Claude Code plugin for full-stack TypeScript developers
 |---|---|---|
 | [`tdd-cycle`](./skills/tdd-cycle/SKILL.md) | procedural | Kent C. Dodds Testing Trophy |
 | [`playwright-e2e`](./skills/playwright-e2e/SKILL.md) | procedural | Playwright official best practices |
+| [`axe-playwright`](./skills/axe-playwright/SKILL.md) | procedural | Deque axe-core + `@axe-core/playwright` + WCAG 2.2 AA |
 
-### Performance · verify
+### Performance · build / verify
 
-| Skill | Type | Methodology |
-|---|---|---|
-| [`core-web-vitals-audit`](./skills/core-web-vitals-audit/SKILL.md) | metric | web.dev Core Web Vitals (2024-Q4) |
-| [`bundle-budget`](./skills/bundle-budget/SKILL.md) | judgment | web.dev bundle budgets + Next.js analyzer |
+| Skill | Phase | Type | Methodology |
+|---|---|---|---|
+| [`core-web-vitals-audit`](./skills/core-web-vitals-audit/SKILL.md) | verify | metric | web.dev Core Web Vitals (2024-Q4) |
+| [`bundle-budget`](./skills/bundle-budget/SKILL.md) | verify | judgment | web.dev bundle budgets + Next.js analyzer |
+| [`next-image-font-script`](./skills/next-image-font-script/SKILL.md) | build | procedural | Next.js `next/image` + `next/font` + `next/script` docs |
 
-### SEO · verify
+### SEO · build / verify
 
-| Skill | Type | Methodology |
-|---|---|---|
-| [`metadata-and-og`](./skills/metadata-and-og/SKILL.md) | procedural | Google Search Central + Next.js Metadata API |
+| Skill | Phase | Type | Methodology |
+|---|---|---|---|
+| [`metadata-and-og`](./skills/metadata-and-og/SKILL.md) | verify | procedural | Google Search Central + Next.js Metadata API |
+| [`structured-data-json-ld`](./skills/structured-data-json-ld/SKILL.md) | verify | procedural | Google Search Central + schema.org |
+| [`seo-sitemap-robots`](./skills/seo-sitemap-robots/SKILL.md) | build | procedural | sitemaps.org 0.9 + Next.js MetadataRoute + BCP 47 |
+| [`open-graph-image`](./skills/open-graph-image/SKILL.md) | build | procedural | Next.js `opengraph-image` + `next/og` `ImageResponse` |
 
 ### Security · build / verify
 

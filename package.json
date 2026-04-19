@@ -1,6 +1,6 @@
 {
   "name": "@neopolitan/gelato",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "The dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript. A Neopolitan product.",
   "license": "MIT",
   "private": true,

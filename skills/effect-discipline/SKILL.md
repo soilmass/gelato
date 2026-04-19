@@ -43,7 +43,7 @@ metadata:
     - "bun@1.1+"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T14:57:10.085Z"
+    last_run: "2026-04-19T16:00:08.238Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Procedural skill. Four mechanical violation
@@ -201,8 +201,21 @@ No shipped CLI. Classifier lives in the eval.
 
 ### Example 2 — `effect-for-derived-value`
 
-**Input:** `useEffect(() => { setFullName(`${first} ${last}`); }, [first, last]);`
-**Output:** derivation done in an effect runs a render cycle extra. Fix: `const fullName = \`${first} ${last}\`;` as a `const`, or `useMemo` if the derivation is expensive.
+**Input:**
+
+```tsx
+useEffect(() => {
+  setFullName(`${first} ${last}`);
+}, [first, last]);
+```
+
+**Output:** derivation done in an effect runs a render cycle extra. Fix:
+
+```tsx
+const fullName = `${first} ${last}`;
+```
+
+as a `const`, or `useMemo` if the derivation is expensive.
 
 ---
 
