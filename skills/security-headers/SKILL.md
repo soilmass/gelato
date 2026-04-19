@@ -1,0 +1,300 @@
+---
+name: security-headers
+description: >
+  Audit a Next.js App Router app's HTTP response headers against the OWASP
+  Secure Headers baseline and produce a prioritized remediation plan.
+  Checks Content-Security-Policy, Strict-Transport-Security, X-Content-Type-
+  Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy. Runs as
+  a deterministic header-string classifier against Next.js middleware config.
+  Use when: adding middleware.ts, writing next.config headers(), reviewing a
+  CSP, "are my security headers set correctly", pre-launch security pass,
+  post-deploy header check, SSRF or clickjacking concerns, upgrading from
+  default Next.js headers to a hardened baseline.
+  Do NOT use for: full OWASP ASVS audit (→ auth-flow-review), application-
+  level authentication (→ auth-flow-review), database-query hardening
+  (→ security for query-injection is a Drizzle schema concern),
+  non-Next.js apps (fork the suite).
+license: MIT
+metadata:
+  version: "1.0"
+  core: web-dev
+  subsystem: security
+  phase: build
+  type: procedural
+  methodology_source:
+    - name: "OWASP Secure Headers Project"
+      authority: "OWASP"
+      url: "https://owasp.org/www-project-secure-headers/"
+      version: "2024 baseline"
+      verified: "2026-04-18"
+    - name: "Next.js — Security headers via headers() and middleware"
+      authority: "Vercel / Next.js team"
+      url: "https://nextjs.org/docs/app/api-reference/next-config-js/headers"
+      version: "Next.js 15 docs (2025)"
+      verified: "2026-04-18"
+  stack_assumptions:
+    - "next@15+ App Router"
+    - "middleware.ts or next.config.ts headers()"
+    - "bun@1.1+"
+  eval:
+    pass_rate: null
+    last_run: null
+    n_cases: null
+  changelog: >
+    v1.0 — initial. Six OWASP-baseline headers enforced mechanically:
+    Content-Security-Policy, Strict-Transport-Security, X-Content-Type-
+    Options, X-Frame-Options, Referrer-Policy, Permissions-Policy. Eval
+    classifies header-configuration fixtures across four violation classes
+    (missing header, over-permissive directive, deprecated value, conflicting
+    source).
+---
+
+# security-headers
+
+Encodes the OWASP Secure Headers baseline applied to Next.js 15+ App Router header configuration. Six headers, six thresholds, a procedural walk that takes a middleware config from "Next defaults" to "hardened baseline" in a known sequence. Not a full OWASP ASVS audit — scoped to HTTP response headers.
+
+---
+
+## Methodology Attribution
+
+This skill encodes guidance from two primary sources:
+
+- **Primary:** OWASP Secure Headers Project
+  - Source: [https://owasp.org/www-project-secure-headers/](https://owasp.org/www-project-secure-headers/)
+  - Version: 2024 baseline (CSP Level 3 included)
+  - Verified: 2026-04-18
+- **Secondary:** Next.js — HTTP Headers configuration
+  - Source: [https://nextjs.org/docs/app/api-reference/next-config-js/headers](https://nextjs.org/docs/app/api-reference/next-config-js/headers)
+  - Version: Next.js 15 docs (2025)
+  - Verified: 2026-04-18
+- **Drift-check:** `.github/workflows/drift-owasp-secure-headers.yml`
+
+Encoded: the six headers OWASP names as the baseline, the minimum directive surface for each, and the Next.js mechanics (`headers()` in `next.config.ts` vs. `NextResponse.headers.set()` in `middleware.ts`) for setting them.
+
+NOT encoded: OWASP ASVS controls beyond response headers (that's `auth-flow-review`), cookie-attribute audits (SameSite, Secure, HttpOnly — belongs in a session-management skill), CORS configuration for API routes (belongs in `server-actions-vs-api`), subresource integrity for scripts (belongs in a v0.2+ SRI skill).
+
+---
+
+## Stack Assumptions
+
+- `next@15+` App Router
+- Headers set via `next.config.ts` `headers()` **or** `middleware.ts` `NextResponse.headers.set()`
+- `bun@1.1+` for the fixture audit scripts
+
+If your stack differs, fork the suite. This skill does not accept configuration flags.
+
+---
+
+## When to Use
+
+Activate when any of the following is true:
+- Adding or editing `middleware.ts` or `next.config.ts` `headers()`
+- A security review flags missing or misconfigured response headers
+- Pre-launch hardening pass
+- Post-deploy check via `curl -I https://<site>` or `securityheaders.com`
+- Upgrading from Next's default headers (empty) to a hardened baseline
+- A CSP violation shows up in the browser console
+
+## When NOT to Use
+
+Do NOT activate for:
+- Full OWASP ASVS audit — use `auth-flow-review` for authentication and `security-headers` for headers only
+- Cookie attribute hardening — out of scope; belongs in a session skill (v0.2+)
+- CORS for API routes — belongs in `server-actions-vs-api`
+- Subresource Integrity for third-party scripts — v0.2+ candidate
+- Non-Next.js apps — the Tool Integration section assumes Next 15 conventions
+
+---
+
+## Procedure
+
+### Step 1 — Inventory current headers
+
+Run against a production-built app (`bun run build && bun run start`), then:
+
+```bash
+curl -sI http://localhost:3000/ | sort
+```
+
+Record every response header. Three sources produce them in Next.js:
+
+1. `next.config.ts` `headers()` — applies per route pattern.
+2. `middleware.ts` — applies per `matcher` config; can override config headers.
+3. Default Next.js headers — minimal; only `X-Powered-By` by default (which should be removed).
+
+### Step 2 — Classify each of the six OWASP-baseline headers
+
+For each of the six, determine: **present**, **missing**, or **present-but-misconfigured**.
+
+| Header | OWASP baseline directive |
+|---|---|
+| `Content-Security-Policy` | `default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';` (tighten per app) |
+| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` |
+| `X-Content-Type-Options` | `nosniff` |
+| `X-Frame-Options` | `DENY` (or rely on `frame-ancestors` in CSP) |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` |
+| `Permissions-Policy` | disable everything by default; opt in per feature (`camera=(), microphone=(), geolocation=()`) |
+
+Common misconfigurations (the eval's four violation classes):
+
+- **`missing-header`** — header not sent at all.
+- **`over-permissive`** — e.g. CSP `script-src 'unsafe-inline' 'unsafe-eval'`, HSTS `max-age=0`, X-Frame-Options `ALLOWALL`.
+- **`deprecated-value`** — X-Frame-Options `ALLOW-FROM` (deprecated since 2019; replaced by `frame-ancestors` in CSP).
+- **`conflicting-source`** — same header set twice with different values (once in `next.config`, once in middleware). Last one wins and it's not always obvious which.
+
+### Step 3 — Produce a remediation plan ordered by severity
+
+Order of application:
+
+1. **HSTS** — if missing on HTTPS production, fix first. One line; massive impact.
+2. **CSP** — the hardest and most impactful. Start `Content-Security-Policy-Report-Only` to measure breakage before enforcing.
+3. **X-Content-Type-Options: nosniff** — one line, no downside.
+4. **Referrer-Policy** — one line.
+5. **X-Frame-Options / frame-ancestors** — prefer CSP's `frame-ancestors`; include X-Frame-Options as belt-and-suspenders for older browsers.
+6. **Permissions-Policy** — opt everything off, opt in per feature. Fixture pages that require camera/mic explicitly allowlist.
+
+### Step 4 — Choose where to set: config vs. middleware
+
+- **`next.config.ts` `headers()`** — static across a route pattern; survives `next build` caching cleanly. Use for apps whose header policy doesn't vary by request.
+- **`middleware.ts`** — dynamic per-request; can vary by path, locale, auth state. Use when you need request-dependent CSP nonces (the only good reason most apps touch middleware for headers).
+
+**CSP nonces REQUIRE middleware** because `next.config.ts` is static at build time. The fixtures cover both shapes.
+
+### Step 5 — Verify in production after deploy
+
+After each fix, re-run `curl -I <production URL>` and cross-check against `https://securityheaders.com/?q=<site>` for a third-party audit grade. A grade of `A` or `A+` indicates the baseline is in place; anything below `A` means at least one header is missing or misconfigured.
+
+---
+
+## Tool Integration
+
+**`next.config.ts` `headers()` (canonical shape):**
+
+```ts
+import type { NextConfig } from 'next';
+
+const SECURITY_HEADERS = [
+  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  {
+    key: 'Content-Security-Policy',
+    value:
+      "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';",
+  },
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=()',
+  },
+];
+
+const config: NextConfig = {
+  async headers() {
+    return [{ source: '/:path*', headers: SECURITY_HEADERS }];
+  },
+};
+
+export default config;
+```
+
+**`middleware.ts` (when CSP nonces are needed):**
+
+```ts
+import { NextResponse, type NextRequest } from 'next/server';
+
+export function middleware(request: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
+  const response = NextResponse.next();
+  response.headers.set(
+    'Content-Security-Policy',
+    `default-src 'self'; script-src 'self' 'nonce-${nonce}'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';`,
+  );
+  response.headers.set('x-nonce', nonce);
+  return response;
+}
+
+export const config = { matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'] };
+```
+
+---
+
+## Examples
+
+### Example 1 — App with no security headers (`missing-header`)
+
+**Input:** `next.config.ts` has no `headers()` function; `middleware.ts` does not exist. `curl -I /` shows only Next.js defaults.
+
+**Output:** apply the canonical `SECURITY_HEADERS` array via `next.config.ts` `headers()` (no nonces needed). Ship. Re-audit with `securityheaders.com` — expect grade A.
+
+### Example 2 — CSP with `unsafe-inline` (`over-permissive`)
+
+**Input:** `Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline';`
+
+**Output:** `'unsafe-inline'` allows inline `<script>` tags and is the single biggest XSS enabler in a CSP. Remove it; use `'nonce-<random>'` via middleware, OR (simpler) move all inline scripts to external files. For third-party scripts (Google Tag Manager, etc.) that insist on inline, opt those specific hashes in with `'sha256-...'` rather than blanket `'unsafe-inline'`.
+
+### Example 3 — X-Frame-Options: ALLOW-FROM (`deprecated-value`)
+
+**Input:** `X-Frame-Options: ALLOW-FROM https://parent.example.com`
+
+**Output:** `ALLOW-FROM` was deprecated in all browsers by 2019. Replace with `Content-Security-Policy: frame-ancestors 'self' https://parent.example.com;` — which modern browsers enforce correctly.
+
+---
+
+## Edge Cases
+
+- **Report-only CSP:** the eval accepts `Content-Security-Policy-Report-Only` as a legitimate staging configuration during rollout. Production must graduate to enforcing `Content-Security-Policy` within a defined window (typically 2-4 weeks).
+- **CDN override:** Vercel and Cloudflare can add headers at the edge that override application-set values. The audit is against the route handler's response; production header-set verification requires `curl` from outside the CDN.
+- **Preflight CORS requests:** OPTIONS requests may intentionally omit some of the six (e.g. CSP is irrelevant for a preflight). The audit scopes to main-method responses (GET/POST).
+- **Subdomains under a wildcard:** HSTS `preload` requires every subdomain to serve HTTPS with the same HSTS header. Preload submission (hstspreload.org) is a one-way decision — be sure before opting in.
+- **Multiple `headers()` sources:** the fixture set includes `conflicting-source` cases where the same header is set in `next.config` AND `middleware`. Middleware wins, but the skill flags this as a maintenance hazard.
+
+---
+
+## Evaluation
+
+See `/evals/security-headers/` for the canonical eval suite.
+
+### Pass criteria
+
+**Quantitative (deterministic header-string classifier):**
+- Classifies ≥ 95% of violation fixtures into the correct class out of four (`missing-header`, `over-permissive`, `deprecated-value`, `conflicting-source`)
+- Zero false positives on legitimate well-configured fixtures
+- Remediation plan orders fixes by severity per SKILL.md § Step 3
+
+No qualitative LLM-as-judge for v0.1 of this skill — header configuration is a mechanical check and the deterministic classifier carries the signal.
+
+### Current pass rate
+
+Auto-updated by `bun run eval`. See `metadata.eval.pass_rate` in frontmatter above.
+
+---
+
+## Handoffs
+
+This skill is scoped to HTTP response header hardening. Explicitly NOT absorbed:
+
+- **Authentication and session flows** — use `auth-flow-review`
+- **Cookie attribute hardening (SameSite, Secure, HttpOnly)** — v0.2+ candidate skill
+- **CORS configuration for API routes** — `server-actions-vs-api` (covers where Server Actions vs route handlers fit)
+- **Subresource Integrity (SRI) for third-party scripts** — v0.2+ candidate
+- **Database-layer injection protection** — schema-level concern, covered by Drizzle's parameterized queries; no separate skill
+
+---
+
+## Dependencies
+
+- **External skills:** none
+- **MCP servers:** none
+- **Tools required in environment:** Bun, Next.js 15+, `curl` (for production verification)
+
+---
+
+## References
+
+- `references/owasp-six-baseline.md` — the six headers with their OWASP-recommended directives, copy-paste ready
+- `references/violation-classes.md` — four-class taxonomy (missing / over-permissive / deprecated / conflicting) with canonical examples
+
+## Scripts
+
+- _(none in v0.1 — the eval ships the deterministic header-string classifier; a `bun run headers-audit` CLI is a v0.2 candidate)_

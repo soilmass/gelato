@@ -1,0 +1,18 @@
+# Promptfoo config for security-headers LLM-as-judge rubrics (deferred to v0.2).
+#
+# v0.1 ships the deterministic classifier only. A v0.2 `fix-orderedness`
+# rubric would judge generated remediation plans against the SKILL § Step 3
+# priority order. This file exists so the test's rubric references resolve.
+
+description: security-headers LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []
