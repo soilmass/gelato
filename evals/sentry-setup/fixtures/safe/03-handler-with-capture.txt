@@ -1,0 +1,19 @@
+---
+expected: safe
+reason: Handler's catch block both logs AND calls Sentry.captureException. No Sentry.init in this file.
+---
+import { logger } from '@/lib/logger';
+import * as Sentry from '@sentry/nextjs';
+import { db, posts } from '@/lib/db';
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const [row] = await db.insert(posts).values(body).returning();
+    return Response.json({ ok: true, postId: row.id });
+  } catch (err) {
+    logger.error({ err }, 'posts.create failed');
+    Sentry.captureException(err);
+    return Response.json({ ok: false }, { status: 500 });
+  }
+}

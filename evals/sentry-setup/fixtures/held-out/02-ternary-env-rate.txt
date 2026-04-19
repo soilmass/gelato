@@ -1,0 +1,14 @@
+---
+class: safe
+reason: tracesSampleRate is a ternary on NODE_ENV — env-guarded even though the prod branch is also 1 in a weird case. Classifier accepts ANY env guard (the human's intent is to differentiate).
+---
+import * as Sentry from '@sentry/nextjs';
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  environment: process.env.NODE_ENV,
+  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.2 : 1,
+  beforeSend(event) {
+    return event;
+  },
+});

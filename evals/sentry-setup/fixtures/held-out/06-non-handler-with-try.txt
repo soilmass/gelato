@@ -1,0 +1,18 @@
+---
+class: safe
+reason: Lib file (not a handler) with Sentry import and a caught error — no-capture-in-catch rule scoped to handler files only.
+---
+import * as Sentry from '@sentry/nextjs';
+import { logger } from '@/lib/logger';
+
+export async function fetchRemote<T>(url: string): Promise<T | null> {
+  try {
+    const res = await fetch(url);
+    return (await res.json()) as T;
+  } catch (err) {
+    logger.warn({ err, url }, 'fetchRemote failed');
+    return null;
+  }
+}
+
+void Sentry;

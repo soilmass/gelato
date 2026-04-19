@@ -1,0 +1,14 @@
+---
+class: safe
+reason: DSN mentioned in a comment for documentation, not assigned to code. Classifier should not false-positive on comment text.
+---
+import * as Sentry from '@sentry/nextjs';
+
+// Note: set NEXT_PUBLIC_SENTRY_DSN to e.g. https://abc@o12345.ingest.sentry.io/67890
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  tracesSampleRate: 0.1,
+  beforeSend(event) {
+    return event;
+  },
+});

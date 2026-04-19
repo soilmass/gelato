@@ -1,0 +1,13 @@
+---
+class: sample-rate-unbounded
+reason: tracesSampleRate 1.0 with no env guard — ships 100% of traces in production.
+---
+import * as Sentry from '@sentry/nextjs';
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  tracesSampleRate: 1.0,
+  beforeSend(event) {
+    return event;
+  },
+});

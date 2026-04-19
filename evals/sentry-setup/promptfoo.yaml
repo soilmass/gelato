@@ -1,0 +1,19 @@
+# Promptfoo config for sentry-setup LLM-as-judge rubrics (deferred to v0.2).
+#
+# v0.1 ships the deterministic classifier only. A v0.2 `alert-coverage`
+# rubric would judge whether critical paths are adequately instrumented
+# (all mutating Server Actions have captureException, all webhooks have
+# error boundaries reaching Sentry).
+
+description: sentry-setup LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []

@@ -1,0 +1,16 @@
+---
+expected: safe
+reason: Handler with a catch block but no @sentry/* import — capture-in-catch rule only applies when Sentry is present in the file.
+---
+import { logger } from '@/lib/logger';
+import { db, posts } from '@/lib/db';
+
+export async function GET() {
+  try {
+    const rows = await db.select().from(posts).limit(10);
+    return Response.json({ posts: rows });
+  } catch (err) {
+    logger.error({ err }, 'posts.list failed');
+    return Response.json({ ok: false }, { status: 500 });
+  }
+}

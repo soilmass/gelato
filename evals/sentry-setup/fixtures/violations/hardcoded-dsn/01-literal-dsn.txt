@@ -1,0 +1,13 @@
+---
+class: hardcoded-dsn
+reason: "DSN is a literal string starting with https://. Should be process.env.NEXT_PUBLIC_SENTRY_DSN."
+---
+import * as Sentry from '@sentry/nextjs';
+
+Sentry.init({
+  dsn: 'https://abc123def456@o12345.ingest.sentry.io/67890',
+  tracesSampleRate: 0.1,
+  beforeSend(event) {
+    return event;
+  },
+});

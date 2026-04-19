@@ -1,0 +1,21 @@
+---
+class: no-capture-in-catch
+reason: Handler imports Sentry but catch block only logs — error never reaches Sentry for alerting / grouping.
+---
+import { logger } from '@/lib/logger';
+import * as Sentry from '@sentry/nextjs';
+import { db, posts } from '@/lib/db';
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    await db.insert(posts).values(body);
+    return Response.json({ ok: true });
+  } catch (err) {
+    logger.error({ err }, 'posts.create failed');
+    return Response.json({ ok: false }, { status: 500 });
+  }
+}
+
+// Sentry.captureException called nowhere in the file.
+void Sentry;

@@ -1,0 +1,23 @@
+---
+class: no-capture-in-catch
+reason: "Server Action with Sentry import and a caught error — only logs and returns. Sentry never sees the error."
+---
+'use server';
+import { logger } from '@/lib/logger';
+import * as Sentry from '@sentry/nextjs';
+
+export async function submit(formData: FormData) {
+  try {
+    await processSubmission(formData);
+    return { ok: true };
+  } catch (err) {
+    logger.warn({ err }, 'submit failed');
+    return { ok: false };
+  }
+}
+
+async function processSubmission(_fd: FormData): Promise<void> {
+  throw new Error('placeholder');
+}
+
+void Sentry;

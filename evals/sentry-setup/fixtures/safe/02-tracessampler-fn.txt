@@ -1,0 +1,18 @@
+---
+expected: safe
+reason: Uses tracesSampler function (not a fixed rate). Safe alternative to env-guarded tracesSampleRate.
+---
+import * as Sentry from '@sentry/nextjs';
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  environment: process.env.NODE_ENV,
+  tracesSampler: (ctx) =>
+    ctx.transactionContext.op === 'http.server' ? 0.05 : 0.5,
+  beforeSend(event) {
+    if (event.request?.headers) {
+      delete event.request.headers.authorization;
+    }
+    return event;
+  },
+});
