@@ -1,0 +1,18 @@
+---
+class: console-in-handler
+reason: console.error inside a Server Action — should route through the Pino logger.
+---
+'use server';
+
+export async function createPost(formData: FormData) {
+  try {
+    const title = String(formData.get('title') ?? '');
+    await doInsert(title);
+    return { ok: true };
+  } catch (err) {
+    console.error('insert failed', err);
+    return { ok: false };
+  }
+}
+
+async function doInsert(_title: string): Promise<void> {}

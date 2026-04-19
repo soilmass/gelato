@@ -1,0 +1,18 @@
+---
+expected: safe
+reason: Error logged with `cause` key (also valid alias for Error object) plus context. Classifier accepts err / error / cause.
+---
+import { logger } from '@/lib/logger';
+import { db, posts } from '@/lib/db';
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    await db.insert(posts).values(body);
+    logger.info({ route: '/api/posts' }, 'post created');
+    return Response.json({ ok: true });
+  } catch (cause) {
+    logger.error({ cause, route: '/api/posts' }, 'post create failed');
+    return Response.json({ ok: false }, { status: 500 });
+  }
+}

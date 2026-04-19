@@ -1,0 +1,11 @@
+---
+class: string-template-log
+reason: String concatenation log — free-text haystack.
+---
+import { logger } from '@/lib/logger';
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  logger.warn('got body with keys: ' + Object.keys(body).join(','));
+  return Response.json({ ok: true });
+}

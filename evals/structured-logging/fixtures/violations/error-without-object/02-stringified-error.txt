@@ -1,0 +1,17 @@
+---
+class: error-without-object
+reason: Stringifies err inside a template literal — stack trace thrown away, serializer never runs.
+---
+import { logger } from '@/lib/logger';
+
+export async function run() {
+  try {
+    await doThing();
+  } catch (err) {
+    logger.error(`doThing failed: ${String(err)}`);
+  }
+}
+
+async function doThing(): Promise<void> {
+  throw new Error('nope');
+}

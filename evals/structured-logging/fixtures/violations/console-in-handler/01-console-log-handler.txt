@@ -1,0 +1,9 @@
+---
+class: console-in-handler
+reason: console.log inside a route handler — unstructured, unsearchable at the aggregator.
+---
+export async function POST(req: Request) {
+  const body = await req.json();
+  console.log('got body:', body);
+  return Response.json({ ok: true });
+}

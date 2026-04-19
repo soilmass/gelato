@@ -1,0 +1,14 @@
+---
+class: safe
+reason: "console.error at module top-level (not inside a function body) — used to surface a boot-time error before the logger is ready. Classifier scopes to function bodies."
+---
+import { logger } from '@/lib/logger';
+
+if (!process.env.DATABASE_URL) {
+  console.error('DATABASE_URL is not set');
+}
+
+export async function GET() {
+  logger.info({ env: process.env.NODE_ENV }, 'health check');
+  return Response.json({ ok: true });
+}

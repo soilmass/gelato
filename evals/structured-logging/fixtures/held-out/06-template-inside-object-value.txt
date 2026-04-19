@@ -1,0 +1,14 @@
+---
+class: safe
+reason: Template literal used as a VALUE inside a structured payload — the payload is still object-shaped and searchable. Not a string-template log.
+---
+import { logger } from '@/lib/logger';
+
+export async function POST(req: Request) {
+  const body = await req.json() as { userId: string; action: string };
+  logger.info(
+    { userId: body.userId, description: `${body.action} at ${Date.now()}` },
+    'user action',
+  );
+  return Response.json({ ok: true });
+}

@@ -1,0 +1,22 @@
+---
+expected: safe
+reason: Canonical handler — structured payload, pino logger, err object in error log, no sensitive fields.
+---
+import { logger } from '@/lib/logger';
+import { nanoid } from 'nanoid';
+import { db, posts } from '@/lib/db';
+
+export async function POST(req: Request) {
+  const requestId = nanoid();
+  const log = logger.child({ requestId });
+
+  try {
+    const body = await req.json();
+    const [row] = await db.insert(posts).values(body).returning();
+    log.info({ postId: row.id }, 'posts.create success');
+    return Response.json({ ok: true, postId: row.id });
+  } catch (err) {
+    log.error({ err }, 'posts.create failed');
+    return Response.json({ ok: false }, { status: 500 });
+  }
+}
