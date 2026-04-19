@@ -1,0 +1,235 @@
+> Enforce Gelato's own TEMPLATE.md + EVAL_SPEC.md + frontmatter schema contract on a candidate `skills/<name>/SKILL.md`. Five violation classes: frontmatter that fails Zod validation, missing one of the mandated body sections (Methodology Attribution, Procedure, When to Use / NOT to Use, Handoffs, Evaluation, References), `methodology_source` absent or empty, `name` field that's not kebab-case, and body length over the 500-line non-negotiable from TEMPLATE.md. Use when: adding a new skill to Gelato (or any Gelato-pattern suite), reviewing a PR that introduces `skills/<name>/SKILL.md`, auditing an existing skill for TEMPLATE drift, vetting a contribution from an external author. Do NOT use for: validating an eval's test file (→ eval-harness-pattern), plugin manifest shape (→ plugin- manifest-validity), drift-workflow presence (→ drift-check- workflow), non-Gelato skill authoring conventions.
+
+**Subsystem:** extensibility · **Phase:** verify · **Type:** procedural
+
+**Pass rate:** 100.0% across 4 cases · **Last run:** 2026-04-19
+
+[View on GitHub](https://github.com/soilmass/gelato/blob/main/skills/new-skill-review/SKILL.md) · [Eval suite](https://github.com/soilmass/gelato/tree/main/evals/new-skill-review)
+
+---
+Encodes Gelato's own artifact contract — TEMPLATE.md v1.0 + the Zod schema in `packages/schema/src/skill-frontmatter.ts`. A candidate SKILL.md that passes all five rules below is drift-free from the template and accepted by `scripts/validate-skills.ts`.
+
+---
+
+## Methodology Attribution
+
+Two primary sources, both internal (self-authority):
+
+- **Primary:** Gelato TEMPLATE.md v1.0 (frozen)
+  - Source: [https://github.com/soilmass/gelato/blob/main/TEMPLATE.md](https://github.com/soilmass/gelato/blob/main/TEMPLATE.md)
+  - Authority: Gelato project / Neopolitan
+  - Version: TEMPLATE.md v1.0 (2026)
+  - Verified: 2026-04-19
+- **Secondary:** Gelato EVAL_SPEC.md
+  - Source: [https://github.com/soilmass/gelato/blob/main/EVAL_SPEC.md](https://github.com/soilmass/gelato/blob/main/EVAL_SPEC.md)
+  - Version: EVAL_SPEC.md v1.0 (2026)
+  - Verified: 2026-04-19
+- **Drift-check:** _planned (v0.2 H7)._
+
+Encoded: the five mechanical rules every Gelato SKILL.md must pass — frontmatter Zod validity, name kebab-case, mandated body sections present, methodology cited, body under the 500-line cap. NOT encoded: whether the SKILL.md's methodology is canonical (that's a human call — Gelato rejects invented methodologies), whether the procedure steps are coherent (judgment), whether the examples match the procedure (cross-section semantic check).
+
+---
+
+## Stack Assumptions
+
+- Gelato repository layout (`skills/<name>/SKILL.md`, `evals/<name>/`, `packages/schema/`)
+- `bun@1.1+`
+
+If your repo is not Gelato-shaped, fork the suite.
+
+---
+
+## When to Use
+
+Activate when any of the following is true:
+- Adding a new skill to Gelato
+- Reviewing a PR that introduces `skills/<name>/SKILL.md`
+- Auditing an existing skill for drift from TEMPLATE.md
+- Vetting a contribution from an external author
+
+## When NOT to Use
+
+Do NOT activate for:
+- **Eval test-file validity** → `eval-harness-pattern`
+- **Plugin manifest shape** → `plugin-manifest-validity`
+- **Drift-check workflow presence** → `drift-check-workflow`
+- **Marketplace submission correctness** → `marketplace-submission`
+- **Non-Gelato skill conventions** — out of scope; fork the suite
+
+---
+
+## Procedure
+
+### Step 1 — Frontmatter must pass the Zod schema
+
+Every `SKILL.md` opens with a YAML frontmatter block. It must parse cleanly via `packages/schema/src/skill-frontmatter.ts`:
+
+```yaml
+---
+name: <kebab-case>
+description: >
+  <Third-person trigger-framed, ≤1024 chars>
+license: MIT
+metadata:
+  version: "1.0"
+  core: <one of the 6 cores>
+  subsystem: <one of the core's subsystem enum values>
+  phase: <build | verify | run>
+  type: <procedural | judgment | metric>
+  methodology_source: [...]
+  stack_assumptions: [...]
+  eval: { pass_rate, last_run, n_cases }
+  changelog: >
+    v1.0 — ...
+---
+```
+
+Common failure modes: missing `license` (must be the literal `MIT`), `core` value not in the discriminated union, `subsystem` not in the enum for the chosen `core`, `version` missing, `stack_assumptions` empty.
+
+### Step 2 — `name` must be kebab-case
+
+```yaml
+# RIGHT
+name: rsc-boundary-audit
+name: optimistic-ui-wiring
+
+# WRONG
+name: RSCBoundaryAudit
+name: Rsc-Boundary-Audit
+name: rsc_boundary_audit
+```
+
+Regex: `^[a-z][a-z0-9-]*$`. The Zod schema enforces this; the rule is surfaced at the SKILL.md level so PR reviewers can catch it without running the validator.
+
+### Step 3 — Body must contain every mandated section
+
+TEMPLATE.md § Body structure requires the following H2 sections. A SKILL.md missing any of them is rejected:
+
+- `## Methodology Attribution`
+- `## Stack Assumptions`
+- `## When to Use`
+- `## When NOT to Use`
+- `## Procedure`
+- `## Tool Integration`
+- `## Examples`
+- `## Evaluation`
+- `## Handoffs`
+- `## References`
+
+(Optional: `## Hard Thresholds` — omit cleanly for judgment skills; `## Edge Cases` — present when edge cases matter; `## Dependencies` — when listing cross-skill / tool deps.)
+
+Rule: the body (everything after the closing `---` of the frontmatter) must contain an H2-level line for each mandated section. Presence only, not ordering.
+
+### Step 4 — `methodology_source` must be present and non-empty
+
+```yaml
+# RIGHT — single source
+methodology_source:
+  - name: "WCAG 2.2"
+    authority: "W3C / WAI"
+    url: "https://www.w3.org/TR/WCAG22/"
+    version: "W3C Rec 2023"
+    verified: "2026-04-19"
+
+# RIGHT — multi-source (array form)
+methodology_source:
+  - name: "Next.js Parallel Routes"
+    authority: "Vercel"
+    url: "https://..."
+    version: "Next 15 docs"
+    verified: "2026-04-19"
+  - name: "Next.js Intercepting Routes"
+    authority: "Vercel"
+    url: "https://..."
+    version: "Next 15 docs"
+    verified: "2026-04-19"
+
+# WRONG — empty or missing
+methodology_source: []
+# or absent entirely
+```
+
+Gelato's core non-negotiable (BRIEF.md) is "methodology-first — every skill cites a canonical external source." An empty `methodology_source` is a SHIP-blocker.
+
+### Step 5 — Body length ≤ 500 lines
+
+TEMPLATE.md § Non-negotiables #4: "Fit under 500 body lines. At 400, restructure into `references/`."
+
+Rule: the body (post-frontmatter) must be ≤500 lines. Skills that grow past the limit should migrate long prose (edge cases, deep dives, reference material) out of SKILL.md and into `references/<topic>.md`.
+
+---
+
+## Tool Integration
+
+No CLI. The classifier runs inside the eval; `scripts/validate-skills.ts` is the companion Zod validator.
+
+## Examples
+
+### Example 1 — `missing-methodology-citation`
+
+**Input:** SKILL.md frontmatter has `methodology_source: []`.
+**Output:** Gelato rejects the skill — BRIEF.md forbids invented methodologies. Fix: add at least one `\{name, authority, url, version, verified\}` entry pointing at a named canonical source (RFC, W3C spec, named book, standards-body doc, official vendor docs). Vendor blogs and aphoristic essays don't clear the bar.
+
+### Example 2 — `skill-body-over-limit`
+
+**Input:** SKILL.md body is 612 lines.
+**Output:** TEMPLATE.md § Non-negotiables #4 caps body at 500. Fix: move deep prose (edge-case catalogs, extended rationale, tool-specific API references) into `skills/<name>/references/<topic>.md` and leave the SKILL.md body as the authoritative procedure + minimum context.
+
+---
+
+## Edge Cases
+
+- **Authoring a skill whose authority is internal Gelato artifacts (Meta core skills):** Self-authority is acceptable when the artifact is explicitly versioned and stable (TEMPLATE.md, EVAL_SPEC.md, plugin.json schema). Flag if a Core 2–5 skill cites an internal Gelato file as methodology — that's a dependency inversion.
+- **Multi-source skills:** `methodology_source` accepts an array. The classifier treats a single object and a single-element array identically.
+- **Skills with `## Hard Thresholds`:** metric-type skills need it; judgment skills explicitly omit it. Classifier does NOT require Hard Thresholds — it's optional per TEMPLATE.md.
+- **Frontmatter with YAML multi-line strings:** `description: >` (folded) and `description: |` (literal) both parse. The 1024-char limit applies to the folded/joined string, not the raw line count.
+
+---
+
+## Evaluation
+
+See `/evals/new-skill-review/` for the canonical eval suite.
+
+### Pass criteria
+
+**Quantitative:**
+- Classifies ≥ 5 violation fixtures across 5 classes at ≥ 95% accuracy
+- Zero false positives on ≥ 5 safe fixtures
+- Held-out adversarial set (≥ 5 fixtures) at ≥ 90% accuracy
+
+**Qualitative:**
+- LLM-as-judge rubric `review-thoroughness` scores ≥ 0.85 (promptfoo)
+
+### Current pass rate
+
+Auto-updated by `bun run eval`. See `metadata.eval.pass_rate` in the frontmatter above.
+
+---
+
+## Handoffs
+
+Scoped to **SKILL.md frontmatter + body structure**. Explicitly NOT absorbed:
+
+- Eval test file (`evals/<name>/eval.test.ts`) shape → `eval-harness-pattern`
+- Plugin manifest (`.claude-plugin/plugin.json`) → `plugin-manifest-validity`
+- Marketplace submission → `marketplace-submission`
+- Drift-check workflow (`.github/workflows/drift-*.yml`) → `drift-check-workflow`
+- Whether the methodology is *actually* canonical — human review; Gelato cannot introspect that
+
+---
+
+## Dependencies
+
+- **External skills:** `eval-harness-pattern`, `plugin-manifest-validity`, `drift-check-workflow`, `marketplace-submission`
+- **MCP servers:** none
+- **Tools required in environment:** `@gelato/schema` (workspace) for the Zod validator
+
+---
+
+## References
+
+- `references/template-mandated-sections.md` — the exact H2 section list from TEMPLATE.md, with rationale per section
+
+## Scripts
+
+- _(none — classifier lives in `evals/new-skill-review/eval.test.ts`)_

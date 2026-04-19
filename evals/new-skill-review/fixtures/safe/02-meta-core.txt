@@ -1,0 +1,41 @@
+---
+reason: Meta-core skill with the correct subsystem enum value.
+---
+---
+name: another-good-skill
+description: A skill in the meta core.
+license: MIT
+metadata:
+  version: "1.0"
+  core: meta
+  subsystem: extensibility
+  phase: verify
+  type: procedural
+  methodology_source:
+    - name: "Gelato TEMPLATE.md"
+      authority: "Gelato / Neopolitan"
+      url: "https://github.com/soilmass/gelato/blob/main/TEMPLATE.md"
+      version: "v1.0"
+      verified: "2026-04-19"
+  stack_assumptions:
+    - "bun@1.1+"
+  eval:
+    pass_rate: null
+    last_run: null
+    n_cases: null
+  changelog: >
+    v1.0 — initial
+---
+
+# another-good-skill
+
+## Methodology Attribution
+## Stack Assumptions
+## When to Use
+## When NOT to Use
+## Procedure
+## Tool Integration
+## Examples
+## Evaluation
+## Handoffs
+## References

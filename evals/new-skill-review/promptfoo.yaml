@@ -1,0 +1,59 @@
+description: new-skill-review LLM-as-judge rubric
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a review of a candidate Gelato SKILL.md. Judge
+    whether the review identifies every rule violation per Gelato's
+    TEMPLATE.md and frontmatter schema, cites each source, and
+    gives the author actionable fixes.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: review-thoroughness
+    vars:
+      content: |
+        Violations found in candidate `my-skill/SKILL.md`:
+
+        1. `missing-methodology-citation` (BRIEF.md § Non-Negotiable
+           #3; schema requires methodology_source to be non-empty).
+           Fix: add at least one citation with {name, authority, url,
+           version, verified} pointing at a named canonical source
+           (RFC, W3C spec, named book, standards-body doc, official
+           vendor docs).
+
+        2. `missing-mandated-section` (TEMPLATE.md § Body structure).
+           Body is missing `## Handoffs`. Fix: add the H2 and name
+           the adjacent skills this one delegates to.
+
+        3. `skill-body-over-limit` (TEMPLATE.md § Non-negotiable #4).
+           Body is 612 lines; cap is 500. Fix: migrate the deep
+           prose — edge-case catalog and extended rationale — into
+           `skills/my-skill/references/<topic>.md` and leave the
+           SKILL.md body as the authoritative procedure.
+
+        No schema-level errors beyond those above.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the review:
+            - names each violation class by its Gelato identifier
+            - cites TEMPLATE.md / BRIEF.md / Zod schema as the
+              source for each rule
+            - gives a concrete, copy-pasteable fix per violation
+            - distinguishes hard errors (schema) from soft
+              recommendations (ordering)
+          Score 0.5 when the review lists the violations but
+          skips the source citations or omits specific fixes.
+          Score 0 when the review misidentifies a violation,
+          invents a rule not in TEMPLATE.md / schema, or skips
+          a stated violation.
