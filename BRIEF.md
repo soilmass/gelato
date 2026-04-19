@@ -204,7 +204,7 @@ gelato/
 ├── README.md
 ├── LICENSE
 ├── package.json
-├── bun.lockb
+├── bun.lock
 ├── turbo.json
 ├── biome.json
 ├── lefthook.yml
