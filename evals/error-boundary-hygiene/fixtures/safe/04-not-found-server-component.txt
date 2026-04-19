@@ -1,0 +1,12 @@
+---
+filename: app/blog/not-found.tsx
+reason: not-found.tsx is a Server Component — no rules apply. Should classify as safe.
+---
+export default function NotFound() {
+  return (
+    <div>
+      <h2>Post not found</h2>
+      <p>The post you were looking for does not exist.</p>
+    </div>
+  );
+}

@@ -1,0 +1,91 @@
+# Promptfoo config for error-boundary-hygiene.
+
+description: error-boundary-hygiene LLM-as-judge rubrics
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a remediation for an error-boundary-hygiene
+    violation in a Next.js 15 + React 19 codebase. Judge whether
+    the fix is implementable and satisfies the cited Next.js docs
+    + React 19 error-boundary contract.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: error-ui-implementability
+    vars:
+      content: |
+        Violation class: error-tsx-missing-reset-prop
+
+        Rule cited: Next.js docs — Error Handling. error.tsx's
+        default export receives { error, reset } from the Next
+        runtime; accepting `reset` is the only way a user can
+        re-render the failed segment.
+
+        Original:
+          'use client';
+          export default function Error({ error }: { error: Error }) {
+            return (
+              <div>
+                <h2>Unable to load post</h2>
+                <p>{error.message}</p>
+              </div>
+            );
+          }
+
+        Fix: accept `reset: () => void` and wire a retry button
+        that invokes it. Keep 'use client' (still required) and
+        use Error.digest for support references.
+
+          'use client';
+          export default function Error({
+            error,
+            reset,
+          }: {
+            error: Error & { digest?: string };
+            reset: () => void;
+          }) {
+            return (
+              <div>
+                <h2>Unable to load post</h2>
+                <p>{error.message}</p>
+                {error.digest ? (
+                  <p>Reference: {error.digest}</p>
+                ) : null}
+                <button onClick={() => reset()}>Try again</button>
+              </div>
+            );
+          }
+
+        Why it satisfies the rule:
+          - Default export accepts reset destructured from props —
+            the mechanical check passes.
+          - onClick={() => reset()} wires the button into the
+            re-render path Next.js provides.
+          - Error.digest preserved as a support reference (Next
+            runtime attaches digest for server errors so the
+            client doesn't see internals).
+          - 'use client' preserved; error.tsx must remain a Client
+            Component.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the fix:
+            - cites Next.js error-handling docs
+            - shows the corrected error.tsx in full
+            - keeps 'use client'
+            - wires the reset prop to a visible control
+            - preserves error.digest handling
+          Score 0.5 if the fix compiles but omits citations or
+          drops digest handling. Score 0 if 'use client' is
+          removed, reset isn't wired, or a new rule violation is
+          introduced.

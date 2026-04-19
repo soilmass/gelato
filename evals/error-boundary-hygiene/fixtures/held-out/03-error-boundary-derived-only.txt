@@ -1,0 +1,17 @@
+---
+class: safe
+filename: components/error-boundary.tsx
+reason: Class boundary declaring only getDerivedStateFromError — still a valid boundary per React docs.
+---
+'use client';
+import { Component, type ReactNode } from 'react';
+
+export class StrictBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError(): { hasError: boolean } {
+    return { hasError: true };
+  }
+  render(): ReactNode {
+    return this.state.hasError ? <p>Broken</p> : this.props.children;
+  }
+}

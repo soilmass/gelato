@@ -1,0 +1,20 @@
+---
+class: global-error-missing-html-body
+filename: app/global-error.tsx
+reason: global-error.tsx replaces the root layout; missing <html>/<body> invalidates the document.
+---
+'use client';
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error;
+  reset: () => void;
+}) {
+  return (
+    <div>
+      <h2>App crashed</h2>
+      <button onClick={() => reset()}>Reload</button>
+    </div>
+  );
+}

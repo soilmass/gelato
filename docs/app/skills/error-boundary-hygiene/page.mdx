@@ -1,0 +1,198 @@
+> Enforce Next.js 15 + React 19 error-handling conventions across a codebase. Four violation classes: `error.tsx` (or `global-error.tsx`) without `'use client'`, `error.tsx` whose default export doesn't accept a `reset: () => void` prop, `global-error.tsx` whose JSX isn't wrapped in `<html>` + `<body>`, and a custom React class-based `ErrorBoundary` implementing neither `componentDidCatch` nor `getDerivedStateFromError`. Use when: adding or reviewing `error.tsx` / `not-found.tsx` / `global-error.tsx`, implementing a custom ErrorBoundary wrapper, "my errors don't surface", "my reset button doesn't reset", "global error page is missing the document tree". Do NOT use for: runtime error reporting to Sentry (→ sentry-setup), try/catch discipline inside handlers (out of scope — case-by-case judgment), loading/skeleton states (→ suspense-streaming-boundaries).
+
+**Subsystem:** ui · **Phase:** build · **Type:** procedural
+
+**Pass rate:** 100.0% across 4 cases · **Last run:** 2026-04-19
+
+[View on GitHub](https://github.com/soilmass/gelato/blob/main/skills/error-boundary-hygiene/SKILL.md) · [Eval suite](https://github.com/soilmass/gelato/tree/main/evals/error-boundary-hygiene)
+
+---
+Encodes Next.js 15 App Router + React 19 error-boundary conventions. Four rules that keep error UIs functional — `'use client'` on every error file, a `reset` prop that actually resets, `<html>`/`<body>` wrapping on global-error, and class-based boundaries that actually catch.
+
+---
+
+## Methodology Attribution
+
+- **Primary:** Next.js — Error Handling
+  - Source: [https://nextjs.org/docs/app/building-your-application/routing/error-handling](https://nextjs.org/docs/app/building-your-application/routing/error-handling)
+  - Version: Next.js 15 docs (2025)
+  - Verified: 2026-04-19
+- **Secondary:** React 19 — `Component.componentDidCatch` + `getDerivedStateFromError`
+  - Source: [https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary)
+  - Version: React 19 docs (2025)
+  - Verified: 2026-04-19
+- **Drift-check:** _planned (v0.2 H7)._
+
+Encoded: the four mechanical file-convention rules Next.js requires (client directive, reset prop, html/body wrap) and the React-specific class-boundary contract (catch + derived state). NOT encoded: error-message UX (tone, severity), error-recovery strategy beyond `reset` (retries, fallback flows), error reporting to Sentry (`sentry-setup`), runtime behaviour of the boundary.
+
+---
+
+## Stack Assumptions
+
+- `next@15+` App Router
+- `react@19+`
+- `bun@1.1+`
+
+If your stack is Pages Router or a custom React boundary framework, fork the suite.
+
+---
+
+## When to Use
+
+Activate when any of the following is true:
+- Adding `error.tsx`, `global-error.tsx`, or `not-found.tsx` to a route segment
+- Implementing a custom `class ErrorBoundary extends Component` wrapper
+- A PR modifies an existing error file
+- "My error page shows the default Next.js error instead of my component"
+- "My reset button doesn't reset the route segment"
+
+## When NOT to Use
+
+Do NOT activate for:
+- **Runtime error reporting** — `sentry-setup`
+- **Try/catch discipline inside route handlers** — case-by-case judgment; out of scope
+- **Loading / Suspense boundary design** — `suspense-streaming-boundaries`
+- **Client-side fetch error UI** — belongs inside the component's own state machine, not an error boundary
+
+---
+
+## Procedure
+
+### Step 1 — `error.tsx` / `global-error.tsx` must declare `'use client'`
+
+Next.js requires error files to be Client Components — they run inside a React error boundary, which is a client-only construct. Missing the directive is a runtime 500.
+
+```tsx
+// app/dashboard/error.tsx — RIGHT
+'use client';
+export default function Error({ error, reset }: { error: Error; reset: () => void }) { … }
+
+// WRONG — defaults to Server Component; Next.js errors at build time or runtime
+export default function Error({ error, reset }) { … }
+```
+
+### Step 2 — `error.tsx` default export must accept `reset: () => void`
+
+The `reset` prop is how Next.js hands the caller a way to re-render the failed segment. Without accepting it, a user clicking "Try again" has no way to recover. The signature must either destructure `reset` or accept the full props object (`\{ error, reset \}`).
+
+```tsx
+// RIGHT
+export default function Error({ error, reset }: { error: Error; reset: () => void }) {
+  return <button onClick={() => reset()}>Try again</button>;
+}
+
+// WRONG — reset absent
+export default function Error({ error }: { error: Error }) {
+  return <span>Oops</span>;
+}
+```
+
+### Step 3 — `global-error.tsx` must wrap its JSX in `<html>` + `<body>`
+
+Global error boundaries replace the root layout entirely. Without `<html>` and `<body>`, the resulting document is invalid and the browser falls back to its own error UI.
+
+```tsx
+// app/global-error.tsx — RIGHT
+'use client';
+export default function GlobalError({ reset }: { reset: () => void }) {
+  return (
+    <html lang="en">
+      <body>
+        <h1>Something went wrong</h1>
+        <button onClick={() => reset()}>Try again</button>
+      </body>
+    </html>
+  );
+}
+
+// WRONG — no html/body wrapper
+'use client';
+export default function GlobalError() {
+  return <h1>Something went wrong</h1>;
+}
+```
+
+### Step 4 — Custom class `ErrorBoundary` must implement a catch method
+
+A React class boundary that extends `Component` must declare at least one of `componentDidCatch` (side effect) or `getDerivedStateFromError` (state derivation). A class without either is not actually a boundary — render errors pass through.
+
+```tsx
+// RIGHT — derived state + (optional) side effect
+export class ErrorBoundary extends Component {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(err: Error) { reportToSentry(err); }
+  render() { return this.state.hasError ? <Fallback /> : this.props.children; }
+}
+
+// WRONG — no catch method; behaves like a plain component
+export class ErrorBoundary extends Component {
+  state = { hasError: false };
+  render() { return this.state.hasError ? <Fallback /> : this.props.children; }
+}
+```
+
+---
+
+## Tool Integration
+
+No shipped CLI. Classifier runs inside the eval.
+
+## Examples
+
+### Example 1 — `error-tsx-missing-use-client`
+
+**Input:** `app/blog/error.tsx` without `'use client'` as its first directive.
+**Output:** Missing directive means Next.js treats it as a Server Component — error-boundary behaviour doesn't attach. Fix: add `'use client';` as the first statement.
+
+### Example 2 — `global-error-missing-html-body`
+
+**Input:** `app/global-error.tsx` returns `<div>Error</div>`.
+**Output:** Global error replaces the root layout including `<html>` and `<body>`. Fix: wrap in `<html lang="…"><body>…</body></html>`.
+
+---
+
+## Edge Cases
+
+- **Custom wrapper around the Error component:** `export default function BlogError(props) \{ return <ErrorUI \{...props\} />; \}` — the classifier checks the default export signature; destructuring inside the wrapper function counts.
+- **TypeScript prop interface:** `interface Props \{ error: Error; reset: () => void \}; export default function Error(\{ error, reset \}: Props)` is accepted.
+- **Class-based error.tsx (non-idiomatic but legal):** checked the same — `reset` must be in the component's props signature.
+- **`not-found.tsx`:** no `'use client'` requirement — it's a Server Component by default. The skill doesn't flag not-found files.
+- **ErrorBoundary in a non-.tsx file (e.g. plain .ts):** still checked.
+
+---
+
+## Evaluation
+
+See `/evals/error-boundary-hygiene/`.
+
+**Quantitative:** ≥4 violation fixtures (one per class) at ≥95% accuracy; 0 false positives on ≥4 safe fixtures; held-out adversarial set ≥90%.
+**Qualitative:** LLM-as-judge rubric `error-ui-implementability` (≥0.85).
+
+---
+
+## Handoffs
+
+Scoped to **error-boundary file conventions**. Explicitly NOT absorbed:
+
+- Runtime error reporting to Sentry → `sentry-setup`
+- Loading states / skeleton UI → `suspense-streaming-boundaries`
+- Client-side form/fetch error UX → belongs in the component's state machine
+
+---
+
+## Dependencies
+
+- **External skills:** `sentry-setup`, `suspense-streaming-boundaries`
+- **MCP servers:** none
+- **Tools required in environment:** none (classifier is self-contained)
+
+---
+
+## References
+
+- `references/nextjs-error-conventions.md` — complete table of Next.js error file conventions + the Error component prop contract
+
+## Scripts
+
+- _(none)_

@@ -1,0 +1,26 @@
+---
+filename: components/error-boundary.tsx
+reason: Class boundary with both getDerivedStateFromError and componentDidCatch.
+---
+'use client';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
+
+export class ErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError(): { hasError: boolean } {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo): void {
+    // report to Sentry (see sentry-setup skill)
+    console.error(error, info);
+  }
+
+  render(): ReactNode {
+    return this.state.hasError ? <p>Something broke.</p> : this.props.children;
+  }
+}

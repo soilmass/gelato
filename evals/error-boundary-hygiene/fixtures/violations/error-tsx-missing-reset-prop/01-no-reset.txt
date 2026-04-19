@@ -1,0 +1,14 @@
+---
+class: error-tsx-missing-reset-prop
+filename: app/blog/error.tsx
+reason: error.tsx default export doesn't accept reset — users cannot recover.
+---
+'use client';
+export default function Error({ error }: { error: Error }) {
+  return (
+    <div>
+      <h2>Unable to load post</h2>
+      <p>{error.message}</p>
+    </div>
+  );
+}

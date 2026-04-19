@@ -1,0 +1,14 @@
+---
+class: error-boundary-missing-derived
+filename: components/error-boundary.tsx
+reason: Custom class ErrorBoundary extends Component with neither componentDidCatch nor getDerivedStateFromError — not a real boundary.
+---
+'use client';
+import { Component, type ReactNode } from 'react';
+
+export class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  render() {
+    return this.state.hasError ? <div>Failed</div> : this.props.children;
+  }
+}
