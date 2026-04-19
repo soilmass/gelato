@@ -1,0 +1,18 @@
+---
+expected: legitimate
+reason: "'use client' with an onClick event handler — no hook, no browser API, but the event-handler prop is enough of a client signal."
+---
+'use client';
+
+export function CopyButton({ text }: { text: string }) {
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        navigator.clipboard.writeText(text);
+      }}
+    >
+      Copy
+    </button>
+  );
+}

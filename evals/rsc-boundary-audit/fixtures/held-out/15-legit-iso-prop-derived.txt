@@ -1,0 +1,14 @@
+---
+expected: legitimate
+reason: "Server component derives an ISO string from a Date and passes the string — not the Date object — across the boundary. Classifier must distinguish identifier props from method-call expressions."
+---
+// app/post/[id]/page.tsx — Server Component
+import { PostMeta } from '@/components/post-meta';
+import { db, posts } from '@/lib/db';
+import { eq } from 'drizzle-orm';
+
+export default async function PostPage({ params }: { params: { id: string } }) {
+  const post = await db.query.posts.findFirst({ where: eq(posts.id, params.id) });
+  if (!post) return null;
+  return <PostMeta publishedIso={post.publishedAt.toISOString()} title={post.title} />;
+}

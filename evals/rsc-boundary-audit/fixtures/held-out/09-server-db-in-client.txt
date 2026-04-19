@@ -1,0 +1,22 @@
+---
+class: server-only-import-in-client
+reason: Client component imports @/lib/db — database client cannot run in the browser. Ships the whole Drizzle runtime to the client if bundled.
+---
+'use client';
+import { useState } from 'react';
+import { db, posts } from '@/lib/db';
+
+export function LivePostCount() {
+  const [count, setCount] = useState<number | null>(null);
+
+  async function load() {
+    const rows = await db.select().from(posts).limit(1);
+    setCount(rows.length);
+  }
+
+  return (
+    <button type="button" onClick={load}>
+      {count ?? 'Load'}
+    </button>
+  );
+}
