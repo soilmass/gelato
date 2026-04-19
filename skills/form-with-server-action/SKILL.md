@@ -16,7 +16,7 @@ description: >
   Do NOT use for: choosing between a Server Action and a route handler
   (→ server-actions-vs-api), input validation with Zod (→
   zod-validation), authentication (→ auth-flow-review), general
-  component styling (→ shadcn-tailwind-v4 when built).
+  component styling (→ shadcn-tailwind-v4).
 license: MIT
 metadata:
   version: "1.0"
@@ -69,7 +69,7 @@ Two primary sources:
   - Verified: 2026-04-18
 - **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
-Encoded: the four-tenet pattern for a React form calling a Server Action (action attribute binding, uncontrolled inputs, pending state, error rendering). NOT encoded: input validation rules (`zod-validation`), server-side business logic (belongs in the action itself), authentication before the action runs (`auth-flow-review`), styling and layout (`shadcn-tailwind-v4` when built).
+Encoded: the four-tenet pattern for a React form calling a Server Action (action attribute binding, uncontrolled inputs, pending state, error rendering). NOT encoded: input validation rules (`zod-validation`), server-side business logic (belongs in the action itself), authentication before the action runs (`auth-flow-review`), styling and layout (`shadcn-tailwind-v4`).
 
 ---
 
@@ -100,7 +100,7 @@ Do NOT activate for:
 - **Choosing between a Server Action and a route handler** — `server-actions-vs-api`.
 - **Schema validation inside the action** — `zod-validation`.
 - **Authentication / session checks** — `auth-flow-review`.
-- **Component styling / shadcn UI composition** — `shadcn-tailwind-v4` (when built).
+- **Component styling / shadcn UI composition** — `shadcn-tailwind-v4`.
 - **File-upload UX specifics** — v0.2+ candidate `file-upload-ux` skill.
 
 ---
@@ -340,7 +340,7 @@ No LLM-as-judge half for v0.1. A v0.2 `a11y-rubric` would judge whether the rend
 - **Tool choice (action vs. route handler)** → `server-actions-vs-api`
 - **Schema validation** → `zod-validation`
 - **Authentication** → `auth-flow-review`
-- **Styling / form UI components** → `shadcn-tailwind-v4` (when built)
+- **Styling / form UI components** → `shadcn-tailwind-v4`
 
 ---
 

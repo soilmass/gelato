@@ -15,7 +15,7 @@ description: >
   Action or an API route", designing a public API surface.
   Do NOT use for: input validation (→ zod-validation), authentication
   middleware (→ auth-flow-review), CORS configuration details (→
-  security-headers), form UI design (→ form-with-server-action when built).
+  security-headers), form UI design (→ form-with-server-action).
 license: MIT
 metadata:
   version: "1.0"
