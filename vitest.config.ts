@@ -16,7 +16,10 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['evals/**/eval.test.ts'],
+    // Picks up both skill evals (evals/*/eval.test.ts) and shared-harness
+    // unit tests (packages/*/src/**/*.test.ts). Harness tests stay fast so
+    // they run inline with `bun run eval` and don't need a separate script.
+    include: ['evals/**/eval.test.ts', 'packages/*/src/**/*.test.ts'],
     passWithNoTests: true,
     testTimeout: 30_000,
   },

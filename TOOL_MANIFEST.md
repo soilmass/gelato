@@ -157,6 +157,16 @@ bunx playwright install --with-deps chromium
 ```
 - Used by fixture apps in metric evals and by `playwright-e2e` skill (v0.2)
 
+### @axe-core/playwright — automated accessibility scanning
+```bash
+bun add -D @axe-core/playwright axe-core
+```
+- Version: `axe-core@4.10+`, `@axe-core/playwright@4.10+`
+- Used by the `axe-playwright` skill (v0.3) to run WCAG 2.2 AA violation
+  scans inside Playwright tests against a fixture Next.js 15 app
+- Authority: Deque Systems; rule catalog is the mechanical subset of
+  WCAG 2.2 AA + Section 508 + best-practice checks
+
 ---
 
 ## Skill discovery + search
@@ -257,4 +267,8 @@ Do **not** import Plop.js, Hygen, or any scaffolding framework. These four scrip
 
 ## Manifest version
 
-This manifest is v1.0. If a tool choice needs to change, bump the manifest version and document the reason in `.changeset/` with a `minor` bump. Do not silently drift.
+This manifest is v1.1. If a tool choice needs to change, bump the manifest version and document the reason in `.changeset/` with a `minor` bump. Do not silently drift.
+
+### v1.1 (v0.3.0 prep)
+
+- Added `@axe-core/playwright` + `axe-core` for the `axe-playwright` skill (Wave 1 of the frontend hardening pass). Authority: Deque; rule catalog aligns with WCAG 2.2 AA.
