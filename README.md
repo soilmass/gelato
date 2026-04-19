@@ -3,7 +3,7 @@
 > The dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript.
 > A Neopolitan product.
 
-[![Skills: 32/32](https://img.shields.io/badge/skills-32%2F32-brightgreen)](./SKILLS.md)
+[![Skills: 37/37](https://img.shields.io/badge/skills-37%2F37-brightgreen)](./SKILLS.md)
 [![Evals: passing](https://img.shields.io/badge/evals-passing-brightgreen)](./EVAL_SPEC.md)
 [![Stack: locked](https://img.shields.io/badge/stack-locked-blue)](./TOOL_MANIFEST.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](./LICENSE)
@@ -12,9 +12,13 @@ Gelato is an opinionated Claude Code plugin for full-stack TypeScript developers
 
 **What makes it different:** every skill has a published, runnable, passing eval. Every skill carries a live LLM-as-judge rubric. See `EVAL_SPEC.md` and `CHANGELOG.md`.
 
-## Shipped in v0.3.0
+## Shipped in v0.4.0
 
-32 skills, each with a deterministic classifier eval at `pass_rate = 1.0`. The `methodology_source` in every SKILL.md cites upstream authority (WCAG 2.2, WAI-ARIA APG, axe-core, OWASP, web.dev, Next.js, React, Google Search Central, schema.org, sitemaps.org, BCP 47, Radix UI, …) — no invented guidance. v0.3.0 adds the 13-skill **frontend hardening pass** (accessibility foundation, React 19 / Next.js 15 mechanics, client-side discipline, performance, SEO + i18n).
+37 skills total, each with a deterministic classifier eval at `pass_rate = 1.0`. The `methodology_source` in every SKILL.md cites upstream authority — no invented guidance.
+
+v0.4.0 adds **Core 6 — Meta** (5 skills): the skills Gelato uses on itself. `new-skill-review` enforces `SKILL.md` shape against TEMPLATE.md; `eval-harness-pattern` enforces `eval.test.ts` against EVAL_SPEC.md; `plugin-manifest-validity` enforces `.claude-plugin/plugin.json` against Anthropic's Plugin Reference; `marketplace-submission` enforces `marketplace.json` against Anthropic's Plugin Marketplaces reference; `drift-check-workflow` enforces every drift-check GitHub Action against Gelato's own drift pattern.
+
+Core 1 — Web Dev (32 skills from v0.3.0) remains at pass rate 1.0. Cores 2–5 (Brand & Content, Growth & Distribution, Founder Ops, Research & Synthesis) land in v0.5 → v0.8.
 
 ### Foundations · build
 
@@ -102,6 +106,16 @@ Gelato is an opinionated Claude Code plugin for full-stack TypeScript developers
 | Skill | Type | Methodology |
 |---|---|---|
 | [`ci-cd-next-on-vercel`](./skills/ci-cd-next-on-vercel/SKILL.md) | procedural | Vercel deployment + DORA metrics |
+
+### Meta · verify / build — Core 6 (v0.4.0)
+
+| Skill | Type | Methodology |
+|---|---|---|
+| [`new-skill-review`](./skills/new-skill-review/SKILL.md) | procedural | Gelato TEMPLATE.md + schema contract |
+| [`eval-harness-pattern`](./skills/eval-harness-pattern/SKILL.md) | procedural | Gelato EVAL_SPEC.md Type-A / Type-B |
+| [`plugin-manifest-validity`](./skills/plugin-manifest-validity/SKILL.md) | procedural | Anthropic Plugin Reference |
+| [`marketplace-submission`](./skills/marketplace-submission/SKILL.md) | procedural | Anthropic Plugin Marketplaces reference |
+| [`drift-check-workflow`](./skills/drift-check-workflow/SKILL.md) | procedural | Gelato drift pattern (self-hosted) |
 
 Deferred sub-skills (v0.2+) and full release notes: see `CHANGELOG.md`.
 
