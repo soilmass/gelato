@@ -1,0 +1,15 @@
+---
+expected: safe
+reason: "page_viewed (past tense, snake_case) with a path qualifier — clearly describes what happened."
+---
+'use client';
+import posthog from 'posthog-js';
+import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
+
+export function usePageViewedTracking() {
+  const path = usePathname();
+  useEffect(() => {
+    posthog.capture('page_viewed', { path, referrer: document.referrer });
+  }, [path]);
+}

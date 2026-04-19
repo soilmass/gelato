@@ -1,0 +1,17 @@
+---
+class: safe
+reason: "posthog-node object form with explicit empty properties — documents intent, not a missing-properties violation."
+---
+'use server';
+import { PostHog } from 'posthog-node';
+
+const posthog = new PostHog(process.env.POSTHOG_KEY!);
+
+export async function recordTutorialSkipped(userId: string) {
+  posthog.capture({
+    distinctId: userId,
+    event: 'tutorial_skipped',
+    properties: {},
+  });
+  await posthog.shutdown();
+}

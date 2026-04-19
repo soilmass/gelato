@@ -1,0 +1,13 @@
+---
+class: pii-in-event-properties
+reason: firstName / lastName as event properties — identity traits belong on identify, not on every event.
+---
+import posthog from 'posthog-js';
+
+export function trackSignupCompleted(
+  firstName: string,
+  lastName: string,
+  plan: string,
+) {
+  posthog.capture('signup_completed', { firstName, lastName, plan });
+}

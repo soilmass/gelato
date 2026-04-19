@@ -1,0 +1,9 @@
+---
+expected: safe
+reason: Canonical capture — snake_case past-tense name, structured properties, no PII.
+---
+import posthog from 'posthog-js';
+
+export function onPostCreated(postId: string, lengthChars: number, tags: string[]) {
+  posthog.capture('post_created', { postId, lengthChars, tags });
+}

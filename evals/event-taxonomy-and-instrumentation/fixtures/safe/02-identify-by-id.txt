@@ -1,0 +1,13 @@
+---
+expected: safe
+reason: "identify uses user.id as distinct ID; email lives on the traits object."
+---
+import posthog from 'posthog-js';
+
+export function afterLogin(user: { id: string; email: string; plan: string }) {
+  posthog.identify(user.id, {
+    email: user.email,
+    plan: user.plan,
+  });
+  posthog.capture('login_succeeded', { plan: user.plan });
+}

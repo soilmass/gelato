@@ -1,0 +1,9 @@
+---
+expected: safe
+reason: Capture with an explicit empty properties object — documents intent, not a missing-properties violation.
+---
+import posthog from 'posthog-js';
+
+export function onTutorialSkipped() {
+  posthog.capture('tutorial_skipped', {});
+}

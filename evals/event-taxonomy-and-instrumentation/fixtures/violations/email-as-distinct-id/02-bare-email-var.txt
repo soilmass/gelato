@@ -1,0 +1,9 @@
+---
+class: email-as-distinct-id
+reason: Bare email identifier used as distinct ID — same anti-pattern.
+---
+import posthog from 'posthog-js';
+
+export function afterLogin(email: string) {
+  posthog.identify(email);
+}

@@ -1,0 +1,9 @@
+---
+class: non-snake-case-event
+reason: Generic `click` event name — no object, no verb. Useless for segmentation.
+---
+import posthog from 'posthog-js';
+
+export function trackSignupButton() {
+  posthog.capture('click', { buttonId: 'signup-cta' });
+}

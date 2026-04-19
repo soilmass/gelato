@@ -1,0 +1,15 @@
+---
+class: email-as-distinct-id
+reason: session.email passed to identify — still a PII-derived distinct ID.
+---
+'use server';
+import { PostHog } from 'posthog-node';
+
+const posthog = new PostHog(process.env.POSTHOG_KEY!);
+
+type Session = { email: string; id: string };
+
+export async function recordLogin(session: Session) {
+  posthog.identify({ distinctId: session.email });
+  await posthog.shutdown();
+}

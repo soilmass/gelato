@@ -1,0 +1,9 @@
+---
+class: safe
+reason: "Digits inside event name (v2_onboarding_completed) are snake_case-compatible. Classifier must accept digits."
+---
+import posthog from 'posthog-js';
+
+export function trackOnboardingV2(userId: string, variant: string) {
+  posthog.capture('v2_onboarding_completed', { userId, variant });
+}

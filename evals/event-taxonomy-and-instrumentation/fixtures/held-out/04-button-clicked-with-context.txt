@@ -1,0 +1,9 @@
+---
+class: non-snake-case-event
+reason: "`button_clicked` alone is on the banned-generic list. Even with context properties it's not specific enough — it doesn't tell you which UI element."
+---
+import posthog from 'posthog-js';
+
+export function trackSignupButton() {
+  posthog.capture('button_clicked', { location: 'hero', color: 'blue' });
+}

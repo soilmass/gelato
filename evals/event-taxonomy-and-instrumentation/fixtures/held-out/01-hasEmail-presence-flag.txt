@@ -1,0 +1,12 @@
+---
+class: safe
+reason: "hasEmail is a presence flag, not the email value. Word-boundary check distinguishes from `email` key."
+---
+import posthog from 'posthog-js';
+
+export function trackSignupStarted(info: { hasEmail: boolean; plan: string }) {
+  posthog.capture('signup_started', {
+    hasEmail: info.hasEmail,
+    plan: info.plan,
+  });
+}

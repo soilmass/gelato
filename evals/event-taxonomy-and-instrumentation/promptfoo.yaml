@@ -1,0 +1,20 @@
+# Promptfoo config for event-taxonomy-and-instrumentation LLM-as-judge rubrics
+# (deferred to v0.2).
+#
+# v0.1 ships the deterministic classifier only. Per the roadmap flag,
+# taxonomy coherence across a feature is fuzzy — a v0.2 `taxonomy-coherence`
+# rubric would judge whether events in a feature share a consistent verb/
+# object shape and avoid synonyms ("post_created" vs "post_added").
+
+description: event-taxonomy-and-instrumentation LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []
