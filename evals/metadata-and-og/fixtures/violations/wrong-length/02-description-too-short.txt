@@ -1,0 +1,9 @@
+---
+class: wrong-length
+reason: Description is 42 chars — below the 70-char floor. Google rewrites short descriptions from page content.
+---
+export const metadata = {
+  title: 'Docs — Gelato',
+  description: 'Documentation for the Gelato project.',
+  alternates: { canonical: 'https://gelato.dev/docs' },
+};

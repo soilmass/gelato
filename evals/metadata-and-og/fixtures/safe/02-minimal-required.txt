@@ -1,0 +1,9 @@
+---
+expected: safe
+reason: Only the three required fields set (title, description, canonical). Google-baseline compliant.
+---
+export const metadata = {
+  title: 'About Gelato — methodology-first Claude Code plugin',
+  description: 'Background on the Gelato project, the non-negotiable principles, and why every skill ships with a runnable eval rather than just markdown guidance.',
+  alternates: { canonical: 'https://gelato.dev/about' },
+};

@@ -1,0 +1,9 @@
+---
+expected: safe
+reason: Title is exactly 60 chars — on the boundary. Classifier should accept ≤ 60, not strictly < 60.
+---
+export const metadata = {
+  title: 'Gelato docs — methodology, skills, and the evaluator',
+  description: 'Browse Gelato documentation — SKILL.md authoring notes, eval patterns, and the canonical template plus validation tooling.',
+  alternates: { canonical: 'https://gelato.dev/docs' },
+};

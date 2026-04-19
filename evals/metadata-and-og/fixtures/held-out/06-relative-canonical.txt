@@ -1,0 +1,10 @@
+---
+expected: safe
+reason: Relative canonical path that resolves via metadataBase. Classifier should accept both absolute and metadataBase-relative canonicals.
+---
+export const metadata = {
+  metadataBase: new URL('https://gelato.dev'),
+  title: 'Gelato — dogmatic Claude Code kit',
+  description: 'Opinionated Claude Code plugin for modern full-stack TypeScript, with every skill shipping a runnable eval for mechanical verification.',
+  alternates: { canonical: '/' },
+};

@@ -1,0 +1,19 @@
+---
+expected: safe
+reason: generateMetadata returns a well-formed shape. Same audit applies to dynamic as static.
+---
+export async function generateMetadata({ params }) {
+  const post = await getPost(params.slug);
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: `https://gelato.dev/posts/${params.slug}` },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url: `https://gelato.dev/posts/${params.slug}`,
+      images: [{ url: post.ogImage, width: 1200, height: 630, alt: post.title }],
+      type: 'article',
+    },
+  };
+}

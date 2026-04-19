@@ -1,0 +1,17 @@
+---
+class: duplicate-canonical
+reason: /pricing and /plans routes both declare canonical = https://gelato.dev/pricing. The /plans route loses its own rank signal.
+---
+// app/pricing/page.tsx
+export const metadata = {
+  title: 'Pricing — Gelato plans and tiers',
+  description: 'Per-seat and per-team Gelato pricing. Enterprise options for teams with multi-Core adoption, support tier, SLA and custom skill selection.',
+  alternates: { canonical: 'https://gelato.dev/pricing' },
+};
+
+// app/plans/page.tsx
+export const metadata = {
+  title: 'Plans — Gelato tiers and pricing',
+  description: 'Enterprise + per-seat Gelato plans. Choose Core 1 only or full six-Core access; support tier and custom-skill selection per plan.',
+  alternates: { canonical: 'https://gelato.dev/pricing' },
+};

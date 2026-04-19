@@ -1,0 +1,18 @@
+# Promptfoo config for metadata-and-og LLM-as-judge rubrics (deferred to v0.2).
+#
+# v0.1 ships the deterministic classifier only. A v0.2 `length-rewrite`
+# rubric would judge whether a generated rewrite of an over-long title
+# preserves meaning while fitting Google's 60-char crop.
+
+description: metadata-and-og LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []

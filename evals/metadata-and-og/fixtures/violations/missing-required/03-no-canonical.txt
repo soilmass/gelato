@@ -1,0 +1,8 @@
+---
+class: missing-required
+reason: Indexable route with no alternates.canonical. Duplicate-content risk across trailing-slash / query-string / www variants.
+---
+export const metadata = {
+  title: 'Changelog — Gelato releases and updates',
+  description: 'Running changelog of Gelato release notes, skill additions, and methodology-drift updates, maintained alongside the Changesets workflow.',
+};

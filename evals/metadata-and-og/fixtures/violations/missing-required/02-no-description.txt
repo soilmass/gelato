@@ -1,0 +1,8 @@
+---
+class: missing-required
+reason: Indexable route with no description. Google will synthesize a snippet from page text — unpredictable and frequently poor.
+---
+export const metadata = {
+  title: 'Pricing — Gelato',
+  alternates: { canonical: 'https://gelato.dev/pricing' },
+};
