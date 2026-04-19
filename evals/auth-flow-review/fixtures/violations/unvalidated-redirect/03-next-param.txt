@@ -1,0 +1,14 @@
+---
+class: unvalidated-redirect
+reason: "?next= param passed directly to redirect — classic open redirect vector from login pages."
+---
+import { redirect } from 'next/navigation';
+
+export default async function LoginGate({
+  searchParams,
+}: {
+  searchParams: { next?: string };
+}) {
+  const next = searchParams.next ?? '/';
+  redirect(next);
+}

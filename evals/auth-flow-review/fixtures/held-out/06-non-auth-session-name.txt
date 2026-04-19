@@ -1,0 +1,14 @@
+---
+class: insecure-session-cookie
+reason: "Cookie name contains 'session' — treated as session-ish. Missing httpOnly/secure/sameSite flags. Flagged even if the value is semantically a UI pref; the name drives the rule."
+---
+'use server';
+import { cookies } from 'next/headers';
+
+export async function saveSessionPref(layout: 'grid' | 'list') {
+  cookies().set('session_layout', layout, {
+    path: '/',
+    maxAge: 60 * 60 * 24 * 30,
+  });
+  return { ok: true };
+}

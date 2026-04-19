@@ -1,0 +1,19 @@
+# Promptfoo config for auth-flow-review LLM-as-judge rubrics (deferred to v0.2).
+#
+# v0.1 ships the deterministic classifier only. A v0.2 `session-architecture`
+# rubric would judge whether a JWT-vs-cookie decision is well-founded given
+# the app's threat model. A second v0.2 rubric could score auth-flow
+# completeness (rate-limit? MFA? lockout? audit log?) against ASVS v4.
+
+description: auth-flow-review LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []

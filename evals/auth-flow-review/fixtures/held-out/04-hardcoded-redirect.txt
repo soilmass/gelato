@@ -1,0 +1,17 @@
+---
+class: safe
+reason: "redirect target is a hardcoded literal '/dashboard' — user input is read but not used as the redirect target. Safe."
+---
+import { redirect } from 'next/navigation';
+
+export default async function PostLogin({
+  searchParams,
+}: {
+  searchParams: { toast?: string };
+}) {
+  const toast = searchParams.toast ?? '';
+  if (toast === 'welcome') {
+    console.log('welcome-toast shown');
+  }
+  redirect('/dashboard');
+}

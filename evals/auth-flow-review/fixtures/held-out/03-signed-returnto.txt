@@ -1,0 +1,15 @@
+---
+class: safe
+reason: "returnTo is verified via HMAC signature before redirect — signature proves it came from our system. No open-redirect risk."
+---
+import { redirect } from 'next/navigation';
+import { verifySignedPayload } from '@/lib/signed-url';
+
+export async function resumeLogin(searchParams: URLSearchParams) {
+  const signed = searchParams.get('state') ?? '';
+  const payload = await verifySignedPayload<{ returnTo: string }>(signed);
+  if (!payload) {
+    redirect('/');
+  }
+  redirect(payload.returnTo);
+}

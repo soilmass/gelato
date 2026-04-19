@@ -1,0 +1,19 @@
+---
+class: safe
+reason: Uses node:crypto timingSafeEqual — constant-time comparison, not ===. Legitimate alternative to bcrypt.compare for signed tokens.
+---
+import { timingSafeEqual } from 'node:crypto';
+import { db, apiKeys } from '@/lib/db';
+import { eq } from 'drizzle-orm';
+
+export async function verifyApiKey(input: string) {
+  const keys = await db.select().from(apiKeys);
+  for (const k of keys) {
+    const a = Buffer.from(input);
+    const b = Buffer.from(k.token);
+    if (a.length === b.length && timingSafeEqual(a, b)) {
+      return k;
+    }
+  }
+  return null;
+}

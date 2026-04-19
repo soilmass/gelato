@@ -1,0 +1,11 @@
+---
+class: unvalidated-redirect
+reason: callbackUrl from formData used verbatim in NextResponse.redirect — no allowlist, no same-origin check.
+---
+import { NextResponse } from 'next/server';
+
+export async function POST(req: Request) {
+  const formData = await req.formData();
+  const callbackUrl = String(formData.get('callbackUrl') ?? '/');
+  return NextResponse.redirect(new URL(callbackUrl, req.url));
+}

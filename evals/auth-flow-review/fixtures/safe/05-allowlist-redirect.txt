@@ -1,0 +1,14 @@
+---
+expected: safe
+reason: Allowlist check on returnTo before redirect — same-origin, known paths only.
+---
+'use server';
+import { redirect } from 'next/navigation';
+
+const ALLOWED_PATHS = new Set(['/', '/dashboard', '/settings', '/billing']);
+
+export async function goAfterLogin(formData: FormData) {
+  const returnTo = String(formData.get('returnTo') ?? '/');
+  const safe = ALLOWED_PATHS.has(returnTo) ? returnTo : '/';
+  redirect(safe);
+}
