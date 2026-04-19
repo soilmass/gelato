@@ -31,6 +31,7 @@ async function discoverSkills(): Promise<string[]> {
 }
 
 interface SkillMetadata {
+  core?: string;
   subsystem?: string;
   phase?: string;
   type?: string;
@@ -151,7 +152,12 @@ async function generate(name: string): Promise<void> {
   const braceEscaped = escapeBracesInInlineCode(autolinkFix);
 
   const mdx = [preamble(name, fm), braceEscaped].join('');
-  const dir = `docs/app/skills/${name}`;
+  // Per-core subdirectory per v0.4.0 plan — docs/app/<core-slug>/skills/<name>/.
+  // Core 1 keeps its historical "web-dev" slug. Nextra discovers pages
+  // recursively via getPageMap(); redirects for legacy /skills/<name> paths
+  // live in docs/next.config.ts.
+  const core = fm.metadata?.core ?? 'web-dev';
+  const dir = `docs/app/${core}/skills/${name}`;
   await Bun.$`mkdir -p ${dir}`.quiet();
   await writeFile(`${dir}/page.mdx`, mdx, 'utf8');
   console.log(`\u270e ${dir}/page.mdx`);
