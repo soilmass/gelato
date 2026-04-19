@@ -1,0 +1,11 @@
+---
+class: marketplace-plugin-missing-source
+reason: "Object-form source missing the `source` discriminator (github/url/git-subdir/npm)."
+---
+{
+  "name": "bad-source-obj",
+  "owner": { "name": "Test" },
+  "plugins": [
+    { "name": "tool", "source": { "repo": "acme/tool" } }
+  ]
+}

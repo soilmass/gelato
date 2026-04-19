@@ -1,0 +1,12 @@
+---
+class: marketplace-plugin-duplicate-name
+reason: "Two entries named `formatter` — `/plugin install formatter@my-tools` would be ambiguous."
+---
+{
+  "name": "my-tools",
+  "owner": { "name": "DevTools" },
+  "plugins": [
+    { "name": "formatter", "source": "./plugins/a" },
+    { "name": "formatter", "source": "./plugins/b" }
+  ]
+}

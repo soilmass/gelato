@@ -1,0 +1,11 @@
+---
+class: marketplace-plugin-source-path-traversal
+reason: "Source `../sibling-repo/plugin` escapes marketplace root — plugin cache cannot copy it."
+---
+{
+  "name": "my-tools",
+  "owner": { "name": "DevTools" },
+  "plugins": [
+    { "name": "shared", "source": "../sibling-repo/plugin" }
+  ]
+}

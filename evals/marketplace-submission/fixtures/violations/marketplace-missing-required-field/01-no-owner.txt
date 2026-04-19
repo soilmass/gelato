@@ -1,0 +1,8 @@
+---
+class: marketplace-missing-required-field
+reason: No `owner` field at top level.
+---
+{
+  "name": "my-tools",
+  "plugins": []
+}

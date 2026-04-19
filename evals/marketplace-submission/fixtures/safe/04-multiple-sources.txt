@@ -1,0 +1,12 @@
+---
+reason: Three entries with three different source types — unique names, all required fields.
+---
+{
+  "name": "mixed-sources",
+  "owner": { "name": "Ops" },
+  "plugins": [
+    { "name": "local-tool", "source": "./plugins/local" },
+    { "name": "github-tool", "source": { "source": "github", "repo": "acme/tool" } },
+    { "name": "npm-tool", "source": { "source": "npm", "package": "@acme/tool" } }
+  ]
+}

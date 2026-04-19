@@ -1,0 +1,9 @@
+---
+class: marketplace-name-reserved
+reason: "`claude-code-marketplace` is on Anthropic's reserved list."
+---
+{
+  "name": "claude-code-marketplace",
+  "owner": { "name": "Nope LLC" },
+  "plugins": []
+}

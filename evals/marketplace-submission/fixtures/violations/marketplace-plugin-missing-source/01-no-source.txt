@@ -1,0 +1,11 @@
+---
+class: marketplace-plugin-missing-source
+reason: Plugin entry has `name` but no `source`.
+---
+{
+  "name": "my-tools",
+  "owner": { "name": "DevTools" },
+  "plugins": [
+    { "name": "deploy", "description": "Deployment tools" }
+  ]
+}

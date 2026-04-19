@@ -1,0 +1,14 @@
+---
+reason: The walkthrough marketplace from the Plugin Marketplaces doc.
+---
+{
+  "name": "my-plugins",
+  "owner": { "name": "Your Name" },
+  "plugins": [
+    {
+      "name": "quality-review-plugin",
+      "source": "./plugins/quality-review-plugin",
+      "description": "Adds a /quality-review skill for quick code reviews"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+---
+class: marketplace-missing-required-field
+reason: "`owner` is a string, not an object — schema requires `owner.name`."
+---
+{
+  "name": "stringy-owner",
+  "owner": "DevTools Team",
+  "plugins": []
+}

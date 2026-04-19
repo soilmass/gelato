@@ -1,0 +1,11 @@
+---
+class: marketplace-name-reserved
+reason: "`agent-skills` is on the reserved list."
+---
+{
+  "name": "agent-skills",
+  "owner": { "name": "Not Anthropic" },
+  "plugins": [
+    { "name": "tool", "source": "./plugins/tool" }
+  ]
+}

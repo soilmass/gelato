@@ -1,0 +1,14 @@
+---
+reason: GitHub object-form source — no ./-path rule applies.
+---
+{
+  "name": "company-tools",
+  "owner": { "name": "DevTools Team", "email": "devtools@example.com" },
+  "plugins": [
+    {
+      "name": "deployment-tools",
+      "source": { "source": "github", "repo": "company/deploy-plugin" },
+      "description": "Deployment automation tools"
+    }
+  ]
+}
