@@ -1,0 +1,15 @@
+---
+class: no-priority-on-lcp
+filename: app/marketing/page.tsx
+reason: Page has <Image> elements; none carry priority for the LCP candidate.
+---
+import Image from 'next/image';
+
+export default function Page() {
+  return (
+    <section>
+      <Image src="/hero.jpg" alt="Hero" width={1200} height={600} />
+      <Image src="/thumb.png" alt="" width={100} height={100} />
+    </section>
+  );
+}

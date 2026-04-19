@@ -1,0 +1,15 @@
+---
+class: font-not-module-scope
+filename: app/layout.tsx
+reason: Inter() initializer called inside Layout function — defeats build-time optimization.
+---
+import { Inter } from 'next/font/google';
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  const inter = Inter({ subsets: ['latin'] });
+  return (
+    <html lang="en" className={inter.className}>
+      <body>{children}</body>
+    </html>
+  );
+}

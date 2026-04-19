@@ -1,0 +1,15 @@
+---
+filename: app/layout.tsx
+reason: Font initializer at module top level — canonical.
+---
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" className={inter.className}>
+      <body>{children}</body>
+    </html>
+  );
+}

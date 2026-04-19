@@ -1,0 +1,21 @@
+---
+class: safe
+filename: app/opengraph-image.tsx
+reason: opengraph-image.tsx is exempt — Satori JSX requires <img>, not <Image>.
+---
+import { ImageResponse } from 'next/og';
+
+export const size = { width: 1200, height: 630 };
+export const contentType = 'image/png';
+
+export default function OG() {
+  return new ImageResponse(
+    (
+      <div style={{ display: 'flex' }}>
+        <img src="https://example.com/logo.png" alt="logo" width={120} height={120} />
+        <h1>Gelato</h1>
+      </div>
+    ),
+    size,
+  );
+}

@@ -1,0 +1,15 @@
+---
+class: safe
+filename: components/product-card.tsx
+reason: Non-page file with <Image> but no priority — rule only applies to page.tsx.
+---
+import Image from 'next/image';
+
+export function ProductCard({ src, name }: { src: string; name: string }) {
+  return (
+    <article>
+      <Image src={src} alt={name} width={300} height={200} />
+      <h3>{name}</h3>
+    </article>
+  );
+}

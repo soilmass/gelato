@@ -1,0 +1,12 @@
+---
+class: safe
+filename: app/layout.tsx
+reason: next/script imported but no <Script> element — rule doesn't activate.
+---
+import type Script from 'next/script';
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return <body>{children}</body>;
+}
+
+export type ScriptType = typeof Script;
