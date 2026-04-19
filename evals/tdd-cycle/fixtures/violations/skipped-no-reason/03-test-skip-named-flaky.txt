@@ -1,0 +1,14 @@
+---
+class: skipped-no-reason
+reason: test.skip with "flaky" in the name — no reason, no issue reference. Classic debt marker.
+---
+import { describe, test, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { Modal } from './Modal';
+
+describe('Modal', () => {
+  test.skip('flaky — closes on escape', () => {
+    render(<Modal />);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+});

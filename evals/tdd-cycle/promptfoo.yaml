@@ -1,0 +1,19 @@
+# Promptfoo config for tdd-cycle LLM-as-judge rubrics (deferred to v0.2).
+#
+# v0.1 ships the deterministic classifier only. The "fuzzy half" (per the
+# roadmap flag) is the test-meaningfulness rubric: does the assertion
+# exercise genuine behavior, or is it tautological ("mock returns X,
+# function returns X, assert X")? A v0.2 rubric will attempt this.
+
+description: tdd-cycle LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []

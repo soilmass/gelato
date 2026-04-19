@@ -1,0 +1,16 @@
+---
+class: safe
+reason: test.skip with an issue reference in the test NAME (not a comment) — classifier must accept either form.
+---
+import { describe, test, expect } from 'vitest';
+import { parseDate } from './parse';
+
+describe('parseDate', () => {
+  test.skip('handles leap seconds — see #4567', () => {
+    expect(parseDate('2016-12-31T23:59:60Z')).toBeTruthy();
+  });
+
+  test('parses ISO 8601', () => {
+    expect(parseDate('2025-01-01T00:00:00Z')).toBeTruthy();
+  });
+});

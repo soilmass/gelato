@@ -1,0 +1,14 @@
+---
+class: shallow-or-enzyme
+reason: wrapper.state() — Enzyme-style internal-state introspection. Switch to testing-library.
+---
+import { describe, it, expect } from 'vitest';
+import { mount } from 'enzyme';
+import { PostList } from './PostList';
+
+describe('PostList', () => {
+  it('loads three posts', () => {
+    const wrapper = mount(<PostList />);
+    expect(wrapper.state('posts')).toHaveLength(3);
+  });
+});

@@ -1,0 +1,16 @@
+---
+class: shallow-or-enzyme
+reason: wrapper.instance() call — accesses component instance methods directly, tightly coupled to class internals.
+---
+import { describe, it, expect } from 'vitest';
+import { mount } from 'enzyme';
+import { PostList } from './PostList';
+
+describe('PostList', () => {
+  it('calls internal load', () => {
+    const wrapper = mount(<PostList />);
+    const instance = wrapper.instance() as { load: () => void };
+    instance.load();
+    expect(wrapper.find('li').length).toBeGreaterThan(0);
+  });
+});

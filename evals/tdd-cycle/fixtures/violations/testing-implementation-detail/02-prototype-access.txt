@@ -1,0 +1,15 @@
+---
+class: testing-implementation-detail
+reason: Accesses .prototype on the class under test — pokes at internals rather than testing behavior.
+---
+import { describe, it, expect, vi } from 'vitest';
+import { PostService } from './PostService';
+
+describe('PostService', () => {
+  it('calls the internal load method', () => {
+    const spy = vi.spyOn(PostService.prototype as never, 'loadInternal' as never);
+    const service = new PostService();
+    service.getAll();
+    expect(spy).toHaveBeenCalled();
+  });
+});

@@ -1,0 +1,13 @@
+---
+class: no-assertion
+reason: it('renders') has no expect call — always passes, tests nothing.
+---
+import { describe, it } from 'vitest';
+import { render } from '@testing-library/react';
+import { Button } from './Button';
+
+describe('Button', () => {
+  it('renders', () => {
+    render(<Button>Click</Button>);
+  });
+});

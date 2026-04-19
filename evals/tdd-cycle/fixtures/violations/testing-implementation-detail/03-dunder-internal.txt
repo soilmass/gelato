@@ -1,0 +1,14 @@
+---
+class: testing-implementation-detail
+reason: Asserts on a dunder (__internalCache) field — tight coupling to an internal data structure.
+---
+import { describe, it, expect } from 'vitest';
+import { Store } from './store';
+
+describe('Store', () => {
+  it('caches the loaded value in __internalCache', () => {
+    const store = new Store();
+    store.load('x');
+    expect((store as { __internalCache: Map<string, unknown> }).__internalCache.size).toBe(1);
+  });
+});

@@ -1,0 +1,17 @@
+---
+class: safe
+reason: "it.skip with a TODO comment explaining the skip — classifier accepts explicit reason markers."
+---
+import { describe, it, expect } from 'vitest';
+import { formatCurrency } from './money';
+
+describe('formatCurrency', () => {
+  // TODO: waiting on Intl.NumberFormat ICU for Arabic-Indic digits.
+  it.skip('formats in Arabic-Indic digits', () => {
+    expect(formatCurrency(1000, 'ar')).toBe('١,٠٠٠');
+  });
+
+  it('formats USD', () => {
+    expect(formatCurrency(1000, 'en')).toBe('$1,000.00');
+  });
+});
