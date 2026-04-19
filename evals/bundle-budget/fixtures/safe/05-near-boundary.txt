@@ -1,0 +1,14 @@
+---
+expected: safe
+reason: Close to the line but still under — 149 KB route and 99 KB shared. Budget is strict >, not ≥.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 100 },
+    { "path": "/dashboard", "firstLoadJsKb": 149 }
+  ],
+  "sharedKb": 99,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next", "recharts"] }
+  ]
+}

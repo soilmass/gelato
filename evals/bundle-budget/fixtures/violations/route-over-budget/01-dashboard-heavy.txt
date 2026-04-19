@@ -1,0 +1,15 @@
+---
+class: route-over-budget
+reason: /dashboard at 281 KB First Load JS — nearly 2× the 150 KB budget.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 87 },
+    { "path": "/dashboard", "firstLoadJsKb": 281 }
+  ],
+  "sharedKb": 85,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] },
+    { "chunk": "dashboard", "deps": ["react-grid-layout", "ag-grid-community"] }
+  ]
+}

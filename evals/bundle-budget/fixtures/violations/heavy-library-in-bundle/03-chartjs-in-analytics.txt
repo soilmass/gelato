@@ -1,0 +1,15 @@
+---
+class: heavy-library-in-bundle
+reason: chart.js (~55 KB) in the analytics chunk — dynamic-import or server-render the charts.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 92 },
+    { "path": "/analytics", "firstLoadJsKb": 142 }
+  ],
+  "sharedKb": 84,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] },
+    { "chunk": "analytics", "deps": ["chart.js", "chartjs-adapter-date-fns"] }
+  ]
+}

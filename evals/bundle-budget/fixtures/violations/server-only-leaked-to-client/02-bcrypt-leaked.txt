@@ -1,0 +1,15 @@
+---
+class: server-only-leaked-to-client
+reason: bcrypt in a client chunk — password-hashing lib MUST stay on the server. Check the auth boundary.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 88 },
+    { "path": "/signup", "firstLoadJsKb": 122 }
+  ],
+  "sharedKb": 84,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] },
+    { "chunk": "signup", "deps": ["bcrypt", "react-hook-form"] }
+  ]
+}

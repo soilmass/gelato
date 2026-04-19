@@ -1,0 +1,15 @@
+---
+class: safe
+reason: dayjs is the lightweight alternative to moment — NOT on the heavyweight list. Safe.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 90 },
+    { "path": "/events", "firstLoadJsKb": 120 }
+  ],
+  "sharedKb": 82,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] },
+    { "chunk": "events", "deps": ["dayjs", "date-fns"] }
+  ]
+}

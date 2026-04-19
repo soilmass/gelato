@@ -1,0 +1,15 @@
+---
+class: shared-budget-exceeded
+reason: Shared chunks at 120 KB — every route pays the tax. Routes themselves are in range.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 125 },
+    { "path": "/about", "firstLoadJsKb": 128 },
+    { "path": "/blog", "firstLoadJsKb": 135 }
+  ],
+  "sharedKb": 120,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next", "@icon-pack/full"] }
+  ]
+}

@@ -1,0 +1,15 @@
+---
+expected: safe
+reason: Marketing site — tiny bundles, no heavy deps, plenty of budget headroom.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 62 },
+    { "path": "/pricing", "firstLoadJsKb": 65 },
+    { "path": "/contact", "firstLoadJsKb": 68 }
+  ],
+  "sharedKb": 58,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "react-dom", "next"] }
+  ]
+}

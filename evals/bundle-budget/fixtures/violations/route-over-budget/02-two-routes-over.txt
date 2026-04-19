@@ -1,0 +1,16 @@
+---
+class: route-over-budget
+reason: Two routes over budget — /settings at 180 KB, /admin at 175 KB. Both need dynamic-import.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 92 },
+    { "path": "/settings", "firstLoadJsKb": 180 },
+    { "path": "/admin", "firstLoadJsKb": 175 }
+  ],
+  "sharedKb": 88,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] },
+    { "chunk": "settings", "deps": ["tiptap-starter-kit", "prosemirror"] }
+  ]
+}

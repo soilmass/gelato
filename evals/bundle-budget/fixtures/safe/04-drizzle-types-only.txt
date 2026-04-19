@@ -1,0 +1,15 @@
+---
+expected: safe
+reason: drizzle-orm schema types are type-only — not the runtime query engine. Not a server-only leak.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 88 },
+    { "path": "/posts", "firstLoadJsKb": 105 }
+  ],
+  "sharedKb": 85,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] },
+    { "chunk": "posts", "deps": ["drizzle-orm/types", "date-fns"] }
+  ]
+}

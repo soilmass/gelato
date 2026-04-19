@@ -1,0 +1,15 @@
+---
+class: safe
+reason: "@prisma/client appears in a server-* chunk, not a client chunk. Server Components ship no JS to the browser."
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 87 },
+    { "path": "/dashboard", "firstLoadJsKb": 105 }
+  ],
+  "sharedKb": 82,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] },
+    { "chunk": "server-dashboard", "deps": ["@prisma/client", "drizzle-orm"] }
+  ]
+}

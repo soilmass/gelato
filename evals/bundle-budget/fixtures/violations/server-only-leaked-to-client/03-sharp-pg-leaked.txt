@@ -1,0 +1,15 @@
+---
+class: server-only-leaked-to-client
+reason: sharp (image processor) and pg (Postgres driver) in client chunk — double leak, bundler config bug.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 93 },
+    { "path": "/upload", "firstLoadJsKb": 148 }
+  ],
+  "sharedKb": 86,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] },
+    { "chunk": "upload", "deps": ["sharp", "pg"] }
+  ]
+}

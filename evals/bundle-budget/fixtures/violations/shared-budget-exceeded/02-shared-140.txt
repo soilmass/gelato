@@ -1,0 +1,14 @@
+---
+class: shared-budget-exceeded
+reason: Shared at 140 KB — the root layout is pulling an analytics SDK and a theme lib globally.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 145 },
+    { "path": "/pricing", "firstLoadJsKb": 148 }
+  ],
+  "sharedKb": 140,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next", "mixpanel-browser", "@emotion/styled"] }
+  ]
+}

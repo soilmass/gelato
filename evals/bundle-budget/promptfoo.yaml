@@ -1,0 +1,19 @@
+# Promptfoo config for bundle-budget LLM-as-judge rubrics (deferred to v0.2).
+#
+# v0.1 ships the deterministic classifier only. A v0.2 `library-severity`
+# rubric would judge whether an ambiguous dep (recharts, framer-motion)
+# is "heavy in context" given its actual use in the route — things that
+# can't be captured by a fixed set.
+
+description: bundle-budget LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []
