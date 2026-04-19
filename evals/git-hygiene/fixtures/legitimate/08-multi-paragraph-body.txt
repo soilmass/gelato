@@ -1,0 +1,17 @@
+---
+expected: pass
+reason: Multi-paragraph body with 72-char lines. Each line hits the boundary exactly, not over. Classifier must not off-by-one.
+---
+feat(eval-harness): stream large fixture sets instead of buffering
+
+The previous loadFixtures implementation read every fixture into
+memory before handing them to the classifier. For skills with 100+
+fixtures the peak RSS spiked over 500 MB and made CI brittle on
+the 2-core runners.
+
+The new implementation yields fixtures one at a time via an async
+iterator. Classifiers don't need all fixtures present at once for
+their shape checks, so throughput is unchanged and memory stays
+well under 100 MB.
+
+Co-Authored-By: Claude <noreply@anthropic.com>

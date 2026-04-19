@@ -1,0 +1,9 @@
+---
+expected: pass
+reason: Changesets-owned commit pattern — chore with the bot-style body; header still passes standard rules.
+---
+chore(release): version packages
+
+@gelato/schema 0.2.0, @gelato/eval-harness 0.2.0.
+
+See .changeset/ for the list of merged changesets.

@@ -1,0 +1,10 @@
+---
+expected: pass
+reason: Body contains short URLs that stay under 72 chars per line. Legitimate citation format for methodology skills.
+---
+docs(skills): clarify verify-phase skills cite DORA
+
+Links to the DORA four-key-metrics reference so the methodology
+attribution is explicit in the body as well as the frontmatter.
+
+Refs: https://dora.dev/guides/dora-metrics-four-keys/

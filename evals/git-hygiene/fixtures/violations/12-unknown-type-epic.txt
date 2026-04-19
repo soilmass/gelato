@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: "`epic` is not in the allowlist — type-enum rule rejects anything outside the 11 canonical types."
+---
+epic: ship Core 1 completion

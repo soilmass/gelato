@@ -1,0 +1,11 @@
+---
+expected: pass
+reason: fix with a trailer footer referencing an issue — standard Conventional Commits trailer.
+---
+fix(eval-harness): honor trailing newline in fixture content
+
+loadFixtures was stripping trailing newlines, which caused the
+git-hygiene classifier to fail on fixtures that depend on the
+blank line after the subject.
+
+Refs: #3

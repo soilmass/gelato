@@ -1,0 +1,9 @@
+---
+expected: pass
+reason: "feat with ! breaking-change marker — commitlint config-conventional accepts the bang as a subject signal."
+---
+feat(skill-frontmatter)!: move description character limit to 1024
+
+Drops the old 500-char ceiling. Existing skills with longer bodies
+now validate. BREAKING CHANGE: skills/*/SKILL.md frontmatter that
+relied on the prior limit as a hard error must update.

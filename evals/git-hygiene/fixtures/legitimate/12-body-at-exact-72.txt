@@ -1,0 +1,7 @@
+---
+expected: pass
+reason: "Body line is exactly 72 characters long — the boundary value. Must pass (max is inclusive per commitlint's 'always' rule)."
+---
+fix(classifier): harden regex against TypeScript generic parameters
+
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

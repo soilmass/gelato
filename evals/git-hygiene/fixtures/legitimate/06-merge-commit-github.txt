@@ -1,0 +1,7 @@
+---
+expected: pass
+reason: "GitHub-generated merge-commit format. First line 'Merge pull request' is outside Conventional Commits; parser skips the header-format rule when it matches merge-commit shape."
+---
+Merge pull request #42 from soilmass/feat/new-skill
+
+feat(skills): add form-with-server-action skill

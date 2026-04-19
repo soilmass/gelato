@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: Type is mixed case — type-case rule allows only lower-case.
+---
+Feat: ship the new skill

@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: "Slash inside the type — `feat/branch` is not a valid Conventional Commits type; type-enum rejects anything outside the 11-item allowlist."
+---
+feat/branch: add the new skill
