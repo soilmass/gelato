@@ -1,0 +1,16 @@
+---
+class: safe
+filename: middleware.ts
+reason: BCP 47 supports 3-digit region codes (419 = Latin America).
+---
+import { NextResponse, type NextRequest } from 'next/server';
+
+export const i18n = { locales: ['en', 'es-419'], defaultLocale: 'en' };
+
+export function middleware(_req: NextRequest) {
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|api).*)'],
+};

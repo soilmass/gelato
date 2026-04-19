@@ -1,0 +1,16 @@
+---
+class: invalid-bcp47-locale
+filename: middleware.ts
+reason: locales list includes "EN" (uppercase primary).
+---
+import { NextResponse, type NextRequest } from 'next/server';
+
+export const i18n = { locales: ['EN', 'es-MX'], defaultLocale: 'EN' };
+
+export function middleware(_req: NextRequest) {
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|api).*)'],
+};

@@ -1,0 +1,18 @@
+---
+filename: middleware.ts
+reason: Canonical middleware with matcher excluding _next/static + api.
+---
+import { NextResponse, type NextRequest } from 'next/server';
+
+const LOCALES = ['en', 'es-MX', 'zh-Hans'];
+const DEFAULT = 'en';
+
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  if (LOCALES.some((l) => pathname.startsWith(`/${l}`))) return NextResponse.next();
+  return NextResponse.redirect(new URL(`/${DEFAULT}${pathname}`, request.url));
+}
+
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|api).*)'],
+};

@@ -1,0 +1,18 @@
+---
+filename: app/[locale]/layout.tsx
+tree_has_locale_segment: true
+reason: Dynamic html lang from params.
+---
+export default function Layout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { locale: string };
+}) {
+  return (
+    <html lang={params.locale}>
+      <body>{children}</body>
+    </html>
+  );
+}

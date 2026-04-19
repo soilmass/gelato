@@ -1,0 +1,12 @@
+---
+filename: app/layout.tsx
+tree_has_locale_segment: false
+reason: Single-locale app; static html lang is fine — rule doesn't activate.
+---
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}

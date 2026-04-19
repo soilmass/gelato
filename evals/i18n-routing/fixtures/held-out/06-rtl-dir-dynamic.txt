@@ -1,0 +1,21 @@
+---
+class: safe
+filename: app/[locale]/layout.tsx
+tree_has_locale_segment: true
+reason: Both lang and dir are dynamic — canonical RTL-aware layout.
+---
+const RTL = new Set(['ar', 'he', 'fa', 'ur']);
+
+export default function Layout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { locale: string };
+}) {
+  return (
+    <html lang={params.locale} dir={RTL.has(params.locale) ? 'rtl' : 'ltr'}>
+      <body>{children}</body>
+    </html>
+  );
+}

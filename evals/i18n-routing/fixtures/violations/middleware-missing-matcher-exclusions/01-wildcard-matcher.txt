@@ -1,0 +1,14 @@
+---
+class: middleware-missing-matcher-exclusions
+filename: middleware.ts
+reason: matcher is "/:path*" with no negative lookahead — fires on assets.
+---
+import { NextResponse, type NextRequest } from 'next/server';
+
+export function middleware(_req: NextRequest) {
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: '/:path*',
+};

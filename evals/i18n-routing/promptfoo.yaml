@@ -1,0 +1,63 @@
+description: i18n-routing LLM-as-judge rubric
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a remediation for an i18n-routing violation
+    in a Next.js 15 App Router app. Judge whether the fix
+    satisfies the Next.js i18n docs + BCP 47.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: i18n-remediation-implementability
+    vars:
+      content: |
+        Violation class: middleware-missing-matcher-exclusions
+
+        Rule cited: Next.js internationalization docs. A locale-
+        detection middleware must exclude `_next/static`,
+        `_next/image`, `favicon.ico`, and `api/*` from its
+        matcher or asset requests 500.
+
+        Original:
+          export const config = { matcher: '/:path*' };
+
+        Fix: replace with a negative-lookahead matcher that
+        excludes Next's build assets + common static extensions
+        + api routes.
+
+          export const config = {
+            matcher: [
+              '/((?!_next/static|_next/image|favicon.ico|api|.*\\.(?:png|jpg|svg|ico|css|js)$).*)',
+            ],
+          };
+
+        Why it satisfies the rule:
+          - The negative lookahead keeps the middleware from
+            firing on `_next/static/chunks/...`, `_next/image?...`,
+            `favicon.ico`, `/api/...`, and asset files with
+            common extensions.
+          - Locale-detection logic still runs on every user
+            route.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the remediation:
+            - cites the Next.js i18n routing docs
+            - shows the corrected matcher in full
+            - excludes _next/static, _next/image, favicon, api,
+              and asset extensions
+            - explains why the exclusions matter
+          Score 0.5 when the fix works but omits a subset of
+          exclusions or the citation.
+          Score 0 when the matcher still fires on static assets
+          or the middleware is removed entirely.

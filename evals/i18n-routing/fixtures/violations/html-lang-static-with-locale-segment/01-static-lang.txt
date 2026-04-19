@@ -1,0 +1,17 @@
+---
+class: html-lang-static-with-locale-segment
+filename: app/[locale]/layout.tsx
+tree_has_locale_segment: true
+reason: Layout renders static lang="en" while tree has locale segment.
+---
+export default function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
