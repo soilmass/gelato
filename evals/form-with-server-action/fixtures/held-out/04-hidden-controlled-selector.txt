@@ -1,0 +1,22 @@
+---
+class: controlled-inputs-with-action
+reason: Even though the use case (segmented selector) justifies controlling the choice, mechanically it's still a controlled input on a Server-Action form. Classifier enforces the rule without reading intent.
+---
+'use client';
+import { useState } from 'react';
+import { useActionState } from 'react';
+import { savePreferences } from './actions';
+
+export function PreferencesForm() {
+  const [theme, setTheme] = useState('light');
+  const [state, formAction, pending] = useActionState(savePreferences, { ok: false, errors: {} });
+
+  return (
+    <form action={formAction}>
+      <input name="theme" type="radio" value="light" checked={theme === 'light'} onChange={() => setTheme('light')} />
+      <input name="theme" type="radio" value="dark" checked={theme === 'dark'} onChange={() => setTheme('dark')} />
+      {state.errors?.theme?.length ? <p role="alert">{state.errors.theme.join(', ')}</p> : null}
+      <button type="submit" disabled={pending}>Save</button>
+    </form>
+  );
+}

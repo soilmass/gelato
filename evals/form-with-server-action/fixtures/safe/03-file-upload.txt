@@ -1,0 +1,26 @@
+---
+expected: safe
+reason: File upload form — uncontrolled file input, all four tenets still hold.
+---
+'use client';
+import { useActionState } from 'react';
+import { uploadAvatar } from './actions';
+
+export function AvatarUploadForm() {
+  const [state, formAction, pending] = useActionState(uploadAvatar, {
+    ok: false,
+    errors: {},
+  });
+
+  return (
+    <form action={formAction} encType="multipart/form-data">
+      <input type="file" name="avatar" accept="image/*" required />
+      {state.errors?.avatar?.length ? (
+        <p role="alert">{state.errors.avatar.join(', ')}</p>
+      ) : null}
+      <button type="submit" disabled={pending}>
+        {pending ? 'Uploading…' : 'Upload'}
+      </button>
+    </form>
+  );
+}

@@ -1,0 +1,27 @@
+---
+class: errors-not-rendered
+reason: state is read as a boolean "ok" flag only; errors key exists in the action return but the UI shows nothing on failure.
+---
+'use client';
+import { useActionState } from 'react';
+import { reportIssue } from './actions';
+
+type IssueState = { ok: boolean; errors?: Record<string, string[]> };
+
+export function IssueForm() {
+  const [state, formAction, pending] = useActionState<IssueState, FormData>(reportIssue, {
+    ok: false,
+  });
+
+  if (state.ok) {
+    return <p>Issue reported.</p>;
+  }
+
+  return (
+    <form action={formAction}>
+      <input name="subject" defaultValue="" required />
+      <textarea name="details" defaultValue="" required />
+      <button type="submit" disabled={pending}>Report</button>
+    </form>
+  );
+}

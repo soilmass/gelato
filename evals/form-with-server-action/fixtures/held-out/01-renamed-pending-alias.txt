@@ -1,0 +1,22 @@
+---
+class: safe
+reason: Pending state destructured under a different name (isSaving). Classifier must recognize disabled={<alias>} even when the variable name is not `pending`.
+---
+'use client';
+import { useActionState } from 'react';
+import { saveDraft } from './actions';
+
+export function DraftForm() {
+  const [state, formAction, isSaving] = useActionState(saveDraft, { ok: false, errors: {} });
+  return (
+    <form action={formAction}>
+      <textarea name="body" defaultValue="" required />
+      {state.errors?.body?.length ? (
+        <p role="alert">{state.errors.body.join(', ')}</p>
+      ) : null}
+      <button type="submit" disabled={isSaving}>
+        {isSaving ? 'Saving…' : 'Save'}
+      </button>
+    </form>
+  );
+}

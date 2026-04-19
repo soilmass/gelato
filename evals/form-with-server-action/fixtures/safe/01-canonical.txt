@@ -1,0 +1,35 @@
+---
+expected: safe
+reason: All four tenets satisfied — action binding, defaultValue, pending disabled, errors rendered.
+---
+'use client';
+import { useActionState } from 'react';
+import { createPost, type CreatePostState } from './actions';
+
+const initialState: CreatePostState = { ok: false, errors: {}, input: { title: '', body: '' } };
+
+export function CreatePostForm() {
+  const [state, formAction, pending] = useActionState(createPost, initialState);
+
+  return (
+    <form action={formAction} className="space-y-3">
+      <div>
+        <label htmlFor="title">Title</label>
+        <input id="title" name="title" defaultValue={state.input?.title} required />
+        {state.errors?.title?.length ? (
+          <p role="alert" className="text-red-600">{state.errors.title.join(', ')}</p>
+        ) : null}
+      </div>
+      <div>
+        <label htmlFor="body">Body</label>
+        <textarea id="body" name="body" defaultValue={state.input?.body} required />
+        {state.errors?.body?.length ? (
+          <p role="alert" className="text-red-600">{state.errors.body.join(', ')}</p>
+        ) : null}
+      </div>
+      <button type="submit" disabled={pending}>
+        {pending ? 'Saving…' : 'Save'}
+      </button>
+    </form>
+  );
+}

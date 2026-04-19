@@ -1,0 +1,21 @@
+---
+class: action-not-bound-to-form
+reason: Form has onSubmit handler that calls the imported Server Action directly — no action={} attribute, progressive enhancement broken.
+---
+'use client';
+import { subscribe } from './actions';
+
+export function NewsletterForm() {
+  return (
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const data = new FormData(e.currentTarget);
+        await subscribe(data);
+      }}
+    >
+      <input name="email" type="email" defaultValue="" required />
+      <button type="submit">Subscribe</button>
+    </form>
+  );
+}

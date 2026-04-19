@@ -1,0 +1,32 @@
+---
+class: safe
+reason: Uses startTransition with formAction for an imperative trigger, but the primary submit still binds via action={}. All tenets satisfied.
+---
+'use client';
+import { startTransition } from 'react';
+import { useActionState } from 'react';
+import { toggleFavorite } from './actions';
+
+export function FavoriteToggle({ postId }: { postId: string }) {
+  const [state, formAction, pending] = useActionState(toggleFavorite, { ok: false, errors: {} });
+
+  return (
+    <form action={formAction}>
+      <input type="hidden" name="postId" defaultValue={postId} />
+      {state.errors?.postId?.length ? (
+        <p role="alert">{state.errors.postId.join(', ')}</p>
+      ) : null}
+      <button
+        type="button"
+        disabled={pending}
+        onClick={() => {
+          const fd = new FormData();
+          fd.set('postId', postId);
+          startTransition(() => formAction(fd));
+        }}
+      >
+        {pending ? '…' : '☆'}
+      </button>
+    </form>
+  );
+}

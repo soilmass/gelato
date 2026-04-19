@@ -1,0 +1,25 @@
+---
+class: controlled-inputs-with-action
+reason: Three controlled fields on a Server-Action form — every keystroke re-renders, and the form renders empty without JS.
+---
+'use client';
+import { useState } from 'react';
+import { useActionState } from 'react';
+import { updateProfile } from './actions';
+
+export function ProfileForm() {
+  const [name, setName] = useState('');
+  const [bio, setBio] = useState('');
+  const [website, setWebsite] = useState('');
+  const [state, formAction, pending] = useActionState(updateProfile, { ok: false, errors: {} });
+
+  return (
+    <form action={formAction}>
+      <input name="name" value={name} onChange={(e) => setName(e.target.value)} />
+      <textarea name="bio" value={bio} onChange={(e) => setBio(e.target.value)} />
+      <input name="website" value={website} onChange={(e) => setWebsite(e.target.value)} />
+      {state.errors?.name ? <p>{state.errors.name.join(', ')}</p> : null}
+      <button type="submit" disabled={pending}>Save</button>
+    </form>
+  );
+}
