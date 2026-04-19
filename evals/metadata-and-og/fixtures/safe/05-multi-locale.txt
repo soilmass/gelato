@@ -1,0 +1,16 @@
+---
+expected: safe
+reason: Multi-locale route with canonical + languages alternates. All required fields present; hreflang entries are separate from the canonical duplicate check.
+---
+export const metadata = {
+  title: 'Gelato — the dogmatic Claude Code kit',
+  description: 'Opinionated Claude Code plugin for modern full-stack TypeScript, with every skill encoding a canonical external methodology plus a runnable eval.',
+  alternates: {
+    canonical: 'https://gelato.dev/',
+    languages: {
+      'en-US': 'https://gelato.dev/',
+      'de-DE': 'https://gelato.dev/de',
+      'ja-JP': 'https://gelato.dev/ja',
+    },
+  },
+};

@@ -1,0 +1,9 @@
+---
+expected: safe
+reason: Page uses title.template via a layout default. The page emits a partial title that merges with the layout template at build time; classifier treats the object shape literally.
+---
+export const metadata = {
+  title: 'About',
+  description: 'Background on the Gelato project, the non-negotiable principles, and why every skill ships with a runnable eval rather than prose guidance.',
+  alternates: { canonical: 'https://gelato.dev/about' },
+};

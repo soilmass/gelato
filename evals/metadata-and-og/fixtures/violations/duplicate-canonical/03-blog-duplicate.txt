@@ -1,0 +1,19 @@
+---
+class: duplicate-canonical
+reason: Blog index and a specific blog post both reference the same canonical URL. Classic misconfiguration in dynamic routes.
+---
+// app/blog/page.tsx
+export const metadata = {
+  title: 'Blog — Gelato posts and updates',
+  description: 'Gelato engineering blog — skill methodology notes, eval design patterns, and post-mortems from building the dogmatic Claude Code kit.',
+  alternates: { canonical: 'https://gelato.dev/blog' },
+};
+
+// app/blog/[slug]/page.tsx
+export async function generateMetadata() {
+  return {
+    title: 'A blog post',
+    description: 'An individual blog post inside the Gelato engineering blog — notes on skill design, eval methodology, and post-mortem observations.',
+    alternates: { canonical: 'https://gelato.dev/blog' },
+  };
+}

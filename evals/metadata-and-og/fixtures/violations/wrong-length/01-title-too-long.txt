@@ -1,0 +1,9 @@
+---
+class: wrong-length
+reason: Title is 97 chars. Google crops to ~60; the high-leverage phrase will be cut.
+---
+export const metadata = {
+  title: 'Gelato — the dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript builders',
+  description: 'Opinionated Claude Code plugin that ships with a runnable eval for every skill and a single locked stack across all skills.',
+  alternates: { canonical: 'https://gelato.dev/' },
+};

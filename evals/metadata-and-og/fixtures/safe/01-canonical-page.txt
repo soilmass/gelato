@@ -1,0 +1,24 @@
+---
+expected: safe
+reason: Every required field present; lengths within Google's crop range; OG + Twitter mirrored; canonical explicit.
+---
+export const metadata = {
+  title: 'Gelato — the dogmatic Claude Code kit',
+  description: 'Opinionated Claude Code plugin for modern full-stack TypeScript. Every skill encodes a canonical external methodology and ships with a runnable, passing eval.',
+  alternates: { canonical: 'https://gelato.dev/' },
+  openGraph: {
+    title: 'Gelato — the dogmatic Claude Code kit',
+    description: 'Opinionated plugin for modern full-stack TypeScript builders.',
+    url: 'https://gelato.dev/',
+    siteName: 'Gelato',
+    images: [{ url: 'https://gelato.dev/og.png', width: 1200, height: 630, alt: 'Gelato' }],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Gelato — the dogmatic Claude Code kit',
+    description: 'Opinionated plugin for modern full-stack TypeScript builders.',
+    images: ['https://gelato.dev/og.png'],
+  },
+  robots: { index: true, follow: true },
+};

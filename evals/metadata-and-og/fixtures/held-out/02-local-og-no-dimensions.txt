@@ -1,0 +1,15 @@
+---
+expected: safe
+reason: Relative-URL OG image without explicit dimensions — Next.js can infer dimensions for local images via metadataBase resolution.
+---
+export const metadata = {
+  metadataBase: new URL('https://gelato.dev'),
+  title: 'Gelato — dogmatic Claude Code kit',
+  description: 'Opinionated Claude Code plugin for modern full-stack TypeScript, with every skill shipping a runnable eval for mechanical verification.',
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: 'Gelato',
+    description: 'Opinionated plugin for modern full-stack TypeScript.',
+    images: ['/og.png'],
+  },
+};

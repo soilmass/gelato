@@ -1,0 +1,9 @@
+---
+expected: safe
+reason: Description is exactly 160 chars — the upper bound. Classifier should accept ≤ 160, not strictly < 160.
+---
+export const metadata = {
+  title: 'Docs index — Gelato',
+  description: 'Full Gelato documentation index, covering skill authoring, the SKILL.md template, eval patterns, the deterministic classifier idiom, and more.',
+  alternates: { canonical: 'https://gelato.dev/docs' },
+};

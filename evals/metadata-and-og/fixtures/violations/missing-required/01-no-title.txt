@@ -1,0 +1,8 @@
+---
+class: missing-required
+reason: Indexable route with no title. Google falls back to the first visible H1 or page content — rarely what the author wanted.
+---
+export const metadata = {
+  description: 'A page about something important. The description is present and correctly-sized, but the title is missing entirely.',
+  alternates: { canonical: 'https://gelato.dev/untitled' },
+};

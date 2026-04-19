@@ -1,0 +1,14 @@
+---
+class: malformed-og
+reason: Remote-URL openGraph image without width/height. Next.js cannot infer dimensions at build time; LinkedIn/Slack refuse to render without them.
+---
+export const metadata = {
+  title: 'Gelato — dogmatic Claude Code kit',
+  description: 'Opinionated Claude Code plugin for modern full-stack TypeScript, with every skill shipping a runnable eval for mechanical verification.',
+  alternates: { canonical: 'https://gelato.dev/' },
+  openGraph: {
+    title: 'Gelato',
+    description: 'Opinionated plugin for modern full-stack TypeScript.',
+    images: [{ url: 'https://cdn.example.com/og.png' }],
+  },
+};

@@ -1,0 +1,8 @@
+---
+expected: safe
+reason: noindex route is exempt from the required-fields check. Auth'd admin pages correctly opt out of indexing.
+---
+export const metadata = {
+  title: 'Admin',
+  robots: { index: false, follow: false },
+};

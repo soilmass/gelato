@@ -1,0 +1,17 @@
+---
+class: duplicate-canonical
+reason: Two route metadata exports in the same file claim canonical = https://gelato.dev/. Google picks one; the other gets deranked.
+---
+// app/index/page.tsx
+export const metadata = {
+  title: 'Gelato — dogmatic Claude Code kit',
+  description: 'Opinionated Claude Code plugin for modern full-stack TypeScript, with every skill encoding a canonical external methodology.',
+  alternates: { canonical: 'https://gelato.dev/' },
+};
+
+// app/home/page.tsx
+export const metadata = {
+  title: 'Home — Gelato',
+  description: 'Landing page for Gelato, the dogmatic Claude Code kit for modern full-stack TypeScript builders and reviewers alike.',
+  alternates: { canonical: 'https://gelato.dev/' },
+};

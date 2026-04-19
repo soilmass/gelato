@@ -1,0 +1,15 @@
+---
+class: wrong-length
+reason: openGraph.title is 95 chars — above the 70-char bar. LinkedIn and Twitter truncate at their platform-specific points.
+---
+export const metadata = {
+  title: 'Gelato — dogmatic Claude Code kit',
+  description: 'Opinionated Claude Code plugin for modern full-stack TypeScript. Every skill ships a runnable eval.',
+  alternates: { canonical: 'https://gelato.dev/' },
+  openGraph: {
+    title: 'Gelato — the dogmatic, eval-verified Claude Code plugin for modern full-stack TypeScript',
+    description: 'Opinionated plugin for builders who want canonical methodologies encoded.',
+    url: 'https://gelato.dev/',
+    images: [{ url: 'https://gelato.dev/og.png', width: 1200, height: 630 }],
+  },
+};

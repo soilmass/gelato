@@ -1,0 +1,15 @@
+---
+class: malformed-og
+reason: openGraph.type set to an unknown value. Valid types are website, article, profile, book, music.*, video.*.
+---
+export const metadata = {
+  title: 'Gelato — dogmatic Claude Code kit',
+  description: 'Opinionated Claude Code plugin for modern full-stack TypeScript, with every skill shipping a runnable eval for mechanical verification.',
+  alternates: { canonical: 'https://gelato.dev/' },
+  openGraph: {
+    title: 'Gelato',
+    description: 'Opinionated plugin.',
+    images: [{ url: 'https://gelato.dev/og.png', width: 1200, height: 630 }],
+    type: 'product',
+  },
+};
