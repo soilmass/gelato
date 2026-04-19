@@ -1,0 +1,83 @@
+description: structured-data-json-ld LLM-as-judge rubric
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a remediation for a JSON-LD structured-data
+    violation on a Next.js page. Judge whether the fix satisfies
+    Google Search Central's required-field table for the cited
+    @type.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: structured-data-remediation-implementability
+    vars:
+      content: |
+        Violation class: product-missing-required
+
+        Rule cited: Google Search Central — Product structured
+        data. Rich-result eligibility requires `name` AND at
+        least one of `image` or `offers`.
+
+        Original:
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Product",
+                description: "A widget.",
+                brand: "Acme",
+              }),
+            }}
+          />
+
+        Fix: add `name` plus an `image` (URL or array of URLs).
+        Keep existing description + brand as recommended fields.
+
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Product",
+                name: "Acme Widget",
+                image: ["https://ex/widget.jpg"],
+                description: "A widget.",
+                brand: {
+                  "@type": "Brand",
+                  name: "Acme",
+                },
+              }),
+            }}
+          />
+
+        Why it satisfies the rule:
+          - `name` added — the primary Product identifier.
+          - `image` added as an array (Google accepts string
+            or array of strings).
+          - `brand` upgraded to a proper Brand object — not
+            required, but aligns with schema.org vocabulary.
+          - `description` preserved as a recommended field.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the remediation:
+            - cites Google Search Central's Product docs
+            - shows the corrected JSON-LD in full
+            - adds `name` AND at least one of `image` or `offers`
+            - preserves the original recommended fields
+          Score 0.5 when the fix satisfies the required-fields
+          table but omits the citation or doesn't preserve
+          surrounding fields.
+          Score 0 when the fix still misses a required field
+          or introduces a new violation.

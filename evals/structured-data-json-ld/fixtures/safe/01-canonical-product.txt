@@ -1,0 +1,19 @@
+---
+reason: Canonical Product with name + image.
+---
+export default function Page() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: "Widget",
+          image: ["https://ex/w.jpg"],
+          description: "A widget.",
+        }),
+      }}
+    />
+  );
+}

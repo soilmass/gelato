@@ -1,0 +1,19 @@
+---
+class: article-missing-required
+reason: Article has headline + author but no datePublished.
+---
+export default function Post() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: "My post",
+          author: { "@type": "Person", name: "Alice" },
+        }),
+      }}
+    />
+  );
+}

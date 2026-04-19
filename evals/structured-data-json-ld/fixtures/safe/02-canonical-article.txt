@@ -1,0 +1,19 @@
+---
+reason: Canonical Article with headline + author + datePublished.
+---
+export default function Post() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: "Hello",
+          author: { "@type": "Person", name: "Alice" },
+          datePublished: "2026-04-19",
+        }),
+      }}
+    />
+  );
+}

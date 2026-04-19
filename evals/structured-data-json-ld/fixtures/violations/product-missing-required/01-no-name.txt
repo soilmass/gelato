@@ -1,0 +1,19 @@
+---
+class: product-missing-required
+reason: Product has description + brand but no name, image, or offers.
+---
+export default function Page() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          description: "A widget.",
+          brand: "Acme",
+        }),
+      }}
+    />
+  );
+}

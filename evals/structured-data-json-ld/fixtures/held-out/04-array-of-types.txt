@@ -1,0 +1,27 @@
+---
+class: product-missing-required
+reason: Array of JSON-LD — one object is valid, the other is Product without required fields.
+---
+export default function Page() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify([
+          {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: "Hi",
+            author: "A",
+            datePublished: "2026-04-19",
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            description: "only desc",
+          },
+        ]),
+      }}
+    />
+  );
+}

@@ -1,0 +1,19 @@
+---
+class: safe
+reason: Literal JSON body inside <script> tag with canonical Article shape.
+---
+export default function Post() {
+  return (
+    <script type="application/ld+json">
+      {`
+        {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": "Hello",
+          "author": "Alice",
+          "datePublished": "2026-04-19"
+        }
+      `}
+    </script>
+  );
+}

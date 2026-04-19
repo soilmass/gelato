@@ -1,0 +1,20 @@
+---
+reason: Canonical FAQPage with acceptedAnswer.text for every question.
+---
+export default function FAQ() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            { "@type": "Question", name: "Q1?", acceptedAnswer: { "@type": "Answer", text: "A1." } },
+            { "@type": "Question", name: "Q2?", acceptedAnswer: { "@type": "Answer", text: "A2." } },
+          ],
+        }),
+      }}
+    />
+  );
+}

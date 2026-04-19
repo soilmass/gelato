@@ -1,0 +1,20 @@
+---
+class: faq-missing-accepted-answer
+reason: FAQPage question has acceptedAnswer={} with no text field.
+---
+export default function FAQ() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            { "@type": "Question", name: "How?", acceptedAnswer: {} },
+          ],
+        }),
+      }}
+    />
+  );
+}
