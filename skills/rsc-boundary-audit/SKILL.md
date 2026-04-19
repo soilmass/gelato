@@ -169,9 +169,11 @@ The eval enforces this: for each violation fixture, applying the recommended fix
 
 ## Tool Integration
 
-**Scanner invocation (the skill's Step 1 tool):**
+**Scanner invocation (the skill's Step 1 tool — v0.2 candidate, not yet shipped):**
 
 ```bash
+# v0.2 candidate — the shipped v0.2.0 eval carries the deterministic classifier;
+# a packaged CLI is scoped for the next release.
 bun run rsc-audit              # walks app/ + components/, writes audit-report.json
 bun run rsc-audit --fix        # writes a remediation patchset to audit-fixes.diff
 ```
