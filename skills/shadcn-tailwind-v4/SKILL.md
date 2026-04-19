@@ -310,9 +310,19 @@ export function cn(...inputs: ClassValue[]): string {
 
 ### Example 4 — String-concatenated className (`string-concat-classname`)
 
-**Input:** `<div className={\`rounded-md border ${isSelected ? 'ring-2 ring-primary' : ''}\`} />`.
+**Input:**
 
-**Output:** `<div className={cn('rounded-md border', isSelected && 'ring-2 ring-primary')} />`. `cn()` resolves conflicts via tailwind-merge and coerces falsy values; a template literal does neither.
+```tsx
+<div className={`rounded-md border ${isSelected ? 'ring-2 ring-primary' : ''}`} />
+```
+
+**Output:**
+
+```tsx
+<div className={cn('rounded-md border', isSelected && 'ring-2 ring-primary')} />
+```
+
+`cn()` resolves conflicts via tailwind-merge and coerces falsy values; a template literal does neither.
 
 ---
 

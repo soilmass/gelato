@@ -70,7 +70,7 @@ For every route in the Next build report (or `@next/bundle-analyzer` JSON): the 
 - Source for the threshold: Addy Osmani's "Performance Budgets 101" — a median-3G user hits Time-to-Interactive in ~5s only if total JS stays near 170 KB compressed. 150 KB leaves headroom for HTML + CSS + images.
 - Violation: even one route > 150 KB — the heavy page is the breach, not the average.
 
-Fix: dynamic-import the expensive component (`next/dynamic(() => import(…), { ssr: false })` when the feature only matters on interaction), swap the library for a lighter alternative, or move logic to the server.
+Fix: dynamic-import the expensive component (`next/dynamic(() => import(…), \{ ssr: false \})` when the feature only matters on interaction), swap the library for a lighter alternative, or move logic to the server.
 
 ### Step 2 — Shared chunks ≤ 100 KB
 
@@ -179,7 +179,7 @@ if (report.sharedKb > 100) {
 
 **Input:** analyzer shows `@prisma/client` in a client chunk.
 
-**Output:** a client component or a client-imported module is importing Prisma. Trace the import path; the file that pulls Prisma must be server-only. Guardrail: never `import { db } from '@/lib/db';` from a file that has `'use client';` or is imported by one.
+**Output:** a client component or a client-imported module is importing Prisma. Trace the import path; the file that pulls Prisma must be server-only. Guardrail: never `import \{ db \} from '@/lib/db';` from a file that has `'use client';` or is imported by one.
 
 ---
 

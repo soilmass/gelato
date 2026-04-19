@@ -75,6 +75,56 @@ function preamble(name: string, fm: SkillFrontmatter): string {
   ].join('\n');
 }
 
+// Walk the source line-by-line; inside fenced code blocks (``` ... ```),
+// pass through unchanged. Outside fenced blocks, escape `{`/`}` inside
+// inline backtick spans to MDX's `\{`/`\}`.
+function escapeBracesInInlineCode(source: string): string {
+  const lines = source.split('\n');
+  let inFenced = false;
+  const out: string[] = [];
+  for (const line of lines) {
+    // Toggle fenced-code state on a line that starts with ``` (possibly
+    // indented by a list-item marker).
+    if (/^\s*```/.test(line)) {
+      inFenced = !inFenced;
+      out.push(line);
+      continue;
+    }
+    if (inFenced) {
+      out.push(line);
+      continue;
+    }
+    out.push(escapeBracesInLine(line));
+  }
+  return out.join('\n');
+}
+
+// Within a single non-fenced line, walk characters and track whether the
+// cursor is inside a single-backtick inline code span. Inside the span,
+// rewrite `{`/`}` to `\{`/`\}`.
+function escapeBracesInLine(line: string): string {
+  const chars: string[] = [];
+  let inInline = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i] ?? '';
+    const prev = i > 0 ? line[i - 1] : '';
+    // A backslash-escaped backtick `\`` is a literal inside the inline
+    // code span; don't toggle state on it. Otherwise, toggle.
+    if (ch === '`' && prev !== '\\') {
+      inInline = !inInline;
+      chars.push(ch);
+      continue;
+    }
+    if (inInline && (ch === '{' || ch === '}')) {
+      chars.push('\\');
+      chars.push(ch);
+      continue;
+    }
+    chars.push(ch);
+  }
+  return chars.join('');
+}
+
 async function generate(name: string): Promise<void> {
   const source = await readFile(`skills/${name}/SKILL.md`, 'utf8');
   const parsed = matter(source);
@@ -91,7 +141,16 @@ async function generate(name: string): Promise<void> {
     /<(https?:\/\/[^\s<>]+)>/g,
     (_match, url: string) => `[${url}](${url})`,
   );
-  const mdx = [preamble(name, fm), autolinkFix].join('');
+
+  // MDX parses `{name}` inside inline code spans as expressions, which blows
+  // up when the source snippet references identifiers like `isSelected` /
+  // `postId` that aren't in scope. Escape `{` / `}` inside inline-backtick
+  // spans to literal `\{` / `\}` so MDX passes them through.
+  // Fenced code blocks (``` ... ```) are left alone — MDX already treats
+  // them as code.
+  const braceEscaped = escapeBracesInInlineCode(autolinkFix);
+
+  const mdx = [preamble(name, fm), braceEscaped].join('');
   const dir = `docs/app/skills/${name}`;
   await Bun.$`mkdir -p ${dir}`.quiet();
   await writeFile(`${dir}/page.mdx`, mdx, 'utf8');

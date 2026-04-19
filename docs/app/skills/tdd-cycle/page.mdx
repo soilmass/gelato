@@ -200,9 +200,9 @@ afterEach(() => {
 
 ### Example 1 — Test with no assertion (`no-assertion`)
 
-**Input:** `it('renders', () => { render(<Button>Click</Button>); });` — no `expect(...)`.
+**Input:** `it('renders', () => \{ render(<Button>Click</Button>); \});` — no `expect(...)`.
 
-**Output:** add at least one assertion: `expect(screen.getByRole('button', { name: 'Click' })).toBeInTheDocument();`. An empty test is not coverage; it's tooling for a missing test.
+**Output:** add at least one assertion: `expect(screen.getByRole('button', \{ name: 'Click' \})).toBeInTheDocument();`. An empty test is not coverage; it's tooling for a missing test.
 
 ### Example 2 — Testing an implementation detail (`testing-implementation-detail`)
 
@@ -218,7 +218,7 @@ afterEach(() => {
 
 ### Example 4 — Skip without reason (`skipped-no-reason`)
 
-**Input:** `it.skip('bug', async () => { /* ... */ });`.
+**Input:** `it.skip('bug', async () => \{ /* ... */ \});`.
 
 **Output:** either fix the test and un-skip, or replace with `it.skip('bug — see #2345', ...)`. A skip with a tracker link is a promise; a bare skip is technical debt.
 

@@ -113,7 +113,7 @@ Tailwind v4 ships its own PostCSS plugin under the `@tailwindcss/postcss` export
 
 ### Step 3 — Config: CSS-first via `@theme`
 
-Tailwind v4 reads theme values from CSS custom properties declared in a `@theme` block. A `tailwind.config.{js,ts}` file is **optional** in v4 — use it only when you need plugins or legacy options. If present, it should NOT have the v3 `content` + `theme: { extend: {} }` shape:
+Tailwind v4 reads theme values from CSS custom properties declared in a `@theme` block. A `tailwind.config.\{js,ts\}` file is **optional** in v4 — use it only when you need plugins or legacy options. If present, it should NOT have the v3 `content` + `theme: \{ extend: \{\} \}` shape:
 
 ```js
 /* WRONG — v3 config shape */
@@ -256,21 +256,31 @@ export function cn(...inputs: ClassValue[]): string {
 
 ### Example 2 — V3 config shape (`v3-config-shape`)
 
-**Input:** `tailwind.config.ts` exports `{ content: ['./src/**/*.{ts,tsx}'], theme: { extend: { colors: { brand: '#ff0080' } } } }`.
+**Input:** `tailwind.config.ts` exports `\{ content: ['./src/**/*.\{ts,tsx\}'], theme: \{ extend: \{ colors: \{ brand: '#ff0080' \} \} \} \}`.
 
 **Output:** delete the file (v4 doesn't need it for this shape) and move colors into a `@theme` block in `globals.css` as CSS custom properties (`--color-brand: #ff0080;`). Tailwind v4 auto-discovers sources; explicit `content` is no longer required.
 
 ### Example 3 — Legacy PostCSS plugin (`old-postcss-plugin`)
 
-**Input:** `postcss.config.js` has `plugins: { tailwindcss: {}, autoprefixer: {} }`.
+**Input:** `postcss.config.js` has `plugins: \{ tailwindcss: \{\}, autoprefixer: \{\} \}`.
 
-**Output:** replace with `plugins: { '@tailwindcss/postcss': {} }`. Autoprefixer is bundled; the `tailwindcss` plugin name is v3.
+**Output:** replace with `plugins: \{ '@tailwindcss/postcss': \{\} \}`. Autoprefixer is bundled; the `tailwindcss` plugin name is v3.
 
 ### Example 4 — String-concatenated className (`string-concat-classname`)
 
-**Input:** `<div className={\`rounded-md border ${isSelected ? 'ring-2 ring-primary' : ''}\`} />`.
+**Input:**
 
-**Output:** `<div className={cn('rounded-md border', isSelected && 'ring-2 ring-primary')} />`. `cn()` resolves conflicts via tailwind-merge and coerces falsy values; a template literal does neither.
+```tsx
+<div className={`rounded-md border ${isSelected ? 'ring-2 ring-primary' : ''}`} />
+```
+
+**Output:**
+
+```tsx
+<div className={cn('rounded-md border', isSelected && 'ring-2 ring-primary')} />
+```
+
+`cn()` resolves conflicts via tailwind-merge and coerces falsy values; a template literal does neither.
 
 ---
 

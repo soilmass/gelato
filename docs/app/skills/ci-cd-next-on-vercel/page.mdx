@@ -101,9 +101,9 @@ Do NOT activate for:
 GitHub masks secret values in workflow logs best-effort (string-match), but:
 - Multi-line secrets / base64-encoded secrets can slip through
 - Logs are retained for 90 days by default, visible to anyone with repo read access
-- Secrets in `env:` are preferred over inlining `${{ secrets.X }}` in command strings
+- Secrets in `env:` are preferred over inlining `$\{\{ secrets.X \}\}` in command strings
 
-Banned run-step patterns: `echo ${{ secrets.` / `echo $<SECRET_NAME>` / `env | grep` / `env > ...` / printing `$GITHUB_TOKEN`.
+Banned run-step patterns: `echo $\{\{ secrets.` / `echo $<SECRET_NAME>` / `env | grep` / `env > ...` / printing `$GITHUB_TOKEN`.
 
 ### Step 3 — Every workflow has a `concurrency:` block with `cancel-in-progress: true`
 
@@ -230,15 +230,15 @@ jobs:
 
 ### Example 2 — Secret echoed in run step (`secret-echoed-in-run`)
 
-**Input:** `run: echo "Deploying with token ${{ secrets.VERCEL_TOKEN }}"`.
+**Input:** `run: echo "Deploying with token $\{\{ secrets.VERCEL_TOKEN \}\}"`.
 
-**Output:** pass the token via `env:` and use the env var in the command — never echo it. `run: vercel --token "$VERCEL_TOKEN"` with `env: VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}`.
+**Output:** pass the token via `env:` and use the env var in the command — never echo it. `run: vercel --token "$VERCEL_TOKEN"` with `env: VERCEL_TOKEN: $\{\{ secrets.VERCEL_TOKEN \}\}`.
 
 ### Example 3 — Missing concurrency-cancel (`missing-concurrency-cancel`)
 
 **Input:** workflow with no top-level `concurrency:` block, triggered on `pull_request`.
 
-**Output:** add `concurrency: { group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true }`. Pushes to the same PR will now cancel stale runs.
+**Output:** add `concurrency: \{ group: $\{\{ github.workflow \}\}-$\{\{ github.ref \}\}, cancel-in-progress: true \}`. Pushes to the same PR will now cancel stale runs.
 
 ### Example 4 — Missing job timeout (`no-timeout-minutes`)
 

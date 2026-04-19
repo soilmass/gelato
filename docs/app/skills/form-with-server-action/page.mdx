@@ -7,7 +7,7 @@
 [View on GitHub](https://github.com/neopolitan/gelato/blob/main/skills/form-with-server-action/SKILL.md) · [Eval suite](https://github.com/neopolitan/gelato/tree/main/evals/form-with-server-action)
 
 ---
-Encodes the React 19 + Next.js 15 form-with-Server-Action idiom. Uncontrolled inputs bound to the form via `action={dispatch}`, pending state surfaced by `useActionState` or `useFormStatus`, errors returned as structured state and rendered inline. The design center: a form that works without JavaScript and upgrades when JavaScript arrives.
+Encodes the React 19 + Next.js 15 form-with-Server-Action idiom. Uncontrolled inputs bound to the form via `action=\{dispatch\}`, pending state surfaced by `useActionState` or `useFormStatus`, errors returned as structured state and rendered inline. The design center: a form that works without JavaScript and upgrades when JavaScript arrives.
 
 ---
 
@@ -84,7 +84,7 @@ export function CreatePostForm() {
 }
 ```
 
-`action={formAction}` is the binding. It gives you: FormData assembly for free, progressive enhancement (the form POSTs natively without JS), and type-safe state threading. **Do not** call the action from `onClick` or `onSubmit` — that bypasses the binding.
+`action=\{formAction\}` is the binding. It gives you: FormData assembly for free, progressive enhancement (the form POSTs natively without JS), and type-safe state threading. **Do not** call the action from `onClick` or `onSubmit` — that bypasses the binding.
 
 ### Step 2 — Keep inputs uncontrolled
 
@@ -139,7 +139,7 @@ The Server Action returns a discriminated union. On the failure branch, the form
 ) : null}
 ```
 
-A form that swallows errors (action returns `{ ok: false, errors }` but the JSX never reads `state.errors`) is broken — validation failures become invisible.
+A form that swallows errors (action returns `\{ ok: false, errors \}` but the JSX never reads `state.errors`) is broken — validation failures become invisible.
 
 ### Step 5 — Do not call the action outside the binding
 
@@ -242,37 +242,37 @@ export async function createPost(_prev: CreatePostState, formData: FormData): Pr
 
 ### Example 1 — Controlled inputs (`controlled-inputs-with-action`)
 
-**Input:** form has `action={formAction}` but every `<input>` uses `value={title}` + `onChange={e => setTitle(e.target.value)}`.
+**Input:** form has `action=\{formAction\}` but every `<input>` uses `value=\{title\}` + `onChange=\{e => setTitle(e.target.value)\}`.
 
-**Output:** controlled inputs on a Server-Action form break progressive enhancement — if JS fails to load, the inputs are empty and the form POSTs nothing useful. Also wasteful: every keystroke re-renders the form. Switch to `defaultValue={state.input?.title}` and read from `FormData` in the action.
+**Output:** controlled inputs on a Server-Action form break progressive enhancement — if JS fails to load, the inputs are empty and the form POSTs nothing useful. Also wasteful: every keystroke re-renders the form. Switch to `defaultValue=\{state.input?.title\}` and read from `FormData` in the action.
 
 ### Example 2 — Missing pending state (`missing-pending-state`)
 
 **Input:** `<button type="submit">Save</button>` — no disabled state, no pending text.
 
-**Output:** the user double-clicks and submits twice. Wire `useActionState` (or `useFormStatus` in a child `<SubmitButton>`) and set `disabled={pending}`. The form will show a live spinner and prevent duplicate submits.
+**Output:** the user double-clicks and submits twice. Wire `useActionState` (or `useFormStatus` in a child `<SubmitButton>`) and set `disabled=\{pending\}`. The form will show a live spinner and prevent duplicate submits.
 
 ### Example 3 — Swallowed errors (`errors-not-rendered`)
 
-**Input:** action returns `{ ok: false, errors: { title: ['required'] } }` but the form's JSX has no references to `state.errors`.
+**Input:** action returns `\{ ok: false, errors: \{ title: ['required'] \} \}` but the form's JSX has no references to `state.errors`.
 
-**Output:** validation fails silently — the user sees nothing. Render per-field errors: `{state.errors?.title?.length ? <p role="alert">…</p> : null}`.
+**Output:** validation fails silently — the user sees nothing. Render per-field errors: `\{state.errors?.title?.length ? <p role="alert">…</p> : null\}`.
 
 ### Example 4 — Action called outside the binding (`action-not-bound-to-form`)
 
-**Input:** form has `onSubmit={async (e) => { e.preventDefault(); await createPost(new FormData(e.currentTarget)); }}` and no `action={}` attribute.
+**Input:** form has `onSubmit=\{async (e) => \{ e.preventDefault(); await createPost(new FormData(e.currentTarget)); \}\}` and no `action=\{\}` attribute.
 
-**Output:** this bypasses the binding. Progressive enhancement is dead (form does nothing without JS), error/pending state threading doesn't work, and you're manually rebuilding what `useActionState` provides. Move the action to `action={formAction}` via `useActionState`.
+**Output:** this bypasses the binding. Progressive enhancement is dead (form does nothing without JS), error/pending state threading doesn't work, and you're manually rebuilding what `useActionState` provides. Move the action to `action=\{formAction\}` via `useActionState`.
 
 ---
 
 ## Edge Cases
 
 - **Multi-step forms** — each step is its own form bound to its own action. Share state between steps via URL params or the server (not React state).
-- **Optimistic updates** — React 19's `useOptimistic` pairs with `useActionState`. Not a violation of any of the four tenets on its own, but the canonical form still uses `action={formAction}` at the binding.
-- **Forms with file uploads** — `action={formAction}` binds as a multipart submission. `FormData` carries the files — still uncontrolled.
+- **Optimistic updates** — React 19's `useOptimistic` pairs with `useActionState`. Not a violation of any of the four tenets on its own, but the canonical form still uses `action=\{formAction\}` at the binding.
+- **Forms with file uploads** — `action=\{formAction\}` binds as a multipart submission. `FormData` carries the files — still uncontrolled.
 - **Formatted inputs (dates, phone numbers)** — if a library requires controlled values (e.g., a masked-input component), control that one field but keep the rest uncontrolled. Document the exception inline.
-- **Non-form actions (delete buttons, toggles)** — still wire via `<form action={formAction}>` with a single submit button; or use `startTransition(formAction)` from an imperative handler when there's genuinely no form semantic.
+- **Non-form actions (delete buttons, toggles)** — still wire via `<form action=\{formAction\}>` with a single submit button; or use `startTransition(formAction)` from an imperative handler when there's genuinely no form semantic.
 
 ---
 

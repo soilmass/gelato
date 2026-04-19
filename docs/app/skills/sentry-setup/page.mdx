@@ -202,7 +202,7 @@ export async function POST(req: Request) {
 
 ### Example 1 — Hardcoded DSN (`hardcoded-dsn`)
 
-**Input:** `Sentry.init({ dsn: 'https://abc@o12345.ingest.sentry.io/67890', ... });`.
+**Input:** `Sentry.init(\{ dsn: 'https://abc@o12345.ingest.sentry.io/67890', ... \});`.
 
 **Output:** replace with `dsn: process.env.NEXT_PUBLIC_SENTRY_DSN`. Move the value into Vercel env / `.env.local`. Rotation becomes config, not a code change.
 
@@ -214,7 +214,7 @@ export async function POST(req: Request) {
 
 ### Example 3 — No `beforeSend` hook (`missing-beforesend`)
 
-**Input:** a `Sentry.init({ dsn, tracesSampleRate })` with no `beforeSend` property.
+**Input:** a `Sentry.init(\{ dsn, tracesSampleRate \})` with no `beforeSend` property.
 
 **Output:** add a `beforeSend` that drops `NEXT_NOT_FOUND` / `NEXT_REDIRECT` and scrubs `authorization` / `cookie` headers. The hook is both noise-reduction and PII protection.
 
