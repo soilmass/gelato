@@ -42,3 +42,6 @@ Thumbs.db
 
 # Bun
 .bun-cache/
+
+# Claude Code scheduled-task runtime state
+.claude/scheduled_tasks.lock
