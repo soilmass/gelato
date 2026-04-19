@@ -35,9 +35,9 @@ metadata:
     - "@lhci/cli@0.13+"
     - "@next/bundle-analyzer"
   eval:
-    pass_rate: null
-    last_run: null
-    n_cases: null
+    pass_rate: 1
+    last_run: "2026-04-19T03:55:46.026Z"
+    n_cases: 5
   changelog: >
     v1.0 — initial. Encodes web.dev Core Web Vitals (2024-Q4, post-INP) for
     Next.js 15+ App Router. Metric eval asserts LCP ≤ 2.5s, INP ≤ 200ms,
