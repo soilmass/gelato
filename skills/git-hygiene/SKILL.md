@@ -38,7 +38,7 @@ metadata:
     - "GitHub as remote"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T11:38:05.846Z"
+    last_run: "2026-04-19T12:45:01.473Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Shipped pre-built in v0.1 handoff so Claude Code uses it

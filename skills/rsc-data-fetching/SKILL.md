@@ -40,7 +40,7 @@ metadata:
     - "bun@1.1+"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T11:54:23.478Z"
+    last_run: "2026-04-19T12:45:01.474Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Four violation classes detected by a deterministic

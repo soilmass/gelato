@@ -40,7 +40,7 @@ metadata:
     - "typescript@5+"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T10:52:56.292Z"
+    last_run: "2026-04-19T12:45:01.474Z"
     n_cases: 5
   changelog: >
     v1.0 — initial. Judgment skill with no Hard Thresholds; procedure
