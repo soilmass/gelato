@@ -1,0 +1,19 @@
+---
+class: safe
+filename: components/react-dot-boundary.tsx
+reason: Uses React.Component qualifier — still detected by classifier; implements catch.
+---
+'use client';
+import * as React from 'react';
+
+export class ReactBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+  componentDidCatch(err: Error): void { console.error(err); }
+  static getDerivedStateFromError(): { hasError: boolean } { return { hasError: true }; }
+  render(): React.ReactNode {
+    return this.state.hasError ? <p>Err</p> : this.props.children;
+  }
+}

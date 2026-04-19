@@ -1,0 +1,15 @@
+---
+class: safe
+filename: app/docs/error.tsx
+reason: Props come via a named type alias — signature still references `reset`.
+---
+'use client';
+
+type ErrorProps = {
+  error: Error & { digest?: string };
+  reset: () => void;
+};
+
+export default function Error({ error, reset }: ErrorProps) {
+  return <button onClick={() => reset()}>Retry</button>;
+}

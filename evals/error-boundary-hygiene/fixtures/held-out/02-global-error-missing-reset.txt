@@ -1,0 +1,16 @@
+---
+class: error-tsx-missing-reset-prop
+filename: app/global-error.tsx
+reason: Global-error has use-client + html/body but default export doesn't accept reset.
+---
+'use client';
+export default function GlobalError({ error }: { error: Error }) {
+  return (
+    <html lang="en">
+      <body>
+        <h2>Crashed</h2>
+        <p>{error.message}</p>
+      </body>
+    </html>
+  );
+}

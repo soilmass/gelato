@@ -1,0 +1,8 @@
+---
+class: error-tsx-missing-use-client
+filename: app/team/error.tsx
+reason: error.tsx has reset + destructured props but no 'use client' directive.
+---
+export default function Error({ reset }: { error: Error; reset: () => void }) {
+  return <button onClick={() => reset()}>Again</button>;
+}

@@ -1,0 +1,22 @@
+---
+filename: app/global-error.tsx
+reason: Global error with html/body wrap + reset + client directive.
+---
+'use client';
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <h1>App crashed</h1>
+        {error.digest ? <p>Reference: {error.digest}</p> : null}
+        <button onClick={() => reset()}>Reload</button>
+      </body>
+    </html>
+  );
+}
