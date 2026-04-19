@@ -20,8 +20,17 @@ description: >
 license: MIT
 metadata:
   version: "1.0"
-  core: web-dev
-  subsystem: <foundations|data|server|ui|testing|performance|seo|security|observability|analytics|deployment>
+  # `core` + `subsystem` form a discriminated union per the Zod schema in
+  # packages/schema/src/skill-frontmatter.ts. Subsystem values are per-core:
+  core: <web-dev | brand-content | growth-distribution | founder-ops | research-synthesis | meta>
+  # Per-core subsystem enums:
+  # - web-dev:            foundations | data | server | ui | testing | performance | seo | security | observability | analytics | deployment
+  # - brand-content:      identity | positioning | landing | product-copy | content | email
+  # - growth-distribution: deliverability | launch | community | analytics | email
+  # - founder-ops:        prioritization | planning | goals | collaboration | ritual | finance
+  # - research-synthesis: discovery | positioning | ethics | ux-research | synthesis
+  # - meta:               extensibility | maintenance | distribution
+  subsystem: <one value from the enum corresponding to `core` above>
   phase: <build|verify|run>
   type: <procedural|judgment|metric>
   methodology_source:
