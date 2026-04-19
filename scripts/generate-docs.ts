@@ -8,10 +8,27 @@
 // metadata surface in a short preamble block above the body so readers see
 // the skill's eval status without scrolling.
 
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile, readdir, writeFile } from 'node:fs/promises';
 import matter from 'gray-matter';
 
-const SKILLS = ['git-hygiene', 'core-web-vitals-audit', 'rsc-boundary-audit'];
+// Auto-discover every skill: a directory under skills/ that contains a
+// SKILL.md file. Keeps the docs site in sync with the repo as new skills
+// land, without requiring a hand-edit of this list with each PR.
+async function discoverSkills(): Promise<string[]> {
+  const entries = await readdir('skills', { withFileTypes: true });
+  const skills: string[] = [];
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const skillMd = `skills/${entry.name}/SKILL.md`;
+    try {
+      await readFile(skillMd, 'utf8');
+      skills.push(entry.name);
+    } catch {
+      // Directory without a SKILL.md — skip silently.
+    }
+  }
+  return skills.sort();
+}
 
 interface SkillMetadata {
   subsystem?: string;
@@ -81,5 +98,6 @@ async function generate(name: string): Promise<void> {
   console.log(`\u270e ${dir}/page.mdx`);
 }
 
-for (const name of SKILLS) await generate(name);
-console.log(`\nGenerated ${SKILLS.length} skill page(s).`);
+const skills = await discoverSkills();
+for (const name of skills) await generate(name);
+console.log(`\nGenerated ${skills.length} skill page(s).`);
