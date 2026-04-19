@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: No type prefix; vague subject.
+---
+update

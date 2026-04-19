@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: Trailing period on the subject line.
+---
+feat: add new skill.

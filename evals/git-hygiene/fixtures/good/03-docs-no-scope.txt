@@ -1,0 +1,9 @@
+---
+expected: pass
+reason: docs type without scope is allowed; imperative subject, concise.
+---
+docs: clarify stack assumptions in TEMPLATE.md
+
+The Stack Assumptions section did not make clear that list items
+should only name tools the skill actually touches. Two skills
+had been listing the entire manifest. Spells it out.

@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: No type prefix; just a sentence.
+---
+Updated the things for the stuff

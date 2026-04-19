@@ -1,0 +1,12 @@
+---
+expected: pass
+reason: Revert commit in the revert() shape git emits; type=revert is whitelisted.
+---
+revert: feat(skills): add core-web-vitals-audit skill
+
+This reverts commit b9610b7c0d3ae8f77aa9e55c2f3f2b4f3a1c9e01.
+
+The published skill body referenced an unreleased Lighthouse CI
+flag. Reverting while we pin the correct version and re-land.
+
+Reverts: b9610b7c0d3ae8f77aa9e55c2f3f2b4f3a1c9e01

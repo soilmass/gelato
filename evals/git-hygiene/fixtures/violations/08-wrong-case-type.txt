@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: Type is uppercase; the type-case rule allows only lower-case (plus sentence-case for subjects).
+---
+FEAT: add new skill

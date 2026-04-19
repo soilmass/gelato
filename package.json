@@ -27,6 +27,8 @@
     "@changesets/cli": "^2.27.9",
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
+    "@commitlint/lint": "^19.5.0",
+    "@commitlint/load": "^19.5.0",
     "@commitlint/types": "^19.5.0",
     "@lhci/cli": "^0.14.0",
     "@playwright/test": "^1.48.2",

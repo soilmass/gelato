@@ -1,0 +1,24 @@
+---
+expected: pass
+reason: Long wrapped body with multiple paragraphs; each line ≤72, no trailing whitespace.
+---
+feat(eval-harness): implement runSkillOnFixtures for rsc-boundary-audit
+
+Loads the skill's SKILL.md as a system prompt, then iterates the
+fixture array issuing one Claude message per fixture. Returns
+per-fixture predictions matching the EVAL_SPEC Type B contract.
+
+Handles three edge cases the draft missed:
+
+  - Rate-limit backoff: on 429s, waits using the Retry-After
+    header and retries once. A second 429 bubbles up.
+  - Empty content blocks: skills occasionally produce empty text
+    blocks when the model returns only tool_use blocks; these
+    now collapse to empty-string predictions rather than throwing.
+  - Token budget: uses max_tokens=8192 for long code fixtures.
+
+The rate-limit test-double lives in evals/rsc-boundary-audit/
+__mocks__/anthropic.ts and is gated behind the ANTHROPIC_MOCK
+env var so CI runs stay deterministic without a real API key.
+
+Refs: #59

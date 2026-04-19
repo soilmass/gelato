@@ -1,0 +1,5 @@
+---
+expected: pass
+reason: test type, scoped, short subject, no body needed.
+---
+test(git-hygiene): add 5 more violation fixtures for subject heuristics

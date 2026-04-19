@@ -1,0 +1,9 @@
+---
+expected: pass
+reason: refactor type, imperative subject, meaningful body explaining why.
+---
+refactor(schema): extract methodology_source union into named helper
+
+The union of single-object and array was repeated in three types.
+Factoring it out makes the Zod error messages more specific when
+a frontmatter block uses the wrong shape.

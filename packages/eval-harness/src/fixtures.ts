@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { basename, extname, join, relative } from 'node:path';
 import matter from 'gray-matter';
 
@@ -42,18 +42,24 @@ export async function loadFixtures(
   options: LoadFixturesOptions = {},
 ): Promise<Fixture[]> {
   const ext = options.extension ?? 'txt';
-  const pattern = `**/*.${ext}`;
-  const glob = new Bun.Glob(pattern);
+  const suffix = `.${ext}`;
+  // readdir recursive lands a Dirent[] with .parentPath (Node 20.12+/22+) —
+  // used here instead of a glob lib so the harness has zero extra runtime
+  // deps and runs identically under Bun and Node (Vitest workers run on Node).
+  const entries = await readdir(root, { withFileTypes: true, recursive: true });
   const fixtures: Fixture[] = [];
 
-  for await (const relPath of glob.scan(root)) {
-    const absPath = join(root, relPath);
+  for (const entry of entries) {
+    if (!entry.isFile() || !entry.name.endsWith(suffix)) continue;
+    const parentPath = entry.parentPath ?? root;
+    const absPath = join(parentPath, entry.name);
+    const relPath = relative(root, absPath);
     const raw = await readFile(absPath, 'utf8');
     const parsed = matter(raw);
     const data = parsed.data as Record<string, unknown>;
 
     const nameNoExt = relPath.slice(0, relPath.length - extname(relPath).length);
-    const parts = relative('.', nameNoExt).split(/[/\\]/).filter(Boolean);
+    const parts = nameNoExt.split(/[/\\]/).filter(Boolean);
     const category = parts.length > 1 ? (parts[0] ?? '') : '';
 
     fixtures.push({

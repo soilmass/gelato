@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: "fix" on its own lacks the `fix: <subject>` shape — type is present but subject is empty.
+---
+fix

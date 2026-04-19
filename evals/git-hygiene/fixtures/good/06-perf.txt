@@ -1,0 +1,12 @@
+---
+expected: pass
+reason: perf type with measured improvement and trade-off called out.
+---
+perf(eval-harness): cache fixture loads by mtime
+
+The quantitative assertion loop re-read 40 fixture files on every
+`it` block — wasteful on the full suite.
+
+Caching by mtime drops eval walltime from 2.1s to 0.4s on a warm
+run; cold run is unchanged. Memory cost is negligible (<200 KB
+for the current fixture set).

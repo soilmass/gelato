@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: "`misc` is not a whitelisted type."
+---
+misc: random changes
