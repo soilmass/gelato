@@ -39,9 +39,9 @@ metadata:
     - "react@19+"
     - "typescript@5+"
   eval:
-    pass_rate: null
-    last_run: null
-    n_cases: null
+    pass_rate: 1
+    last_run: "2026-04-19T04:14:03.536Z"
+    n_cases: 4
   changelog: >
     v1.0 — initial. Judgment skill with no Hard Thresholds; procedure
     carries enforcement. Four-criterion decision tree for component

@@ -36,7 +36,7 @@ metadata:
     - "@next/bundle-analyzer"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T03:55:46.026Z"
+    last_run: "2026-04-19T04:14:03.535Z"
     n_cases: 5
   changelog: >
     v1.0 — initial. Encodes web.dev Core Web Vitals (2024-Q4, post-INP) for
