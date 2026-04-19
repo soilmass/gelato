@@ -1,0 +1,19 @@
+# Promptfoo config for form-with-server-action LLM-as-judge rubrics (deferred to v0.2).
+#
+# v0.1 ships the deterministic classifier only. A v0.2 `a11y-rubric` would
+# judge whether rendered error JSX carries role="alert" and whether the
+# pending-state button has an accessible label (aria-live, etc.) — concerns
+# that are harder to classify with regex but well-suited to an LLM judge.
+
+description: form-with-server-action LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []

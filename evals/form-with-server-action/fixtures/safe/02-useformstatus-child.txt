@@ -1,0 +1,30 @@
+---
+expected: safe
+reason: Pending state surfaced via useFormStatus in a child SubmitButton component — valid alternative to useActionState tuple.
+---
+'use client';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { subscribe } from './actions';
+
+function SubmitButton({ children }: { children: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <button type="submit" disabled={pending}>
+      {pending ? 'Working…' : children}
+    </button>
+  );
+}
+
+export function SubscribeForm() {
+  const [state, formAction] = useActionState(subscribe, { ok: false, errors: {} });
+  return (
+    <form action={formAction}>
+      <input name="email" type="email" defaultValue="" required />
+      {state.errors?.email?.length ? (
+        <p role="alert">{state.errors.email.join(', ')}</p>
+      ) : null}
+      <SubmitButton>Subscribe</SubmitButton>
+    </form>
+  );
+}

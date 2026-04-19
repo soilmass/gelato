@@ -1,0 +1,25 @@
+---
+class: errors-not-rendered
+reason: useActionState initial state declares an errors field but JSX never references state.errors — validation failures become invisible.
+---
+'use client';
+import { useActionState } from 'react';
+import { createPost } from './actions';
+
+export function CreatePostForm() {
+  const [state, formAction, pending] = useActionState(createPost, {
+    ok: false,
+    errors: {},
+  });
+
+  return (
+    <form action={formAction}>
+      <input name="title" defaultValue="" required />
+      <textarea name="body" defaultValue="" required />
+      <button type="submit" disabled={pending}>
+        {pending ? 'Saving…' : 'Save'}
+      </button>
+      {state.ok ? <p>Saved.</p> : null}
+    </form>
+  );
+}

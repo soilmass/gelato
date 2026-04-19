@@ -1,0 +1,28 @@
+---
+class: controlled-inputs-with-action
+reason: Email input controlled on a newsletter form with Server Action binding — unnecessary client state, no progressive enhancement.
+---
+'use client';
+import { useState } from 'react';
+import { useActionState } from 'react';
+import { subscribe } from './actions';
+
+export function NewsletterForm() {
+  const [email, setEmail] = useState('');
+  const [state, formAction, pending] = useActionState(subscribe, { ok: false, errors: {} });
+
+  return (
+    <form action={formAction}>
+      <input
+        name="email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      {state.errors?.email?.length ? (
+        <p role="alert">{state.errors.email.join(', ')}</p>
+      ) : null}
+      <button type="submit" disabled={pending}>Subscribe</button>
+    </form>
+  );
+}

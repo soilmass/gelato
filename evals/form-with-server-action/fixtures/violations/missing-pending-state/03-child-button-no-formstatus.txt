@@ -1,0 +1,23 @@
+---
+class: missing-pending-state
+reason: Submit button is a child component but does NOT use useFormStatus — the parent's pending state is never surfaced.
+---
+'use client';
+import { useActionState } from 'react';
+import { saveDraft } from './actions';
+
+function SubmitButton() {
+  // NOTE: should call useFormStatus() here, but doesn't.
+  return <button type="submit">Save draft</button>;
+}
+
+export function DraftForm() {
+  const [state, formAction] = useActionState(saveDraft, { ok: false, errors: {} });
+  return (
+    <form action={formAction}>
+      <textarea name="content" defaultValue="" required />
+      {state.errors?.content ? <p role="alert">{state.errors.content.join(', ')}</p> : null}
+      <SubmitButton />
+    </form>
+  );
+}

@@ -1,0 +1,39 @@
+---
+expected: safe
+reason: useOptimistic alongside useActionState — optimistic UI does not violate any tenet. action still bound via action={}.
+---
+'use client';
+import { useActionState, useOptimistic } from 'react';
+import { addComment } from './actions';
+
+export function CommentForm({ comments }: { comments: { id: string; text: string }[] }) {
+  const [state, formAction, pending] = useActionState(addComment, { ok: false, errors: {} });
+  const [optimistic, addOptimistic] = useOptimistic(
+    comments,
+    (current, text: string) => [...current, { id: 'temp', text }],
+  );
+
+  return (
+    <>
+      <ul>
+        {optimistic.map((c) => (
+          <li key={c.id}>{c.text}</li>
+        ))}
+      </ul>
+      <form
+        action={async (formData) => {
+          addOptimistic(String(formData.get('text') ?? ''));
+          await formAction(formData);
+        }}
+      >
+        <input name="text" defaultValue="" required />
+        {state.errors?.text?.length ? (
+          <p role="alert">{state.errors.text.join(', ')}</p>
+        ) : null}
+        <button type="submit" disabled={pending}>
+          {pending ? 'Posting…' : 'Post'}
+        </button>
+      </form>
+    </>
+  );
+}

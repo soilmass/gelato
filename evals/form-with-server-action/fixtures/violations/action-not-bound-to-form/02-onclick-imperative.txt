@@ -1,0 +1,29 @@
+---
+class: action-not-bound-to-form
+reason: Action imported and called via onClick handler — form has no action attribute, button is outside the submit flow.
+---
+'use client';
+import { useState } from 'react';
+import { createPost } from './actions';
+
+export function CreatePostForm() {
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+
+  return (
+    <div>
+      <input name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+      <textarea name="body" value={body} onChange={(e) => setBody(e.target.value)} />
+      <button
+        onClick={async () => {
+          const formData = new FormData();
+          formData.set('title', title);
+          formData.set('body', body);
+          await createPost(formData);
+        }}
+      >
+        Save
+      </button>
+    </div>
+  );
+}

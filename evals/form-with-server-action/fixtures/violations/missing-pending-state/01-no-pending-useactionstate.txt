@@ -1,0 +1,20 @@
+---
+class: missing-pending-state
+reason: useActionState destructures only [state, formAction] — the pending flag is never read. Submit button is not disabled on submit.
+---
+'use client';
+import { useActionState } from 'react';
+import { createPost } from './actions';
+
+export function CreatePostForm() {
+  const [state, formAction] = useActionState(createPost, { ok: false, errors: {} });
+  return (
+    <form action={formAction}>
+      <input name="title" defaultValue="" required />
+      {state.errors?.title?.length ? (
+        <p role="alert">{state.errors.title.join(', ')}</p>
+      ) : null}
+      <button type="submit">Save</button>
+    </form>
+  );
+}

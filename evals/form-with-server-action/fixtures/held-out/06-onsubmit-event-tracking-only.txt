@@ -1,0 +1,26 @@
+---
+class: safe
+reason: Form has both action={formAction} AND an onSubmit handler that only fires analytics — action binding is intact, progressive enhancement preserved.
+---
+'use client';
+import { useActionState } from 'react';
+import { subscribe } from './actions';
+import { track } from '@/lib/analytics';
+
+export function NewsletterForm() {
+  const [state, formAction, pending] = useActionState(subscribe, { ok: false, errors: {} });
+  return (
+    <form
+      action={formAction}
+      onSubmit={() => {
+        track('newsletter_submit');
+      }}
+    >
+      <input name="email" type="email" defaultValue="" required />
+      {state.errors?.email?.length ? (
+        <p role="alert">{state.errors.email.join(', ')}</p>
+      ) : null}
+      <button type="submit" disabled={pending}>Subscribe</button>
+    </form>
+  );
+}

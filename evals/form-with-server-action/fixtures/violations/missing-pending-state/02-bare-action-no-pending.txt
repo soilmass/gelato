@@ -1,0 +1,14 @@
+---
+class: missing-pending-state
+reason: Client form binds action directly without useActionState and without useFormStatus — button is never disabled on submit.
+---
+'use client';
+import { deletePost } from './actions';
+
+export function DeleteButton({ id }: { id: string }) {
+  return (
+    <form action={deletePost.bind(null, id)}>
+      <button type="submit">Delete</button>
+    </form>
+  );
+}

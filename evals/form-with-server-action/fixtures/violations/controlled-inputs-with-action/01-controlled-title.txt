@@ -1,0 +1,26 @@
+---
+class: controlled-inputs-with-action
+reason: Title input controlled via useState + value + onChange on a form with action={} binding. Breaks progressive enhancement.
+---
+'use client';
+import { useState } from 'react';
+import { useActionState } from 'react';
+import { createPost } from './actions';
+
+export function CreatePostForm() {
+  const [title, setTitle] = useState('');
+  const [state, formAction, pending] = useActionState(createPost, { ok: false, errors: {} });
+
+  return (
+    <form action={formAction}>
+      <input
+        name="title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        required
+      />
+      {state.errors?.title?.length ? <p role="alert">{state.errors.title.join(', ')}</p> : null}
+      <button type="submit" disabled={pending}>Save</button>
+    </form>
+  );
+}

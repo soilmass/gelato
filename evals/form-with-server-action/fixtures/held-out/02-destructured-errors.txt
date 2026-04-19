@@ -1,0 +1,20 @@
+---
+class: safe
+reason: Errors destructured from state at the top — classifier must detect that `errors.title` rendering satisfies the tenet even without `state.errors` syntax.
+---
+'use client';
+import { useActionState } from 'react';
+import { createPost } from './actions';
+
+export function CreatePostForm() {
+  const [state, formAction, pending] = useActionState(createPost, { ok: false, errors: {} });
+  const { errors } = state;
+
+  return (
+    <form action={formAction}>
+      <input name="title" defaultValue="" required />
+      {errors?.title?.length ? <p role="alert">{errors.title.join(', ')}</p> : null}
+      <button type="submit" disabled={pending}>Save</button>
+    </form>
+  );
+}

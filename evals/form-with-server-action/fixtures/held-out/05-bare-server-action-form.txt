@@ -1,0 +1,14 @@
+---
+class: safe
+reason: Server component form with action={createPost} — zero-JS form. Pending + errors tenets do not apply (require client hooks). Classifier must not flag as missing-pending-state.
+---
+import { deleteAccount } from './actions';
+
+export function DeleteAccountForm() {
+  return (
+    <form action={deleteAccount}>
+      <input type="hidden" name="confirm" defaultValue="yes" />
+      <button type="submit">Delete my account</button>
+    </form>
+  );
+}
