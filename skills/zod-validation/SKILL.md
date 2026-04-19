@@ -64,7 +64,7 @@ Two primary sources:
   - Source: [https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations)
   - Version: Next.js 15 docs (2025)
   - Verified: 2026-04-18
-- **Drift-check:** `.github/workflows/drift-zod-docs.yml`
+- **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
 Encoded: the "parse at the boundary" principle (validate inputs where they enter, not at point-of-use), the `.parse()` vs `.safeParse()` decision, the four common misuses that produce runtime exceptions or silent data corruption.
 

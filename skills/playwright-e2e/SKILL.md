@@ -52,7 +52,7 @@ Encodes Playwright's "Best Practices" guidance for end-to-end tests on a Next.js
   - Source: [https://playwright.dev/docs/best-practices](https://playwright.dev/docs/best-practices)
   - Authority: Microsoft / Playwright team
   - Verified: 2026-04-18
-- **Drift-check:** `.github/workflows/drift-playwright-best-practices.yml`
+- **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
 Encoded: the four mechanical rules that produce flaky or fragile tests if broken. NOT encoded: test-design decisions (what to cover, when a feature is "done"), accessibility auditing (a v0.2 `axe-playwright` skill will cover `axe-core` scans), visual regression (a v0.2 `visual-regression` skill will cover per-page snapshots), network mocking strategy (context-specific judgment).
 

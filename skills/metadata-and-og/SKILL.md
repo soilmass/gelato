@@ -64,7 +64,7 @@ Two primary sources:
   - Source: [https://nextjs.org/docs/app/api-reference/functions/generate-metadata](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
   - Version: Next.js 15 docs (2025)
   - Verified: 2026-04-18
-- **Drift-check:** `.github/workflows/drift-google-search-central.yml`
+- **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
 Encoded: the required-fields set (title, description, canonical), the length boundaries Google crops (title 50-60 chars, description 150-160 chars, OG title similar), the four canonical drift shapes, the Next-specific mechanics (static `metadata` export vs. `generateMetadata()` vs. layout-inherited defaults).
 

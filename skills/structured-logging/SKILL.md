@@ -66,7 +66,7 @@ Two primary sources:
   - Source: [https://opentelemetry.io/docs/specs/otel/logs/data-model/](https://opentelemetry.io/docs/specs/otel/logs/data-model/)
   - Authority: OpenTelemetry / CNCF
   - Verified: 2026-04-18
-- **Drift-check:** `.github/workflows/drift-pino-otel-logs.yml`
+- **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
 Encoded: the four mechanical logging-hygiene rules detectable from a single handler file — no `console.*`, structured-object payloads, no sensitive fields, error-object in error-level logs. NOT encoded: log-level selection judgment, log-aggregation platform choice (Axiom / Grafana Loki / DataDog), sampling strategy, PII redaction policy beyond the mechanical check.
 
