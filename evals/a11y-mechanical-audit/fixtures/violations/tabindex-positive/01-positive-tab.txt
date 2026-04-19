@@ -1,0 +1,12 @@
+---
+class: tabindex-positive
+reason: Positive tabIndex reorders focus out of document order — fails WCAG 2.4.3.
+---
+export function Nav() {
+  return (
+    <nav>
+      <a href="/home" tabIndex={2} className="h-11 px-4">Home</a>
+      <a href="/about" tabIndex={1} className="h-11 px-4">About</a>
+    </nav>
+  );
+}

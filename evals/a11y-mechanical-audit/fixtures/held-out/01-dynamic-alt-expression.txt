@@ -1,0 +1,7 @@
+---
+class: safe
+reason: alt={expr} — presence check passes; runtime value of expr is axe-playwright's concern.
+---
+export function Avatar({ user }: { user: { name: string; avatarUrl: string } }) {
+  return <img src={user.avatarUrl} alt={user.name} className="h-10 w-10 rounded-full" />;
+}

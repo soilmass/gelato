@@ -1,0 +1,11 @@
+---
+class: interactive-without-role
+reason: <span> with onClick and no role/tabIndex/keyboard — classic SPA antipattern.
+---
+export function Expander({ toggle }: { toggle: () => void }) {
+  return (
+    <span onClick={toggle} className="cursor-pointer text-blue-600">
+      Show more
+    </span>
+  );
+}

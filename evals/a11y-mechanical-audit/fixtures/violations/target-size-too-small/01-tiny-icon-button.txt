@@ -1,0 +1,13 @@
+---
+class: target-size-too-small
+reason: Button is 24x24 (h-6 w-6) — below WCAG 2.5.8 target-size bar.
+---
+export function DismissButton({ onDismiss }: { onDismiss: () => void }) {
+  return (
+    <button onClick={onDismiss} className="h-6 w-6" aria-label="Dismiss">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" />
+      </svg>
+    </button>
+  );
+}

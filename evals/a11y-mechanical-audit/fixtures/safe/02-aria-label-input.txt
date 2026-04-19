@@ -1,0 +1,15 @@
+---
+reason: Input labelled via aria-label; no positive tabIndex.
+---
+export function SearchBox() {
+  return (
+    <div>
+      <input
+        name="q"
+        type="search"
+        aria-label="Search posts"
+        className="h-11 w-full px-3"
+      />
+    </div>
+  );
+}

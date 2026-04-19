@@ -1,0 +1,11 @@
+---
+class: safe
+reason: Arbitrary Tailwind value h-[48px] resolves above the 44px bar.
+---
+export function BigButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="h-[48px] w-[48px] rounded-lg">
+      Go
+    </button>
+  );
+}

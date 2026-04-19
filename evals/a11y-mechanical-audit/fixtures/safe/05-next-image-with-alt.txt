@@ -1,0 +1,15 @@
+---
+reason: Image has meaningful alt; negative tabIndex for programmatic focus is allowed.
+---
+import Image from 'next/image';
+
+export function Card({ focusRef }: { focusRef: React.Ref<HTMLDivElement> }) {
+  return (
+    <article>
+      <img src="/logo.svg" alt="Gelato logo" className="h-10 w-10" />
+      <div ref={focusRef} tabIndex={-1} className="outline-none">
+        Card content
+      </div>
+    </article>
+  );
+}

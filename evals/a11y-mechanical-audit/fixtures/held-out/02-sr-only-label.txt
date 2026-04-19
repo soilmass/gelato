@@ -1,0 +1,15 @@
+---
+class: safe
+reason: Visually-hidden label is still an accessible name; sr-only is a visual concern.
+---
+export function Filter() {
+  return (
+    <form>
+      <label htmlFor="cat" className="sr-only">Category</label>
+      <select id="cat" name="category" className="h-11 w-40 px-2">
+        <option>All</option>
+        <option>Docs</option>
+      </select>
+    </form>
+  );
+}

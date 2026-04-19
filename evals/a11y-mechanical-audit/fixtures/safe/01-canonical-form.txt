@@ -1,0 +1,13 @@
+---
+reason: Labelled form, sized button, labelled image. Clean.
+---
+export function Subscribe() {
+  return (
+    <form className="flex gap-2">
+      <label htmlFor="email" className="sr-only">Email address</label>
+      <input id="email" name="email" type="email" className="h-11 flex-1 px-3" />
+      <button type="submit" className="h-11 w-28 px-4">Subscribe</button>
+      <img src="/check.svg" alt="" className="h-5 w-5" />
+    </form>
+  );
+}

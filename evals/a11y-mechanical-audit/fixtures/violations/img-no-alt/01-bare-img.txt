@@ -1,0 +1,12 @@
+---
+class: img-no-alt
+reason: <img> tag has no alt attribute at all — fails WCAG 1.1.1 / axe image-alt.
+---
+export function Hero() {
+  return (
+    <section>
+      <img src="/hero.jpg" />
+      <h1>Welcome</h1>
+    </section>
+  );
+}

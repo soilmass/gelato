@@ -1,0 +1,19 @@
+---
+reason: Non-interactive element correctly elevated with role+tabIndex+onKeyDown.
+---
+export function CardLink({ onOpen, label }: { onOpen: () => void; label: string }) {
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') onOpen();
+      }}
+      className="h-11 w-full p-3"
+      aria-label={label}
+    >
+      {label}
+    </div>
+  );
+}
