@@ -1,0 +1,18 @@
+---
+expected: legitimate
+reason: onChange handler and controlled input; useState for client value. Criteria 1 and 3 both apply.
+---
+'use client';
+import { useState } from 'react';
+
+export function SearchInput() {
+  const [q, setQ] = useState('');
+  return (
+    <input
+      type="search"
+      value={q}
+      onChange={(e) => setQ(e.target.value)}
+      placeholder="Search"
+    />
+  );
+}

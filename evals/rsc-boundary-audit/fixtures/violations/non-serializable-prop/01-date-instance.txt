@@ -1,0 +1,11 @@
+---
+class: non-serializable-prop
+reason: Server component passes a Date instance to a client child; the serializer folds it to an ISO string but the type-signature assumes Date.
+---
+// app/page.tsx — Server Component
+import DatePicker from './date-picker';
+
+export default async function Page() {
+  const initial = new Date();
+  return <DatePicker initial={initial} />;
+}

@@ -1,0 +1,17 @@
+---
+class: barrel-import-leakage
+reason: Imports two icons from a large icon barrel, dragging hundreds of unused SVG components into the client bundle.
+---
+'use client';
+import { ChevronDown, User } from '@/icons';
+import { useState } from 'react';
+
+export function UserMenu() {
+  const [open, setOpen] = useState(false);
+  return (
+    <button onClick={() => setOpen(!open)}>
+      <User />
+      <ChevronDown />
+    </button>
+  );
+}

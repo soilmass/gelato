@@ -1,0 +1,9 @@
+---
+expected: legitimate
+reason: onClick handler triggers criterion 1 (interactivity).
+---
+'use client';
+
+export function SubmitButton({ onSubmit }: { onSubmit: () => void }) {
+  return <button onClick={onSubmit}>Submit</button>;
+}

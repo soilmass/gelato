@@ -1,0 +1,22 @@
+---
+class: barrel-import-leakage
+reason: Imports lib helpers via the barrel; the barrel re-exports server-only utilities alongside client ones.
+---
+'use client';
+import { cn, formatMoney } from '@/lib';
+import { useState } from 'react';
+
+export function PriceInput() {
+  const [value, setValue] = useState(0);
+  return (
+    <label className={cn('field', value > 0 && 'field-filled')}>
+      <span>Amount</span>
+      <input
+        type="number"
+        value={value}
+        onChange={(e) => setValue(Number(e.target.value))}
+      />
+      <span>{formatMoney(value)}</span>
+    </label>
+  );
+}

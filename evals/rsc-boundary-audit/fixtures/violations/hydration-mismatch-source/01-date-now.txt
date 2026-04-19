@@ -1,0 +1,7 @@
+---
+class: hydration-mismatch-source
+reason: Date.now() in render diverges between server render and client hydration; the DOM mismatches and React re-renders.
+---
+export function Timestamp() {
+  return <span>Rendered at {Date.now()}</span>;
+}

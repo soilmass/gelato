@@ -1,0 +1,15 @@
+---
+expected: legitimate
+reason: localStorage access triggers criterion 2 (browser APIs). Read happens inside useEffect to avoid hydration mismatch.
+---
+'use client';
+import { useEffect, useState } from 'react';
+
+export function Greeting() {
+  const [name, setName] = useState('');
+  useEffect(() => {
+    const saved = localStorage.getItem('name');
+    if (saved) setName(saved);
+  }, []);
+  return <p>Hello {name || 'stranger'}</p>;
+}

@@ -1,0 +1,19 @@
+---
+class: barrel-import-leakage
+reason: Imports a single component via the top-level barrel, pulling the entire components re-export tree into the client bundle.
+---
+'use client';
+import { Button, Tooltip, Modal } from '@/components';
+import { useState } from 'react';
+
+export function CTA() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Tooltip content="Click me">
+        <Button onClick={() => setOpen(true)}>Go</Button>
+      </Tooltip>
+      {open && <Modal onClose={() => setOpen(false)}>Content</Modal>}
+    </>
+  );
+}

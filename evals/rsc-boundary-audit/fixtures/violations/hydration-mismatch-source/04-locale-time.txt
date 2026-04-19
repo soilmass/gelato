@@ -1,0 +1,8 @@
+---
+class: hydration-mismatch-source
+reason: toLocaleTimeString without an explicit locale depends on the environment's default; server and client often differ.
+---
+export function NowLabel() {
+  const t = new Date().toLocaleTimeString();
+  return <time dateTime={new Date().toISOString()}>{t}</time>;
+}

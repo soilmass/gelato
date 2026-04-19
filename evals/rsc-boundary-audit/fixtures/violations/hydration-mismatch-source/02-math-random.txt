@@ -1,0 +1,8 @@
+---
+class: hydration-mismatch-source
+reason: Math.random() produces a different value at server render vs. client hydration. Hydration warning guaranteed.
+---
+export function RandomBanner() {
+  const pick = Math.random() > 0.5 ? 'A' : 'B';
+  return <div className={`banner banner-${pick}`}>Banner {pick}</div>;
+}

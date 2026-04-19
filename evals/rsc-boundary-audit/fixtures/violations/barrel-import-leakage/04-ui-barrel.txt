@@ -1,0 +1,17 @@
+---
+class: barrel-import-leakage
+reason: Imports a single Card component via the @/ui barrel. The barrel re-exports forty sibling components; all forty end up in the bundle.
+---
+'use client';
+import { Card } from '@/ui';
+import { useState } from 'react';
+
+export function ToggleCard() {
+  const [open, setOpen] = useState(false);
+  return (
+    <Card>
+      <button onClick={() => setOpen(!open)}>{open ? 'Hide' : 'Show'}</button>
+      {open && <p>Detail content</p>}
+    </Card>
+  );
+}

@@ -1,0 +1,14 @@
+---
+class: unnecessary-directive
+reason: Pure presentational card; no interactivity, no browser APIs, no hooks, no context. All four criteria fail.
+---
+'use client';
+
+export default function UserCard({ name, avatar }: { name: string; avatar: string }) {
+  return (
+    <div className="card">
+      <img src={avatar} alt="" />
+      <span>{name}</span>
+    </div>
+  );
+}

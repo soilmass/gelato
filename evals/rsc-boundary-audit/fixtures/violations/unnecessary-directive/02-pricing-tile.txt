@@ -1,0 +1,25 @@
+---
+class: unnecessary-directive
+reason: Static info display. No handlers, no effects, no browser APIs. Directive is leftover from an earlier draft.
+---
+'use client';
+
+interface Plan {
+  name: string;
+  price: number;
+  features: string[];
+}
+
+export function PricingTile({ plan }: { plan: Plan }) {
+  return (
+    <article>
+      <h3>{plan.name}</h3>
+      <p>${plan.price}/mo</p>
+      <ul>
+        {plan.features.map((f) => (
+          <li key={f}>{f}</li>
+        ))}
+      </ul>
+    </article>
+  );
+}

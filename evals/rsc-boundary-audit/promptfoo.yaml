@@ -1,0 +1,94 @@
+# Promptfoo config for rsc-boundary-audit LLM-as-judge rubrics.
+#
+# Invoked by packages/eval-harness's judgeWithPromptfoo() wrapper via
+# `bunx promptfoo eval --config <this> --filter-description <rubric>`.
+#
+# Two rubrics from SKILL.md § Evaluation:
+#   - implementability — fix recommendations are usable as-written
+#   - groundedness     — examples reference the actual codebase
+
+description: rsc-boundary-audit LLM-as-judge rubrics
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    Review the following remediation recommendation for an rsc-boundary-audit
+    finding and return your evaluation.
+
+    ---
+    {{recommendation}}
+    ---
+
+tests:
+  - description: implementability
+    vars:
+      recommendation: |
+        File: components/user-card.tsx
+        Class: unnecessary-directive
+
+        Remove the `'use client'` directive on line 1. The component uses no
+        event handlers, no React hooks, no browser APIs, and consumes no
+        client-only contexts — none of the four criteria apply.
+
+        Before:
+          'use client';
+          export default function UserCard({ name, avatar }) {
+            return <div><img src={avatar} /><span>{name}</span></div>;
+          }
+
+        After (delete line 1):
+          export default function UserCard({ name, avatar }) {
+            return <div><img src={avatar} /><span>{name}</span></div>;
+          }
+
+        Expected bundle impact: -4.2 kB gzipped (measured via
+        @next/bundle-analyzer against the pre/post diff).
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when every recommendation in the text is
+          implementable exactly as written — specific file paths, specific
+          code changes, no "additional context needed" gaps. Score 0 when the
+          recommendation is vague, references non-existent files, or requires
+          the reader to infer the fix from prose.
+
+  - description: groundedness
+    vars:
+      recommendation: |
+        File: app/page.tsx
+        Class: non-serializable-prop
+
+        The server component passes `new Date()` as `initial` to
+        <DatePicker />. Date instances serialize as plain objects with a
+        numeric epoch, not as Date — the child's type annotation reads `Date`
+        but receives the serialized form, causing runtime errors on
+        `.getTime()` or `.toLocaleString()` calls.
+
+        Fix: convert at the boundary. The server emits an ISO string, the
+        client hydrates to Date only inside its own useEffect or once on
+        first interaction.
+
+          // app/page.tsx (server)
+          return <DatePicker initialIso={initial.toISOString()} />;
+
+          // app/date-picker.tsx (client)
+          'use client';
+          export function DatePicker({ initialIso }: { initialIso: string }) {
+            const [date, setDate] = useState(() => new Date(initialIso));
+            // ...
+          }
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the examples reference concrete,
+          believable files (app/page.tsx, components/date-picker.tsx) with
+          concrete variable names and shapes that would plausibly exist in a
+          real App Router codebase. Score 0 when examples are abstract,
+          reference placeholder names (foo/bar/baz), or describe "some
+          component" without specifics.

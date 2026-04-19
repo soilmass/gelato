@@ -1,0 +1,17 @@
+---
+class: unnecessary-directive
+reason: Layout wrapper — renders children and adds shell chrome. No client-only concerns at this level; children can still be client components.
+---
+'use client';
+
+import type { ReactNode } from 'react';
+
+export default function LayoutShell({ children }: { children: ReactNode }) {
+  return (
+    <div className="shell">
+      <header>Site Header</header>
+      <main>{children}</main>
+      <footer>© 2026</footer>
+    </div>
+  );
+}

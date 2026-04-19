@@ -1,0 +1,12 @@
+---
+class: non-serializable-prop
+reason: URL instance passed across the boundary; not a plain object. Serialize to href string instead.
+---
+// app/share/page.tsx — Server Component
+import ShareButton from './share-button';
+
+export default async function Page() {
+  const shareUrl = new URL('https://example.com/share/abc123');
+  shareUrl.searchParams.set('utm', 'dm');
+  return <ShareButton url={shareUrl} />;
+}

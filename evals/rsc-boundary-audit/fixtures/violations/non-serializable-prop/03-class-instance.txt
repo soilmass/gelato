@@ -1,0 +1,18 @@
+---
+class: non-serializable-prop
+reason: Custom class instance passed to client child; the instance methods are lost across serialization.
+---
+// app/report/page.tsx — Server Component
+import ReportView from './report-view';
+
+class Report {
+  constructor(public title: string, public rows: number[]) {}
+  sum() {
+    return this.rows.reduce((a, b) => a + b, 0);
+  }
+}
+
+export default async function Page() {
+  const report = new Report('Q4', [10, 20, 30]);
+  return <ReportView report={report} />;
+}
