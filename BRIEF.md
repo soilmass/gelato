@@ -98,11 +98,13 @@ See SKILLS.md for the subsystem-to-skill mapping.
 
 ## v0.1 scope — what you are building now
 
-**Before anything else:** `.claude/skills/git-hygiene/SKILL.md` ships pre-built in this handoff and is auto-loaded by Claude Code the moment this repo opens. Read it before your first commit. Every commit you make in this repo — including the very first scaffolding commit — follows its procedure. Do not rewrite it. Do not modify it in this handoff unless the reference skills reveal a template problem.
+**Before anything else:** `skills/git-hygiene/SKILL.md` ships pre-built in this handoff and is auto-loaded by Claude Code the moment this repo opens. Read it before your first commit. Every commit you make in this repo — including the very first scaffolding commit — follows its procedure. Do not rewrite it. Do not modify it in this handoff unless the reference skills reveal a template problem.
+
+(The skill was originally placed at `.claude/skills/git-hygiene/` in the handoff tarball; it was moved to top-level `skills/` during Step 1 scaffolding per Claude Code plugin distribution convention.)
 
 Then, in this order:
 
-1. **Repo scaffolding** — monorepo with Bun workspaces, all tooling from TOOL_MANIFEST.md wired. Create `.claude-plugin/plugin.json`. Decide whether to keep git-hygiene at `.claude/skills/` (project-only) or move to top-level `skills/` (plugin distribution); update path references in BRIEF.md, SKILLS.md, STARTUP.md, and `.claude/CLAUDE.md` if you move it.
+1. **Repo scaffolding** — monorepo with Bun workspaces, all tooling from TOOL_MANIFEST.md wired. Create `.claude-plugin/plugin.json`. (Resolved during Step 1: git-hygiene moved from `.claude/skills/` to top-level `skills/` to match Claude Code plugin distribution convention; path references updated across BRIEF.md, SKILLS.md, STARTUP.md, and `.claude/CLAUDE.md` in the same commit.)
 2. **Eval runner** — Vitest harness, Promptfoo helper lib, frontmatter pass_rate writer. Also run `git-hygiene`'s eval (deferred from Step 0) as the first thing the runner processes.
 3. **Skill scaffolder** — hand-rolled Bun script (`scripts/new-skill.ts`), reads TEMPLATE.md
 4. **Validation CLI** — walks the skills directory, validates every SKILL.md frontmatter via Zod
@@ -151,16 +153,7 @@ gelato/
 ├── .changeset/
 ├── .claude/
 │   ├── CLAUDE.md                 # auto-loaded project context (ships in handoff)
-│   ├── settings.json             # minimal project settings (ships in handoff)
-│   └── skills/
-│       └── git-hygiene/          # PRE-BUILT — ships in v0.1 handoff, auto-loaded
-│           ├── SKILL.md
-│           ├── scripts/
-│           │   └── check-branch-name.sh
-│           ├── references/
-│           │   ├── conventional-commits-quick-ref.md
-│           │   └── beams-seven-rules.md
-│           └── assets/
+│   └── settings.json             # minimal project settings (ships in handoff)
 ├── .github/
 │   ├── workflows/
 │   │   ├── ci.yml
@@ -171,7 +164,15 @@ gelato/
 ├── .claude-plugin/
 │   ├── plugin.json
 │   └── marketplace.json
-├── skills/                        # plugin distribution path (populated in Step 1+)
+├── skills/                        # plugin distribution path — top-level per Claude Code convention
+│   ├── git-hygiene/              # PRE-BUILT — ships in v0.1 handoff, auto-loaded
+│   │   ├── SKILL.md
+│   │   ├── scripts/
+│   │   │   └── check-branch-name.sh
+│   │   ├── references/
+│   │   │   ├── conventional-commits-quick-ref.md
+│   │   │   └── beams-seven-rules.md
+│   │   └── assets/
 │   ├── core-web-vitals-audit/    # Built in Step 3
 │   │   ├── SKILL.md
 │   │   ├── scripts/
@@ -217,7 +218,7 @@ gelato/
 
 | Step | Work | Stop for review? |
 |---|---|---|
-| 0 | Read `.claude/skills/git-hygiene/SKILL.md` (auto-loaded). Ships pre-built. Use from commit 1. | No — implicit precondition |
+| 0 | Read `skills/git-hygiene/SKILL.md` (auto-loaded). Ships pre-built. Use from commit 1. | No — implicit precondition |
 | 1 | Scaffolding + all tooling from TOOL_MANIFEST.md. Create `.claude-plugin/plugin.json`. Decide final skill path. | **Yes** |
 | 2 | Eval runner + scaffolder + validator scripts. Run git-hygiene's eval. | **Yes** |
 | 3 | Reference skill #1: `core-web-vitals-audit` with passing eval | **Yes** |

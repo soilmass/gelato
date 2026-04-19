@@ -1,0 +1,17 @@
+{
+  "name": "@gelato/schema",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zod schema for Gelato SKILL.md frontmatter.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./skill-frontmatter": "./src/skill-frontmatter.ts"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  }
+}

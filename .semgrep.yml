@@ -1,0 +1,11 @@
+# Gelato Semgrep configuration.
+#
+# Rule packs (p/javascript, p/typescript) are invoked from CI via CLI flags;
+# see .github/workflows/ci.yml.
+#
+# This file exists for local custom rules. v0.1 ships with none; adding rules
+# here is a `ci:` commit per skills/git-hygiene/SKILL.md.
+#
+# Per TOOL_MANIFEST.md, Semgrep never runs as a git hook (too slow for local).
+
+rules: []

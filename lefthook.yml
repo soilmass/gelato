@@ -1,0 +1,27 @@
+# Lefthook configuration — see skills/git-hygiene/SKILL.md § Tool Integration.
+# Never bypass these hooks with `--no-verify`. Fix the underlying issue.
+
+commit-msg:
+  commands:
+    commitlint:
+      run: bunx commitlint --edit {1}
+
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      glob: '*.{ts,tsx,js,jsx,json,jsonc}'
+      run: bunx biome check --write --no-errors-on-unmatched {staged_files}
+      stage_fixed: true
+    gitleaks:
+      # Requires the `gitleaks` binary on PATH. Install via your OS package
+      # manager. Failure mode: secrets must not enter history — rotate any
+      # leaked secret immediately per skills/git-hygiene/SKILL.md § Step 8.
+      run: gitleaks protect --staged --no-banner
+
+pre-push:
+  commands:
+    branch-name:
+      run: bash scripts/check-branch-name.sh
+    typecheck:
+      run: bunx tsc --noEmit

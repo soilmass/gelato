@@ -11,11 +11,11 @@ Do not skip the summary step. Do not begin scaffolding before the user approves.
 ## Quick constraints (full rules in BRIEF.md)
 
 - **Dogmatic stack, no substitutions.** See `TOOL_MANIFEST.md`.
-- **Git discipline from commit 1.** The pre-built skill at `.claude/skills/git-hygiene/SKILL.md` is auto-loaded and applies to every commit you make. Conventional Commits format, imperative subjects ≤72 chars, bodies wrap at 72, atomic commits. Never bypass hooks with `--no-verify`.
+- **Git discipline from commit 1.** The pre-built skill at `skills/git-hygiene/SKILL.md` is auto-loaded and applies to every commit you make. Conventional Commits format, imperative subjects ≤72 chars, bodies wrap at 72, atomic commits. Never bypass hooks with `--no-verify`.
 - **Stop after each build step.** See BRIEF.md build order. Commit, announce, wait for approval, then continue.
-- **Do not modify** `TEMPLATE.md` or `.claude/skills/git-hygiene/SKILL.md` unless a reference skill reveals a template problem — in which case pause and report.
+- **Do not modify** `TEMPLATE.md` or `skills/git-hygiene/SKILL.md` unless a reference skill reveals a template problem — in which case pause and report.
 - **Evals are mandatory.** A skill without a passing eval is not shipped.
-- **Co-author trailer** — when Claude writes >50% of a commit, add `Co-Authored-By: Claude <noreply@anthropic.com>` per `.claude/skills/git-hygiene/SKILL.md` Step 9.
+- **Co-author trailer** — when Claude writes >50% of a commit, add `Co-Authored-By: Claude <noreply@anthropic.com>` per `skills/git-hygiene/SKILL.md` Step 9.
 
 ## Project identity
 
@@ -31,15 +31,12 @@ Do not skip the summary step. Do not begin scaffolding before the user approves.
 ## Where things live
 
 - `/BRIEF.md`, `/TEMPLATE.md`, `/SKILLS.md`, `/EVAL_SPEC.md`, `/TOOL_MANIFEST.md`, `/STARTUP.md` — briefing docs
-- `/.claude/skills/git-hygiene/` — pre-built skill, auto-loaded
+- `/skills/git-hygiene/` — pre-built skill, auto-loaded, ships with the plugin
+- `/.claude-plugin/plugin.json` — plugin manifest
 - `/.claude/CLAUDE.md` — this file
 - `/.claude/settings.json` — project settings
 - `/.git/` — initialized; commit 0 already exists on `main`
 
-## Step 1 of build order note
+## Plugin skill path (resolved during Step 1)
 
-During Step 1 (scaffolding), when you create `.claude-plugin/plugin.json`, decide whether the git-hygiene skill should:
-- **Stay** at `.claude/skills/git-hygiene/` (project-local auto-load only), or
-- **Move** to a top-level `skills/git-hygiene/` matching Claude Code plugin distribution convention (so it ships with the plugin)
-
-Pick per current Claude Code plugin convention. If you move it, update the path references in BRIEF.md, SKILLS.md, STARTUP.md, and this file as part of the scaffolding commit.
+The git-hygiene skill lives at top-level `skills/git-hygiene/` — moved from `.claude/skills/` during Step 1 scaffolding. Claude Code's plugin distribution convention puts shared skills at the plugin root under `skills/<name>/SKILL.md`; content under `.claude/` is project-local and is not distributed when users install the plugin. See the Claude Code plugin reference at <https://code.claude.com/docs/en/plugins-reference.md>.

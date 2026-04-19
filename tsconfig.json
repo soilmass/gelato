@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022"],
+    "types": ["bun"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@gelato/schema": ["packages/schema/src/index.ts"],
+      "@gelato/schema/*": ["packages/schema/src/*"],
+      "@gelato/eval-harness": ["packages/eval-harness/src/index.ts"],
+      "@gelato/eval-harness/*": ["packages/eval-harness/src/*"]
+    }
+  },
+  "include": ["packages/*/src/**/*.ts", "scripts/**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    ".turbo",
+    "coverage",
+    "evals/**/fixtures/**"
+  ]
+}
