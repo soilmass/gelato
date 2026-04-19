@@ -1,0 +1,21 @@
+---
+expected: legitimate
+reason: Client component with both a React hook and a browser API — double client signal, cleanly legitimate.
+---
+'use client';
+import { useEffect, useState } from 'react';
+
+export function WindowSizeBadge() {
+  const [size, setSize] = useState({ w: 0, h: 0 });
+  useEffect(() => {
+    const onResize = () => setSize({ w: window.innerWidth, h: window.innerHeight });
+    onResize();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  return (
+    <span>
+      {size.w}×{size.h}
+    </span>
+  );
+}

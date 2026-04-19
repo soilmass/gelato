@@ -1,0 +1,19 @@
+---
+class: barrel-import-leakage
+reason: Client component imports from @/components (barrel), pulling the whole barrel graph into the client bundle.
+---
+'use client';
+import { useState } from 'react';
+import { Button, Dialog } from '@/components';
+
+export function SettingsModalTrigger() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Open settings</Button>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <p>Settings</p>
+      </Dialog>
+    </>
+  );
+}

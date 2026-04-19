@@ -1,0 +1,12 @@
+---
+class: hydration-mismatch-source
+reason: "Server component renders Date.now() directly — the value will differ between server and client render, causing a hydration mismatch."
+---
+// app/live/page.tsx — Server Component
+export default function LivePage() {
+  return (
+    <footer>
+      <span>Rendered at {Date.now()}</span>
+    </footer>
+  );
+}

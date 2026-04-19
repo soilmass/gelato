@@ -1,0 +1,25 @@
+---
+expected: legitimate
+reason: Plain server component — no 'use client', uses fetch at render time, no hydration-fragile APIs.
+---
+// app/news/page.tsx — Server Component
+interface Story {
+  id: string;
+  title: string;
+  publishedIso: string;
+}
+
+export default async function NewsPage() {
+  const res = await fetch('https://api.example.com/news', { next: { revalidate: 60 } });
+  const stories = (await res.json()) as Story[];
+  return (
+    <ul>
+      {stories.map((s) => (
+        <li key={s.id}>
+          <strong>{s.title}</strong>
+          <time dateTime={s.publishedIso}>{s.publishedIso}</time>
+        </li>
+      ))}
+    </ul>
+  );
+}

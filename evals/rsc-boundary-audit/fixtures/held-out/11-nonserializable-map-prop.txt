@@ -1,0 +1,16 @@
+---
+class: non-serializable-prop
+reason: Server component builds a Map instance and passes it as a prop to a client component. Map does not round-trip the RSC serialization boundary.
+---
+// app/dashboard/page.tsx — Server Component
+import { MetricsPanel } from '@/components/metrics-panel';
+import { db, sessions } from '@/lib/db';
+
+export default async function Page() {
+  const rows = await db.select().from(sessions);
+  const lookup = new Map<string, number>();
+  for (const row of rows) {
+    lookup.set(row.country, (lookup.get(row.country) ?? 0) + 1);
+  }
+  return <MetricsPanel buckets={lookup} />;
+}
