@@ -1,0 +1,19 @@
+---
+class: test-only-committed
+reason: test.describe.only committed — whole suite bypassed except this describe block.
+---
+import { test, expect } from '@playwright/test';
+
+test.describe.only('payment flow', () => {
+  test('user can pay', async ({ page }) => {
+    await page.goto('/pay');
+    await expect(page.getByRole('heading', { name: 'Payment' })).toBeVisible();
+  });
+});
+
+test.describe('everything else', () => {
+  test('home loads', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('heading')).toBeVisible();
+  });
+});

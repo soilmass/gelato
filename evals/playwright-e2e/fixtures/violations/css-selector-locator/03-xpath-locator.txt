@@ -1,0 +1,12 @@
+---
+class: css-selector-locator
+reason: xpath locator — worst of both worlds, fragile and opaque. Swap for semantic locators.
+---
+import { test, expect } from '@playwright/test';
+
+test('admin deletes user', async ({ page }) => {
+  await page.goto('/admin');
+  await page.locator('xpath=//button[@class="delete-user"]').click();
+  await page.locator('xpath=//button[text()="Confirm"]').click();
+  await expect(page.locator('xpath=//div[@role="alert"]')).toBeVisible();
+});

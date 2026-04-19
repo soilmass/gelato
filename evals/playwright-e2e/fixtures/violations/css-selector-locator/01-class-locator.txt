@@ -1,0 +1,13 @@
+---
+class: css-selector-locator
+reason: page.locator with a CSS class selector — breaks when the class changes. Use getByRole.
+---
+import { test, expect } from '@playwright/test';
+
+test('user signs in', async ({ page }) => {
+  await page.goto('/login');
+  await page.locator('.email-input').fill('user@example.com');
+  await page.locator('.password-input').fill('hunter2');
+  await page.locator('.signin-btn').click();
+  await expect(page.locator('.welcome-heading')).toBeVisible();
+});

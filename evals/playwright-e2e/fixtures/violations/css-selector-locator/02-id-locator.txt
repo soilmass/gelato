@@ -1,0 +1,13 @@
+---
+class: css-selector-locator
+reason: page.locator with #id — fragile and not semantic. Prefer getByRole or getByLabel.
+---
+import { test, expect } from '@playwright/test';
+
+test('profile edit', async ({ page }) => {
+  await page.goto('/profile');
+  await page.locator('#name').fill('New Name');
+  await page.locator('#bio').fill('Hello');
+  await page.locator('#save-btn').click();
+  await expect(page.locator('#success-message')).toHaveText('Saved.');
+});

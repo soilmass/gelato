@@ -1,0 +1,15 @@
+---
+expected: safe
+reason: Intentional test.skip with an issue-tracker link — a tracked known-broken marker, not a .only problem.
+---
+import { test, expect } from '@playwright/test';
+
+test.skip('legacy admin flow — see #1234', async ({ page }) => {
+  await page.goto('/admin');
+  await expect(page.getByRole('heading', { name: 'Admin' })).toBeVisible();
+});
+
+test('admin v2 flow', async ({ page }) => {
+  await page.goto('/admin');
+  await expect(page.getByRole('heading', { name: 'Admin' })).toBeVisible();
+});

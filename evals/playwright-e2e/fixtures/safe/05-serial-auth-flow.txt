@@ -1,0 +1,24 @@
+---
+expected: safe
+reason: "Serial-mode auth flow — legitimate use of describe.configure when tests depend on state."
+---
+import { test, expect } from '@playwright/test';
+
+test.describe.configure({ mode: 'serial' });
+
+test.describe('admin panel (requires login)', () => {
+  test('admin can log in', async ({ page }) => {
+    await page.goto('/login');
+    await page.getByLabel('Email').fill('admin@example.com');
+    await page.getByLabel('Password').fill('hunter2');
+    await page.getByRole('button', { name: 'Log in' }).click();
+    await expect(page).toHaveURL('/admin');
+  });
+
+  test('admin can delete a user', async ({ page }) => {
+    await page.goto('/admin/users');
+    await page.getByRole('button', { name: 'Delete user 42' }).click();
+    await page.getByRole('button', { name: 'Confirm' }).click();
+    await expect(page.getByRole('alert')).toHaveText('User deleted.');
+  });
+});

@@ -1,0 +1,11 @@
+---
+class: imperative-assertion
+reason: expect(await locator.isVisible()).toBe(true) — no auto-wait, flakes on any async render.
+---
+import { test, expect } from '@playwright/test';
+
+test('toast appears', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Save' }).click();
+  expect(await page.getByRole('alert').isVisible()).toBe(true);
+});

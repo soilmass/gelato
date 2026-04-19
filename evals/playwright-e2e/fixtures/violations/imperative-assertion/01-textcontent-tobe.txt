@@ -1,0 +1,10 @@
+---
+class: imperative-assertion
+reason: expect(await locator.textContent()).toBe() — single-point-in-time, no auto-wait. Use toHaveText.
+---
+import { test, expect } from '@playwright/test';
+
+test('heading renders', async ({ page }) => {
+  await page.goto('/');
+  expect(await page.getByRole('heading').textContent()).toBe('Welcome');
+});

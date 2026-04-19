@@ -1,0 +1,10 @@
+---
+class: css-selector-locator
+reason: Even nested / combinator CSS (div > .foo) is a raw CSS locator — fragile. Classifier flags.
+---
+import { test, expect } from '@playwright/test';
+
+test('first notification is unread', async ({ page }) => {
+  await page.goto('/notifications');
+  await expect(page.locator('li > .unread-indicator').first()).toBeVisible();
+});

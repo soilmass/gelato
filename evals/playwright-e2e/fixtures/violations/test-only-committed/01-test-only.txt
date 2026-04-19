@@ -1,0 +1,15 @@
+---
+class: test-only-committed
+reason: test.only committed to the repo — CI will run only this test and silently skip the rest.
+---
+import { test, expect } from '@playwright/test';
+
+test.only('my focused test', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('heading')).toBeVisible();
+});
+
+test('the rest of the suite', async ({ page }) => {
+  await page.goto('/about');
+  await expect(page.getByRole('heading')).toBeVisible();
+});
