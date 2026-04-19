@@ -1,0 +1,14 @@
+---
+class: route-over-budget
+reason: Both route and shared exceed budget. Priority is route-over-budget (per-route actionability) — shared is a secondary fix.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 160 },
+    { "path": "/settings", "firstLoadJsKb": 170 }
+  ],
+  "sharedKb": 115,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] }
+  ]
+}

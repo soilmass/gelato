@@ -1,0 +1,15 @@
+---
+class: route-over-budget
+reason: /map at 350 KB — huge over-budget. Mapping lib plus marker clustering ships on first load.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 85 },
+    { "path": "/map", "firstLoadJsKb": 350 }
+  ],
+  "sharedKb": 82,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] },
+    { "chunk": "map", "deps": ["leaflet", "supercluster", "rbush"] }
+  ]
+}

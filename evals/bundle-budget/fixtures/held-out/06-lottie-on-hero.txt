@@ -1,0 +1,13 @@
+---
+class: heavy-library-in-bundle
+reason: lottie-web (~140 KB) bundled into the main chunk — listed as a heavy library even though the route is under budget.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 145 }
+  ],
+  "sharedKb": 95,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next", "lottie-web"] }
+  ]
+}

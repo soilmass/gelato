@@ -1,0 +1,14 @@
+---
+class: shared-budget-exceeded
+reason: Shared just over budget at 105 KB — a single polyfill bundle pushed the shared chunk past 100.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 108 },
+    { "path": "/about", "firstLoadJsKb": 110 }
+  ],
+  "sharedKb": 105,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next", "core-js-compat"] }
+  ]
+}

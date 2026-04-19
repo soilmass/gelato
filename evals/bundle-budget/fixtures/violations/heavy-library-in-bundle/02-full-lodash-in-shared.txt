@@ -1,0 +1,14 @@
+---
+class: heavy-library-in-bundle
+reason: Full lodash bundled into shared chunk — every route ships 25+ KB of lodash. Move to lodash-es.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 95 },
+    { "path": "/blog", "firstLoadJsKb": 110 }
+  ],
+  "sharedKb": 92,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next", "lodash"] }
+  ]
+}

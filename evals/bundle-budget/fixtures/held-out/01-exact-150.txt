@@ -1,0 +1,14 @@
+---
+class: safe
+reason: Route at exactly 150 KB — budget is strict >, not ≥. Not a violation.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 95 },
+    { "path": "/dashboard", "firstLoadJsKb": 150 }
+  ],
+  "sharedKb": 90,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] }
+  ]
+}

@@ -1,0 +1,14 @@
+---
+class: safe
+reason: Shared at exactly 100 KB — budget is strict >, not ≥.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 105 },
+    { "path": "/blog", "firstLoadJsKb": 115 }
+  ],
+  "sharedKb": 100,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] }
+  ]
+}

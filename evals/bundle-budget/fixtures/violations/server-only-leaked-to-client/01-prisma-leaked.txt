@@ -1,0 +1,15 @@
+---
+class: server-only-leaked-to-client
+reason: "@prisma/client in a client chunk — a 'use client' component is importing the DB client."
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 95 },
+    { "path": "/dashboard", "firstLoadJsKb": 145 }
+  ],
+  "sharedKb": 90,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] },
+    { "chunk": "dashboard", "deps": ["@prisma/client", "react-table"] }
+  ]
+}

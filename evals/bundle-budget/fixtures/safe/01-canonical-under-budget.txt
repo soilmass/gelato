@@ -1,0 +1,17 @@
+---
+expected: safe
+reason: All routes well under 150 KB, shared under 100 KB, only lightweight deps in client chunks.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 87 },
+    { "path": "/about", "firstLoadJsKb": 89 },
+    { "path": "/blog", "firstLoadJsKb": 95 },
+    { "path": "/blog/[slug]", "firstLoadJsKb": 112 }
+  ],
+  "sharedKb": 84,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "react-dom", "scheduler", "next"] },
+    { "chunk": "blog", "deps": ["gray-matter", "remark"] }
+  ]
+}

@@ -1,0 +1,14 @@
+---
+expected: safe
+reason: lodash-es is tree-shakeable — not the full lodash. Route well under budget.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 90 },
+    { "path": "/dashboard", "firstLoadJsKb": 118 }
+  ],
+  "sharedKb": 82,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next", "lodash-es"] }
+  ]
+}

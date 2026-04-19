@@ -1,0 +1,15 @@
+---
+class: heavy-library-in-bundle
+reason: moment.js (~70 KB) in /events client chunk — swap for date-fns or dayjs.
+---
+{
+  "routes": [
+    { "path": "/", "firstLoadJsKb": 88 },
+    { "path": "/events", "firstLoadJsKb": 145 }
+  ],
+  "sharedKb": 82,
+  "bundles": [
+    { "chunk": "main", "deps": ["react", "next"] },
+    { "chunk": "events", "deps": ["moment", "ical.js"] }
+  ]
+}
