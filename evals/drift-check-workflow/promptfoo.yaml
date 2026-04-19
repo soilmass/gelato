@@ -1,0 +1,52 @@
+description: drift-check-workflow LLM-as-judge rubric
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a review of a candidate
+    `.github/workflows/drift-<skill>.yml` against Gelato's drift
+    pattern (see `skills/drift-check-workflow/references/drift-pattern.md`).
+    Judge whether the review identifies each violation, cites the
+    Gelato drift pattern, and gives actionable fixes.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: drift-workflow-thoroughness
+    vars:
+      content: |
+        Violations in candidate `.github/workflows/drift-example.yml`:
+
+        1. `drift-workflow-missing-concurrency` (Gelato drift pattern
+           § Rule 5). No top-level `concurrency:` block. Fix:
+             concurrency:
+               group: drift-example
+               cancel-in-progress: true
+
+        2. `drift-workflow-missing-fetch` (Gelato drift pattern §
+           Rule 3). No `curl` or `wget` step — workflow runs weekly
+           but never checks the upstream source. Fix: add a step like
+             - name: Fetch upstream
+               run: curl -fsSL <methodology_source.url> -o /tmp/snapshot.html
+
+        No other shape-level errors.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the review:
+            - names each violation class by its Gelato identifier
+            - cites the Gelato drift pattern as the source
+            - gives a copy-pasteable YAML fix per violation
+            - does NOT invent rules not present in the drift pattern
+          Score 0.5 when the review lists violations but skips
+          citations or concrete fixes.
+          Score 0 when a violation is misclassified, a non-existent
+          rule is cited, or a stated violation is skipped.

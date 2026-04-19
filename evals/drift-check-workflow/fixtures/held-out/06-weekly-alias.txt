@@ -1,0 +1,20 @@
+---
+class: drift-workflow-missing-schedule
+reason: "`@weekly` is a cron alias but this fixture uses it WITHOUT the `- cron:` key form. The current classifier requires `- cron:` syntax."
+---
+name: Drift — Example
+
+on:
+  schedule: '@weekly'
+  workflow_dispatch: {}
+
+concurrency:
+  group: drift-example
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: curl -fsSL https://example.com/spec -o /tmp/spec.html

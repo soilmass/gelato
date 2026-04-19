@@ -1,0 +1,22 @@
+---
+class: drift-workflow-missing-fetch
+reason: Workflow runs but never fetches the upstream source.
+---
+name: Drift — Example
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch: {}
+
+concurrency:
+  group: drift-example
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Placeholder
+        run: echo "TODO — fetch the spec here eventually."

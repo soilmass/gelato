@@ -1,0 +1,25 @@
+---
+reason: Gelato's own drift-conventional-commits workflow — canonical passing case.
+---
+name: Drift — Conventional Commits
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: drift-conventional-commits
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    name: Fetch and compare canonical sources
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch Conventional Commits 1.0.0
+        run: curl -fsSL https://www.conventionalcommits.org/en/v1.0.0/ -o /tmp/cc.html
+      - name: Fetch Beams essay
+        run: curl -fsSL https://cbea.ms/git-commit/ -o /tmp/beams.html

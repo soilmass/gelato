@@ -1,0 +1,21 @@
+---
+class: safe
+reason: "actions/checkout pinned to a full SHA — still a checkout reference."
+---
+name: Drift — Example
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch: {}
+
+concurrency:
+  group: drift-example
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      - run: curl -fsSL https://example.com/spec -o /tmp/spec.html
