@@ -1,0 +1,9 @@
+---
+expected: safe
+reason: Canonical v4 postcss.config.mjs — @tailwindcss/postcss plugin, no legacy tailwindcss name.
+---
+export default {
+  plugins: {
+    '@tailwindcss/postcss': {},
+  },
+};

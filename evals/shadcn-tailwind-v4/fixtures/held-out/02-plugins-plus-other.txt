@@ -1,0 +1,10 @@
+---
+class: safe
+reason: postcss.config.mjs uses @tailwindcss/postcss alongside cssnano — extra plugins are allowed; the tailwind plugin name is correct.
+---
+export default {
+  plugins: {
+    '@tailwindcss/postcss': {},
+    cssnano: { preset: 'default' },
+  },
+};

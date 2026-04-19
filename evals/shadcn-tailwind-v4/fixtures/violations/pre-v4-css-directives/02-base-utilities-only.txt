@@ -1,0 +1,12 @@
+---
+class: pre-v4-css-directives
+reason: v3 @tailwind directives (base + utilities) — partial migration attempt still leaves legacy syntax.
+---
+@tailwind base;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+  }
+}

@@ -1,0 +1,13 @@
+---
+class: string-concat-classname
+reason: Template literal with interpolated variant — no tailwind-merge conflict resolution, no falsy coercion.
+---
+export function Card({ isSelected }: { isSelected: boolean }) {
+  return (
+    <div
+      className={`rounded-md border p-4 ${isSelected ? 'ring-2 ring-primary' : ''}`}
+    >
+      content
+    </div>
+  );
+}

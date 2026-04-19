@@ -1,0 +1,15 @@
+---
+class: pre-v4-css-directives
+reason: Someone half-migrated — added a @theme block but kept the three @tailwind directives. All three must go.
+---
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@theme {
+  --color-brand: oklch(65% 0.2 30);
+}
+
+.card {
+  background: var(--color-background);
+}

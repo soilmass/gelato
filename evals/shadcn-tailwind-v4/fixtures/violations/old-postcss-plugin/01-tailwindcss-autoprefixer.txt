@@ -1,0 +1,10 @@
+---
+class: old-postcss-plugin
+reason: v3 plugin name tailwindcss + autoprefixer — v4 ships @tailwindcss/postcss and bundles autoprefixer.
+---
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};

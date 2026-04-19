@@ -1,0 +1,10 @@
+---
+class: old-postcss-plugin
+reason: Array-form postcss plugins with require('tailwindcss') — the v3 plugin loaded by require call, should use '@tailwindcss/postcss'.
+---
+module.exports = {
+  plugins: [
+    require('tailwindcss'),
+    require('autoprefixer'),
+  ],
+};

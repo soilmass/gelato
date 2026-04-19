@@ -1,0 +1,10 @@
+---
+class: old-postcss-plugin
+reason: ESM postcss.config.mjs with legacy tailwindcss plugin name — should be '@tailwindcss/postcss'.
+---
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};

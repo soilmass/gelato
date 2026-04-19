@@ -1,0 +1,19 @@
+---
+class: v3-config-shape
+reason: Classic v3 tailwind.config.js — content array + theme.extend — ignored by v4's CSS-first engine.
+---
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        brand: '#ff0080',
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [],
+};

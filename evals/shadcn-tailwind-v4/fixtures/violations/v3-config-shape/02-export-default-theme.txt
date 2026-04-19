@@ -1,0 +1,17 @@
+---
+class: v3-config-shape
+reason: export default with content array + theme extend — same v3 shape, ESM syntax.
+---
+import type { Config } from 'tailwindcss';
+
+export default {
+  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}'],
+  theme: {
+    extend: {
+      spacing: {
+        18: '4.5rem',
+      },
+    },
+  },
+  plugins: [],
+} satisfies Config;

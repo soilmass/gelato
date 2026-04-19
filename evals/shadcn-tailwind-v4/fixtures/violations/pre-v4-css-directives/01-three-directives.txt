@@ -1,0 +1,11 @@
+---
+class: pre-v4-css-directives
+reason: All three v3 @tailwind directives — should be a single @import "tailwindcss";.
+---
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-btn {
+  @apply rounded-md px-4 py-2;
+}
