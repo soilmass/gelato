@@ -1,0 +1,14 @@
+---
+class: safe
+reason: disableRules with trailing line comment — adjacent-comment rule satisfied.
+---
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('ok', async ({ page }) => {
+  await page.goto('/');
+  const results = await new AxeBuilder({ page })
+    .disableRules(['region']) // region check misfires on Next.js app-dir fragments
+    .analyze();
+  expect(results.violations).toEqual([]);
+});

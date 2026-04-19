@@ -1,0 +1,14 @@
+---
+class: disabled-rules-undocumented
+reason: disableRules silences color-contrast with no explanatory comment.
+---
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('docs home scan', async ({ page }) => {
+  await page.goto('/docs');
+  const results = await new AxeBuilder({ page })
+    .disableRules(['color-contrast', 'landmark-one-main'])
+    .analyze();
+  expect(results.violations).toEqual([]);
+});

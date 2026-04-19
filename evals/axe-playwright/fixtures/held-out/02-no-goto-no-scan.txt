@@ -1,0 +1,10 @@
+---
+class: safe
+reason: Spec has no page.goto — Step 1 doesn't activate for unit-style tests.
+---
+import { test, expect } from '@playwright/test';
+
+test('helper unit', async () => {
+  const a = 1;
+  expect(a).toEqual(1);
+});

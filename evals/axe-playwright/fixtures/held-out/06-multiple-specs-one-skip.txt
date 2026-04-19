@@ -1,0 +1,17 @@
+---
+class: page-without-axe-scan
+reason: Spec visits a route but the file contains no AxeBuilder and no axe wrapper import.
+---
+import { test, expect } from '@playwright/test';
+
+test.describe('blog', () => {
+  test('post renders', async ({ page }) => {
+    await page.goto('/blog/hello-world');
+    await expect(page.locator('article')).toBeVisible();
+  });
+
+  test('archive renders', async ({ page }) => {
+    await page.goto('/blog');
+    await expect(page.locator('ul')).toBeVisible();
+  });
+});

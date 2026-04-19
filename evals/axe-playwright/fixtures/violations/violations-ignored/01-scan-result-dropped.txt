@@ -1,0 +1,12 @@
+---
+class: violations-ignored
+reason: AxeBuilder.analyze() result is logged but never asserted.
+---
+import { test } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('pricing has no a11y violations', async ({ page }) => {
+  await page.goto('/pricing');
+  const results = await new AxeBuilder({ page }).analyze();
+  console.log(results.violations);
+});

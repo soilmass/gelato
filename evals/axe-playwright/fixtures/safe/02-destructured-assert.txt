@@ -1,0 +1,11 @@
+---
+reason: Destructured { violations } is directly asserted against [].
+---
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('pricing clean', async ({ page }) => {
+  await page.goto('/pricing');
+  const { violations } = await new AxeBuilder({ page }).analyze();
+  expect(violations).toEqual([]);
+});

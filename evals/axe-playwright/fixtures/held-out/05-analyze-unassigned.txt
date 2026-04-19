@@ -1,0 +1,11 @@
+---
+class: violations-ignored
+reason: .analyze() return value not assigned to any binding — result discarded.
+---
+import { test } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('scan pricing', async ({ page }) => {
+  await page.goto('/pricing');
+  await new AxeBuilder({ page }).analyze();
+});

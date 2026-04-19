@@ -1,0 +1,14 @@
+---
+class: scan-limited-to-bestpractice-only
+reason: runOnly tags includes only best-practice; skips the WCAG 2.2 AA rule pack.
+---
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('narrow scan', async ({ page }) => {
+  await page.goto('/');
+  const results = await new AxeBuilder({ page })
+    .options({ runOnly: { type: 'tag', values: ['best-practice'] } })
+    .analyze();
+  expect(results.violations).toEqual([]);
+});
