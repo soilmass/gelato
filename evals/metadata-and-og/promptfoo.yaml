@@ -1,10 +1,13 @@
-# Promptfoo config for metadata-and-og LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for metadata-and-og LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. A v0.2 `length-rewrite`
-# rubric would judge whether a generated rewrite of an over-long title
-# preserves meaning while fitting Google's 60-char crop.
+# Invoked by packages/eval-harness's judgeWithPromptfoo() wrapper via
+# `bunx promptfoo eval --config <this> --filter-description <rubric>`.
+#
+# One rubric per SKILL.md § Evaluation:
+#   - length-rewrite — judges whether a rewrite of an over-long title
+#     preserves meaning while fitting Google's 60-char crop
 
-description: metadata-and-og LLM-as-judge rubrics (deferred to v0.2)
+description: metadata-and-og LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -13,6 +16,48 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is an original page-metadata element and a proposed
+    rewrite that shortens it to fit a search-engine length budget.
+    Assess whether the rewrite preserves the core meaning of the
+    original while fitting the stated budget.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: length-rewrite
+    vars:
+      content: |
+        Element: <title> (Google's effective crop is ~60 characters)
+        Original (82 chars):
+          "Introducing Our Brand New Revolutionary Platform for Modern
+          Full-Stack TypeScript Development Teams in 2025"
+        Rewrite (57 chars):
+          "Gelato — Dogmatic Full-Stack TypeScript Kit for 2025"
+
+        The rewrite preserves:
+          - product name (Gelato)
+          - the positioning (dogmatic full-stack TypeScript)
+          - the time signal (2025)
+        It drops:
+          - marketing filler ("Introducing", "Brand New Revolutionary")
+          - audience detail ("Modern", "Development Teams")
+        Net: a searchable, recognizable headline that fits the 60-char
+        crop with three characters to spare.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the rewrite:
+            - fits the stated length budget (≤ 60 chars for <title>)
+            - preserves the product / primary noun of the original
+            - preserves the distinctive claim (positioning, key
+              differentiator) that would cause a searcher to click
+            - drops only filler (adjectives, generic audience tags,
+              marketing verbs like "Introducing")
+          Score 0 when the rewrite exceeds the budget, substitutes a
+          different product, or drops the distinctive claim. Score
+          0.5 when the rewrite is technically compliant but loses one
+          of the three preservation goals above.

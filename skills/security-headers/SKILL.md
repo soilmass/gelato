@@ -38,7 +38,7 @@ metadata:
     - "bun@1.1+"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T05:43:07.879Z"
+    last_run: "2026-04-19T11:46:56.860Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Six OWASP-baseline headers enforced mechanically:

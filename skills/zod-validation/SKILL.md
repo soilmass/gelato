@@ -36,9 +36,9 @@ metadata:
     - "typescript@5+"
     - "bun@1.1+"
   eval:
-    pass_rate: null
-    last_run: null
-    n_cases: null
+    pass_rate: 1
+    last_run: "2026-04-19T11:46:57.719Z"
+    n_cases: 4
   changelog: >
     v1.0 — initial. Four violation classes (missing-at-boundary,
     validation-after-consumption, parse-should-be-safe-parse,

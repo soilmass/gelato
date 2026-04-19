@@ -1,10 +1,14 @@
-# Promptfoo config for security-headers LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for security-headers LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. A v0.2 `fix-orderedness`
-# rubric would judge generated remediation plans against the SKILL § Step 3
-# priority order. This file exists so the test's rubric references resolve.
+# Invoked by packages/eval-harness's judgeWithPromptfoo() wrapper via
+# `bunx promptfoo eval --config <this> --filter-description <rubric>`.
+#
+# One rubric per SKILL.md § Evaluation:
+#   - fix-orderedness — judges whether a remediation plan orders fixes
+#     by severity per SKILL.md § Step 3 priority (CSP / HSTS before
+#     X-Frame / Referrer-Policy, missing-header before deprecated-value)
 
-description: security-headers LLM-as-judge rubrics (deferred to v0.2)
+description: security-headers LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -13,6 +17,69 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is a remediation plan for a Next.js application with
+    multiple security-header violations. Assess whether the plan orders
+    the fixes by severity — the highest-leverage changes first, the
+    cosmetic ones last.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: fix-orderedness
+    vars:
+      content: |
+        Audit findings on app/_middleware.ts:
+          1. missing-header: no Content-Security-Policy (CSP)
+          2. missing-header: no Strict-Transport-Security (HSTS)
+          3. deprecated-value: X-XSS-Protection: "1; mode=block"
+          4. over-permissive: X-Frame-Options: ALLOWALL
+          5. conflicting-source: Referrer-Policy set twice with
+             different values
+
+        Proposed remediation order:
+
+          Step 1 (highest severity, XSS-prevention):
+            Add Content-Security-Policy with a strict default-src,
+            script-src nonce, and object-src 'none'.
+
+          Step 2 (transport security):
+            Add Strict-Transport-Security: max-age=63072000;
+            includeSubDomains; preload.
+
+          Step 3 (clickjacking, HSTS-adjacent):
+            Fix X-Frame-Options from ALLOWALL → DENY (or remove in
+            favor of CSP frame-ancestors).
+
+          Step 4 (conflicting-source cleanup):
+            Remove duplicate Referrer-Policy entries, keep
+            strict-origin-when-cross-origin.
+
+          Step 5 (cosmetic / browser-deprecated):
+            Remove X-XSS-Protection entirely — the header is
+            deprecated; modern browsers ignore it.
+
+        Rationale: CSP + HSTS deliver the largest real-world
+        attack-surface reduction; XFO/Referrer cleanups matter but
+        are secondary; the deprecated X-XSS-Protection fix is last
+        because it has essentially zero defensive value today.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the remediation plan:
+            - opens with CSP or HSTS (the two highest-leverage
+              headers for a Next.js app)
+            - places missing-header fixes before deprecated-value
+              fixes
+            - places structural fixes (CSP, HSTS, XFO) before
+              cosmetic ones (deprecated X-XSS-Protection, legacy
+              cache-control)
+            - justifies the ordering with a rationale, not just a
+              list
+          Score 0 when deprecated-value fixes or cosmetic fixes are
+          listed first, or when the plan is un-ordered. Score 0.5
+          when the ordering is mostly correct but lacks rationale or
+          mixes severity tiers out of order in one step.
