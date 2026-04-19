@@ -11,10 +11,15 @@ on:
     - cron: '0 4 * * 1'
   workflow_dispatch:
 
+concurrency:
+  group: drift-conventional-commits
+  cancel-in-progress: true
+
 jobs:
   drift:
     name: Fetch and compare canonical sources
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
