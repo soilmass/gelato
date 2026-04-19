@@ -1,0 +1,14 @@
+---
+class: hardcoded-dsn
+reason: Client config with inlined DSN — ships the DSN in the browser bundle forever.
+---
+import * as Sentry from '@sentry/nextjs';
+
+Sentry.init({
+  dsn: 'https://publicKey@o555.ingest.us.sentry.io/999',
+  environment: 'production',
+  tracesSampleRate: 0.1,
+  beforeSend(event) {
+    return event;
+  },
+});

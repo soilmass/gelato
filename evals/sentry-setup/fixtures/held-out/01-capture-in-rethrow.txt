@@ -1,0 +1,19 @@
+---
+class: safe
+reason: Catch block logs and re-throws — classifier accepts captureException OR throw (re-throw reaches Sentry's global handler).
+---
+import { logger } from '@/lib/logger';
+import * as Sentry from '@sentry/nextjs';
+import { db, posts } from '@/lib/db';
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    await db.insert(posts).values(body);
+    return Response.json({ ok: true });
+  } catch (err) {
+    logger.error({ err }, 'posts.create failed');
+    Sentry.captureException(err);
+    throw err;
+  }
+}

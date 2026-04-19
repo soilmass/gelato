@@ -1,0 +1,15 @@
+---
+class: hardcoded-dsn
+reason: DSN assigned to a module-local constant and passed in — still a hardcoded literal, still ships to git.
+---
+import * as Sentry from '@sentry/nextjs';
+
+const DSN = 'https://fedcba@o11111.ingest.sentry.io/22222';
+
+Sentry.init({
+  dsn: DSN,
+  tracesSampleRate: 0.1,
+  beforeSend(event) {
+    return event;
+  },
+});

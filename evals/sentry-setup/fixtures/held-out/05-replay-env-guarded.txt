@@ -1,0 +1,15 @@
+---
+class: safe
+reason: replaysSessionSampleRate env-guarded — not literal 1.0 — classifier accepts the conditional form.
+---
+import * as Sentry from '@sentry/nextjs';
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  tracesSampleRate: 0.1,
+  replaysSessionSampleRate: process.env.NODE_ENV === 'production' ? 0.01 : 1.0,
+  replaysOnErrorSampleRate: process.env.NODE_ENV === 'production' ? 1.0 : 0,
+  beforeSend(event) {
+    return event;
+  },
+});

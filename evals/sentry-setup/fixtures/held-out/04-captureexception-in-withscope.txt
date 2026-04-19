@@ -1,0 +1,22 @@
+---
+class: safe
+reason: captureException is called inside a Sentry.withScope block. Classifier finds the call regardless of nesting.
+---
+import { logger } from '@/lib/logger';
+import * as Sentry from '@sentry/nextjs';
+
+export async function POST(req: Request) {
+  try {
+    await doWork(req);
+    return Response.json({ ok: true });
+  } catch (err) {
+    logger.error({ err }, 'work failed');
+    Sentry.withScope((scope) => {
+      scope.setTag('route', 'work');
+      Sentry.captureException(err);
+    });
+    return Response.json({ ok: false }, { status: 500 });
+  }
+}
+
+async function doWork(_req: Request): Promise<void> {}
