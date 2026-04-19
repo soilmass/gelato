@@ -1,0 +1,17 @@
+---
+expected: legitimate
+reason: Server component constructs a Date locally and renders it as a deterministic ISO string inside text content. No prop crosses the boundary, so no serialization concern.
+---
+// app/log/page.tsx — Server Component
+
+export default async function Log() {
+  const now = new Date();
+  return (
+    <section>
+      <h1>Build log</h1>
+      <p>
+        Generated <time dateTime={now.toISOString()}>{now.toISOString()}</time>.
+      </p>
+    </section>
+  );
+}

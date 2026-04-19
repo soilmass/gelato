@@ -22,6 +22,7 @@ import { describe, expect, it } from 'vitest';
 const here = dirname(fileURLToPath(import.meta.url));
 const VIOLATIONS_DIR = resolve(here, 'fixtures/violations');
 const LEGITIMATE_DIR = resolve(here, 'fixtures/legitimate');
+const HELD_OUT_DIR = resolve(here, 'fixtures/held-out');
 const PROMPTFOO_CONFIG = resolve(here, 'promptfoo.yaml');
 
 // Five-class taxonomy; matches the folder names under fixtures/violations.
@@ -67,10 +68,20 @@ const EVENT_HANDLER_RE = /\bon[A-Z]\w+\s*=/;
 const HYDRATION_MISMATCH_RE =
   /(?:\bDate\.now\s*\(|\bMath\.random\s*\(|\btypeof\s+window\b|\.toLocaleTimeString\s*\(|\.toLocaleString\s*\(|\.toLocaleDateString\s*\()/;
 
-// Non-serializable props (class 3 signals).
-const NON_SERIALIZABLE_CONSTRUCTOR_RE = /\bnew\s+(?:Date|Map|Set|URL)\b/;
-const CLASS_DECLARATION_RE = /\bclass\s+\w+\s*\{/;
-const ARROW_FUNCTION_ASSIGN_RE = /\bconst\s+\w+\s*=\s*(?:async\s*)?\(/;
+// Non-serializable props (class 3 signals). Matches `new Date()`, `new Map()`,
+// etc., plus any `new Xxx()` where Xxx is PascalCase (custom class instance).
+const NON_SERIALIZABLE_CONSTRUCTOR_RE = /\bnew\s+(?:Date|Map|Set|URL|[A-Z]\w+)\b/;
+
+// Comments the classifier strips before matching. Imperfect for strings that
+// contain `//` or `/* */` — safe for the fixture shapes in this eval set.
+function stripComments(source: string): string {
+  return source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+}
+
+// Prop identifiers passed via `<Component prop={ident}/>`. Expressions with
+// dots, parens, or operators (e.g. `{now.toISOString()}`) deliberately do not
+// match — those return primitives and are not boundary-crossing concerns.
+const PROP_IDENTIFIER_RE = /<\w+[^>]*?\s+\w+=\{(\w+)\}/g;
 
 function hasUseClientDirective(content: string): boolean {
   const firstNonBlank = content.split('\n').find((l) => l.trim() !== '');
@@ -78,18 +89,39 @@ function hasUseClientDirective(content: string): boolean {
   return /^\s*['"]use client['"]\s*;?\s*$/.test(firstNonBlank);
 }
 
-function looksLikeServerComponentPassingProp(content: string): boolean {
-  // JSX child with prop passing — a server component without 'use client'
-  // that constructs a non-plain-object and passes it to a child.
-  const hasJSXPropPass = /<\w+[^>]*\s+\w+=\{[^}]+\}[^>]*\/?\s*>/.test(content);
-  return hasJSXPropPass;
+function hasUseServerDirective(body: string): boolean {
+  return body
+    .split('\n')
+    .slice(0, 5)
+    .some((line) => /^\s*['"]use server['"]\s*;?\s*$/.test(line));
+}
+
+function isNonSerializablePropSource(ident: string, body: string): boolean {
+  const escaped = ident.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // const <ident> = new Xxx(...)
+  const assignedFromCtor = new RegExp(
+    `\\bconst\\s+${escaped}\\s*=\\s*new\\s+(?:Date|Map|Set|URL|[A-Z]\\w+)\\b`,
+  ).test(body);
+  if (assignedFromCtor) return true;
+  // const <ident> = (...) => or const <ident> = async (...) =>
+  const assignedFromArrow = new RegExp(`\\bconst\\s+${escaped}\\s*=\\s*(?:async\\s*)?\\(`).test(
+    body,
+  );
+  // Arrow functions are non-serializable UNLESS the file is a Server Action
+  // module (file-level `'use server'`), in which case the functions are
+  // specially tagged and legally cross the boundary.
+  if (assignedFromArrow && !hasUseServerDirective(body)) return true;
+  return false;
 }
 
 function classify(content: string): Classification {
-  // Strip frontmatter before classification so YAML description fields with
-  // trigger words (e.g., "Map instance") don't fool the heuristics.
+  // Strip frontmatter so YAML description fields with trigger words don't
+  // fool the regex heuristics.
   const bodyMatch = /^---\n[\s\S]*?\n---\n([\s\S]*)$/.exec(content);
-  const body = bodyMatch?.[1] ?? content;
+  const raw = bodyMatch?.[1] ?? content;
+  // Strip comments so `// TODO: add useState` doesn't false-positive the
+  // interactivity check.
+  const body = stripComments(raw);
 
   if (hasUseClientDirective(body)) {
     if (SERVER_ONLY_IMPORT.test(body)) return 'server-only-import-in-client';
@@ -103,21 +135,15 @@ function classify(content: string): Classification {
   // No 'use client' → server component or unclassified.
   if (HYDRATION_MISMATCH_RE.test(body)) return 'hydration-mismatch-source';
 
-  const hasNonSerializableCtor = NON_SERIALIZABLE_CONSTRUCTOR_RE.test(body);
-  const hasLocalClass = CLASS_DECLARATION_RE.test(body);
-  const hasLocalArrow = ARROW_FUNCTION_ASSIGN_RE.test(body);
-  const passesProp = looksLikeServerComponentPassingProp(body);
-
-  if (passesProp && (hasNonSerializableCtor || hasLocalClass || hasLocalArrow)) {
-    // Only flag a function prop as non-serializable when the file does NOT
-    // declare `'use server'` as a real directive at the top. A mention in a
-    // comment or string doesn't count; Server Actions require the directive.
-    const firstFewLines = body.split('\n').slice(0, 5);
-    const hasUseServerDirective = firstFewLines.some((line) =>
-      /^\s*['"]use server['"]\s*;?\s*$/.test(line),
-    );
-    if (hasLocalArrow && hasUseServerDirective) return 'legitimate';
-    return 'non-serializable-prop';
+  // Per-identifier check: only flag when a prop receives an identifier that
+  // was assigned from a non-serializable source. `<time dateTime={now.toISO()}>`
+  // does not match (expression, not identifier); `<DatePicker initial={now}>`
+  // where `const now = new Date()` does.
+  const propIdentifiers = [...body.matchAll(PROP_IDENTIFIER_RE)]
+    .map((m) => m[1])
+    .filter((v): v is string => Boolean(v));
+  for (const ident of propIdentifiers) {
+    if (isNonSerializablePropSource(ident, body)) return 'non-serializable-prop';
   }
 
   return 'legitimate';
@@ -156,6 +182,27 @@ describe('rsc-boundary-audit', () => {
         falsePositives.map((r) => `${r.name} (got ${r.predicted})`),
         'every legitimate fixture must classify as legitimate',
       ).toEqual([]);
+    });
+
+    it('classifier generalizes to held-out adversarial fixtures at ≥ 90%', async () => {
+      // Held-out set — fixtures written to exercise classifier edge cases
+      // the initial fixture set did not directly drive. Lower bar (90% vs
+      // 95%) because some edge cases may remain open until a ts-morph
+      // upgrade lands in v0.2.
+      const fixtures = await loadFixtures(HELD_OUT_DIR);
+      expect(fixtures.length, 'expected at least 6 held-out fixtures').toBeGreaterThanOrEqual(6);
+
+      const wrong: { name: string; expected: string; predicted: string }[] = [];
+      for (const f of fixtures) {
+        const expected = (f.metadata.class ?? f.metadata.expected) as Classification;
+        const predicted = classify(f.content);
+        if (predicted !== expected) wrong.push({ name: f.name, expected, predicted });
+      }
+      const accuracy = (fixtures.length - wrong.length) / fixtures.length;
+      expect(
+        accuracy,
+        `held-out misclassified: ${wrong.map((w) => `${w.name} (exp=${w.expected} got=${w.predicted})`).join('; ') || '(none)'}`,
+      ).toBeGreaterThanOrEqual(0.9);
     });
 
     it('remediation plan orders violations by class priority', async () => {

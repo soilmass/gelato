@@ -1,0 +1,12 @@
+---
+expected: legitimate
+reason: Client component imports from a specific leaf path under @/components, not from the top-level barrel. The classifier must distinguish @/components (barrel) from @/components/button (leaf).
+---
+'use client';
+import { Button } from '@/components/button';
+import { useState } from 'react';
+
+export function CTA() {
+  const [clicked, setClicked] = useState(false);
+  return <Button onClick={() => setClicked(true)}>{clicked ? 'Done' : 'Go'}</Button>;
+}

@@ -1,0 +1,17 @@
+---
+expected: legitimate
+reason: Client component imports a single utility via a deep path (@/lib/utils/cn), not via the @/lib barrel. Legitimate client code using the skill's recommended import-shape.
+---
+'use client';
+import { cn } from '@/lib/utils/cn';
+import { useState } from 'react';
+
+export function Field({ label }: { label: string }) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <label className={cn('field', focused && 'field-focus')}>
+      <span>{label}</span>
+      <input onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} />
+    </label>
+  );
+}

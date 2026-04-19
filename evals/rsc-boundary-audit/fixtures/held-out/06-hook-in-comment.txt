@@ -1,0 +1,21 @@
+---
+class: unnecessary-directive
+reason: The 'use client' directive is present but the only mention of useState is in a TODO comment. A regex classifier that does not strip comments before matching would false-negative this as "legitimate".
+---
+'use client';
+
+// TODO: add loading state with useState + useEffect once the endpoint
+// exposes a progress field; for now render the static shape.
+
+interface Plan {
+  name: string;
+  price: number;
+}
+
+export function PlanDisplay({ plan }: { plan: Plan }) {
+  return (
+    <div>
+      <strong>{plan.name}</strong>: ${plan.price}
+    </div>
+  );
+}
