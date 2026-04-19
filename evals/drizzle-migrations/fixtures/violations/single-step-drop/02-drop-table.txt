@@ -1,0 +1,5 @@
+---
+class: single-step-drop
+reason: Drops a table in a single migration without a preceding expand; foreign keys and application queries break instantly.
+---
+DROP TABLE old_payments;

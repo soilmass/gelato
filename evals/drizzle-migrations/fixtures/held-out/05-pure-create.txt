@@ -1,0 +1,14 @@
+---
+expected: safe
+reason: Multi-statement migration that only creates new objects; exercises the classifier's 'no violation matched' path.
+---
+CREATE TABLE api_keys (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id integer NOT NULL REFERENCES users(id),
+  prefix varchar(8) NOT NULL,
+  hashed_secret text NOT NULL,
+  last_used_at timestamptz,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX api_keys_user_id_idx ON api_keys (user_id);
+CREATE UNIQUE INDEX api_keys_prefix_uniq ON api_keys (prefix);

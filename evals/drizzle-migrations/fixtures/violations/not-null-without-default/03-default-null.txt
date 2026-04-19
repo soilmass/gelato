@@ -1,0 +1,5 @@
+---
+class: not-null-without-default
+reason: Explicit DEFAULT NULL is not a valid default for a NOT NULL column — it's equivalent to supplying no default.
+---
+ALTER TABLE users ADD COLUMN phone_number text NOT NULL DEFAULT NULL;

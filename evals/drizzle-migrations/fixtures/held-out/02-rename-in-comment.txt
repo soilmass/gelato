@@ -1,0 +1,8 @@
+---
+expected: safe
+reason: RENAME COLUMN appears only in a SQL comment documenting the historical plan. A classifier without comment-stripping would false-positive.
+---
+-- Historical context: we considered ALTER TABLE users RENAME COLUMN name TO full_name
+-- but rejected that approach in favor of the three-step expand/contract below.
+-- This migration is only the first step (expand).
+ALTER TABLE users ADD COLUMN full_name text;

@@ -1,0 +1,5 @@
+---
+class: single-step-drop
+reason: Drops a column in a single migration; running app instances that still read it fail immediately.
+---
+ALTER TABLE users DROP COLUMN legacy_id;

@@ -1,0 +1,5 @@
+---
+class: not-null-without-default
+reason: NOT NULL without DEFAULT on a non-empty table — any insert from a pre-deploy app instance that omits the column fails.
+---
+ALTER TABLE users ADD COLUMN email_verified boolean NOT NULL;

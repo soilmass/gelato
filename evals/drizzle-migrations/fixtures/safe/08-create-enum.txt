@@ -1,0 +1,5 @@
+---
+expected: safe
+reason: New enum type creation; no existing table depends on it.
+---
+CREATE TYPE subscription_status AS ENUM ('active', 'paused', 'cancelled');

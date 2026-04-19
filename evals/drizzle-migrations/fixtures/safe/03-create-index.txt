@@ -1,0 +1,5 @@
+---
+expected: safe
+reason: New index on an existing column; no schema shape change.
+---
+CREATE INDEX users_created_at_idx ON users (created_at);

@@ -1,0 +1,5 @@
+---
+class: single-step-type-change
+reason: Precision change on a numeric column forces a full rewrite; existing decimal values may truncate silently on narrowing.
+---
+ALTER TABLE orders ALTER COLUMN price TYPE numeric(12, 4);

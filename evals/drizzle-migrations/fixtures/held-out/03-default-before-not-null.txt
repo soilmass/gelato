@@ -1,0 +1,5 @@
+---
+expected: safe
+reason: DEFAULT clause precedes NOT NULL in this add — a classifier that requires a specific ordering would false-positive.
+---
+ALTER TABLE users ADD COLUMN is_admin boolean DEFAULT false NOT NULL;
