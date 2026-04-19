@@ -1,0 +1,13 @@
+---
+class: sitemap-missing-url
+filename: app/sitemap.ts
+reason: Sitemap entry lacks url field.
+---
+import type { MetadataRoute } from 'next';
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    { lastModified: new Date(), priority: 1 },
+    { url: 'https://ex.com/about', lastModified: new Date() },
+  ];
+}

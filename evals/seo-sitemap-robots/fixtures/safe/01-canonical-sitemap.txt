@@ -1,0 +1,16 @@
+---
+filename: app/sitemap.ts
+reason: Canonical sitemap with url + Date lastModified + valid BCP 47 locales.
+---
+import type { MetadataRoute } from 'next';
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    { url: 'https://ex.com/', lastModified: new Date(), priority: 1 },
+    { url: 'https://ex.com/about', lastModified: '2026-04-19T00:00:00Z' },
+    {
+      url: 'https://ex.com/docs',
+      alternates: { languages: { en: 'https://ex.com/docs', 'es-MX': 'https://ex.com/es/docs' } },
+    },
+  ];
+}

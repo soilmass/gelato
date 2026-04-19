@@ -1,0 +1,12 @@
+---
+filename: app/sitemap.ts
+reason: ISO 8601 string lastModified is accepted.
+---
+import type { MetadataRoute } from 'next';
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    { url: 'https://ex.com/', lastModified: '2026-04-19' },
+    { url: 'https://ex.com/now', lastModified: '2026-04-19T15:00:00Z' },
+  ];
+}
