@@ -37,9 +37,9 @@ metadata:
     - "middleware.ts or next.config.ts headers()"
     - "bun@1.1+"
   eval:
-    pass_rate: null
-    last_run: null
-    n_cases: null
+    pass_rate: 1
+    last_run: "2026-04-19T05:43:07.879Z"
+    n_cases: 4
   changelog: >
     v1.0 — initial. Six OWASP-baseline headers enforced mechanically:
     Content-Security-Policy, Strict-Transport-Security, X-Content-Type-
