@@ -1,0 +1,10 @@
+---
+class: slot-without-layout-prop
+reason: "@feed exists without any parent layout.tsx at all — dead slot."
+---
+// FILE: app/page.tsx
+export default function Home() { return <h1>hi</h1>; }
+// FILE: app/@feed/default.tsx
+export default function D() { return null; }
+// FILE: app/@feed/page.tsx
+export default function F() { return <ul>…</ul>; }

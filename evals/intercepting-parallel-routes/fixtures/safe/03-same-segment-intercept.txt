@@ -1,0 +1,11 @@
+---
+reason: "(.)photo in feed intercepts feed/photo; base route exists in-segment."
+---
+// FILE: app/layout.tsx
+export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</>; }
+// FILE: app/feed/page.tsx
+export default function Feed() { return <ul>…</ul>; }
+// FILE: app/feed/photo/page.tsx
+export default function FeedPhoto() { return <img />; }
+// FILE: app/feed/(.)photo/page.tsx
+export default function FeedPhotoModal() { return <dialog>…</dialog>; }

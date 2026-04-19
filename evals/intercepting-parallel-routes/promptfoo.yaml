@@ -1,0 +1,88 @@
+description: intercepting-parallel-routes LLM-as-judge rubric
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a remediation for an intercepting-parallel-
+    routes violation in a Next.js 15 App Router codebase. Judge
+    whether the fix is implementable and satisfies the Next.js
+    parallel + intercepting route conventions.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: route-structure-remediation
+    vars:
+      content: |
+        Violation class: parallel-missing-default
+
+        Rule cited: Next.js docs — Parallel Routes. Every @slot
+        requires a default.tsx; without it, navigating away from
+        the slot's URL leaves the slot rendering null and breaks
+        the layout.
+
+        Original tree:
+          app/layout.tsx
+          app/@feed/page.tsx   ← no default.tsx
+
+        Original layout (correct):
+          export default function Layout({
+            children,
+            feed,
+          }: {
+            children: React.ReactNode;
+            feed: React.ReactNode;
+          }) {
+            return <>{children}{feed}</>;
+          }
+
+        Fix: add app/@feed/default.tsx. For a slot whose default
+        state is "nothing rendered", return null:
+
+          // app/@feed/default.tsx
+          export default function Default() {
+            return null;
+          }
+
+        Or return a sensible empty-state skeleton:
+
+          // app/@feed/default.tsx
+          export default function Default() {
+            return (
+              <section className="text-sm text-neutral-500">
+                Pick a post to see your feed.
+              </section>
+            );
+          }
+
+        Why it satisfies the rule:
+          - Any URL that doesn't match app/@feed/page.tsx's route
+            now resolves to default.tsx, so the layout's
+            {feed} slot always renders SOMETHING.
+          - Hard-refresh and deep-link scenarios no longer
+            collapse the layout.
+          - The layout signature is unchanged — the fix is a
+            file addition, not a contract change.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the fix:
+            - cites the Next.js parallel routes docs
+            - shows the corrected file tree
+            - adds default.tsx at the correct path (under the
+              @slot folder)
+            - explains WHY null (or a sensible empty) is
+              appropriate
+            - does not modify the layout signature
+          Score 0.5 when the fix adds default.tsx but omits
+          the citation or rationale.
+          Score 0 when default.tsx is placed at the wrong path,
+          or when the layout signature is changed unnecessarily.

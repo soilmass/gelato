@@ -1,0 +1,25 @@
+---
+reason: "Canonical parallel-route layout with two slots and defaults."
+---
+// FILE: app/layout.tsx
+export default function Layout({
+  children,
+  modal,
+  feed,
+}: {
+  children: React.ReactNode;
+  modal: React.ReactNode;
+  feed: React.ReactNode;
+}) {
+  return <>{children}{modal}{feed}</>;
+}
+// FILE: app/page.tsx
+export default function Home() { return <h1>Home</h1>; }
+// FILE: app/@modal/default.tsx
+export default function ModalDefault() { return null; }
+// FILE: app/@modal/page.tsx
+export default function ModalPage() { return <dialog>…</dialog>; }
+// FILE: app/@feed/default.tsx
+export default function FeedDefault() { return null; }
+// FILE: app/@feed/page.tsx
+export default function FeedPage() { return <ul>…</ul>; }

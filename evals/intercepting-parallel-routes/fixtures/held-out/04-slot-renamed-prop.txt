@@ -1,0 +1,17 @@
+---
+class: safe
+reason: "Typed-alias props still contain the slot name; classifier inspects destructured identifiers."
+---
+// FILE: app/layout.tsx
+type LayoutProps = {
+  children: React.ReactNode;
+  modal: React.ReactNode;
+};
+
+export default function Layout({ children, modal }: LayoutProps) {
+  return <>{children}{modal}</>;
+}
+// FILE: app/@modal/default.tsx
+export default function D() { return null; }
+// FILE: app/@modal/page.tsx
+export default function P() { return <dialog>…</dialog>; }
