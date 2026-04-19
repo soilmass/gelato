@@ -1,11 +1,12 @@
-# Promptfoo config for ci-cd-next-on-vercel LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for ci-cd-next-on-vercel LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. A v0.2 `pipeline-design`
-# rubric would judge whether test / deploy / rollback stages are wired
-# correctly across multiple workflow files — cross-file analysis beyond
-# the four single-YAML shape checks encoded here.
+# One rubric per SKILL.md § Evaluation:
+#   - pipeline-design — judges whether test / deploy / rollback stages
+#     are wired correctly across multiple workflow files; cross-file
+#     analysis beyond the single-YAML shape checks the classifier
+#     handles.
 
-description: ci-cd-next-on-vercel LLM-as-judge rubrics (deferred to v0.2)
+description: ci-cd-next-on-vercel LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -14,6 +15,94 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is a description of a Next.js + Vercel CI/CD
+    pipeline spanning multiple GitHub Actions workflows. Assess
+    whether test, deploy, and rollback stages are wired correctly
+    across the workflow files — with the right dependencies,
+    fail-safe guards, and recovery paths — or whether the pipeline
+    has gaps a reviewer would worry about shipping to production.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: pipeline-design
+    vars:
+      content: |
+        Pipeline: gelato — production on main, preview on pull_request
+
+        Workflows:
+
+          ci.yml                    (on: pull_request)
+            jobs:
+              validate    — bun run validate + typecheck + eval
+              build       — bun run build
+            Both jobs run in parallel; PR cannot merge until both
+            are green.
+
+          deploy-prod.yml           (on: push to main)
+            concurrency: group=deploy-prod, cancel-in-progress=false
+            jobs:
+              deploy — waits for ci.yml to succeed on the merge
+                       commit (via actions/github-script checking the
+                       validate + build check-runs), then:
+                       vercel pull --env=production
+                       vercel build --prod
+                       vercel deploy --prebuilt --prod
+
+          rollback.yml              (on: workflow_dispatch)
+            jobs:
+              rollback — inputs: { deployment_url }
+                         vercel promote <deployment_url> --prod
+                         operator-triggered only; branch protection
+                         restricts dispatch to maintainers
+
+          drift-check.yml           (on: schedule '0 3 * * 1')
+            jobs:
+              check — weekly snapshot of upstream methodology
+                      sources; opens PR when a source's SHA
+                      changes, feeding the main CI path
+
+        Guards:
+          - GitHub branch protection: require validate + build green
+            before merge-to-main
+          - deploy-prod.yml's pre-deploy guard re-checks CI status
+            (defense-in-depth for force-merge edge cases)
+          - Vercel preview deploys happen automatically on PR via the
+            git integration — CI validates in parallel but does not
+            gate preview publish (previews are for review, not for
+            production)
+          - Rollback runbook lives in README.md § Incident response,
+            referenced from the rollback.yml inputs description
+
+        Coverage:
+          - Test: gated
+          - Deploy: gated
+          - Rollback: documented + one-click
+          - Drift: automated PR
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the pipeline:
+            - has a clear test gate (validate + build) that must
+              pass before merge to main
+            - sequences deploy-to-production after CI passes (either
+              via actions/github-script check OR via branch
+              protection required-checks)
+            - has a named rollback workflow that's dispatchable by
+              operators without requiring a code change
+            - documents the rollback runbook so the on-call knows
+              how to invoke it
+            - includes concurrency controls on the deploy workflow
+              (queue for prod, cancel for previews)
+            - addresses drift / freshness of external dependencies
+              (scheduled drift-check or Renovate)
+          Score 0 when the deploy workflow doesn't depend on CI,
+          when rollback requires editing code + redeploying, when
+          there's no documented runbook, or when concurrency
+          controls are absent. Score 0.5 when core stages are
+          wired but rollback is undocumented OR drift-check is
+          absent.

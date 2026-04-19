@@ -1,12 +1,11 @@
-# Promptfoo config for event-taxonomy-and-instrumentation LLM-as-judge rubrics
-# (deferred to v0.2).
+# Promptfoo config for event-taxonomy-and-instrumentation LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. Per the roadmap flag,
-# taxonomy coherence across a feature is fuzzy — a v0.2 `taxonomy-coherence`
-# rubric would judge whether events in a feature share a consistent verb/
-# object shape and avoid synonyms ("post_created" vs "post_added").
+# One rubric per SKILL.md § Evaluation:
+#   - taxonomy-coherence — judges whether events across a feature
+#     share a consistent verb/object shape and avoid synonyms
+#     ("post_created" vs "post_added", "created" vs "publish").
 
-description: event-taxonomy-and-instrumentation LLM-as-judge rubrics (deferred to v0.2)
+description: event-taxonomy-and-instrumentation LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -15,6 +14,79 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is the complete set of PostHog events captured
+    across a feature. Assess whether the events form a coherent
+    taxonomy — consistent noun_verb shape, no synonyms for the
+    same user action, clear life-cycle coverage (start / success /
+    abandon / fail paths) — versus a scattershot that will produce
+    fragmented dashboards.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: taxonomy-coherence
+    vars:
+      content: |
+        Feature: Post publishing flow
+
+        Events captured:
+
+          post_draft_created       — user opens the new-post composer
+          post_draft_saved         — autosave fires while composing
+          post_published           — user clicks Publish on a draft
+          post_publish_failed      — server error during publish
+          post_publish_abandoned   — user closes composer with unsaved changes
+          post_archived            — user archives a published post
+          post_deleted             — user permanently deletes
+
+        Properties on every event:
+          { postId, draftVersion, wordCount }
+
+        Properties specific to publish_failed:
+          { errorCode, retriable }
+
+        Missing (intentionally):
+          - No "post_viewed" — covered by page_viewed at the page
+            level, not worth a separate feature event
+          - No "post_clicked" — would be generic UI-interaction noise,
+            not a business-meaningful signal
+
+        Coherence notes:
+          - All events share the `post_` prefix + past-tense verb
+          - Life-cycle covers begin (draft_created) → in-progress
+            (draft_saved) → terminal successful (published,
+            archived, deleted) and terminal unsuccessful
+            (publish_failed, publish_abandoned)
+          - No synonyms: "created" consistently describes the draft
+            stage, "published" the commit stage, "archived" /
+            "deleted" the end-of-life transitions
+          - Shared properties (postId, draftVersion, wordCount) let
+            dashboards join across the funnel without synthetic keys
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the taxonomy:
+            - uses a consistent noun prefix across all events
+              (post_draft_created, post_published, post_archived)
+            - uses past-tense verbs, not present/imperative
+            - covers the full life-cycle of the user action:
+              begin / progress / terminal success / terminal
+              failure / abandoned path
+            - avoids synonyms for the same transition
+              (no "created" in one event and "added" in another
+              for the same meaning)
+            - shares a core property set across events so funnels
+              can join without synthetic keys
+            - explicitly documents which events are NOT captured
+              and why (separating intention from oversight)
+          Score 0 when events mix shapes ("PostCreated" +
+          "post-published" + "deletePost"), when multiple synonyms
+          exist for the same transition, or when the life-cycle
+          is incomplete (success tracked but failure ignored).
+          Score 0.5 when the shape is consistent but life-cycle
+          coverage is partial, or when events are named well but
+          no shared properties support funnel analysis.

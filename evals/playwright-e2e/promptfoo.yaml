@@ -1,12 +1,12 @@
-# Promptfoo config for playwright-e2e LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for playwright-e2e LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. A v0.2 `test-meaningfulness`
-# rubric would judge whether a test's assertions cover user-visible behavior
-# ("user sees their name after login") rather than shallow markers ("page
-# loaded"). A second v0.2 rubric could score test-isolation quality (fixture
-# hygiene, no cross-test state).
+# One rubric per SKILL.md § Evaluation:
+#   - e2e-test-meaningfulness — judges whether a Playwright test's
+#     assertions cover user-visible behavior (seeing, clicking,
+#     reading content) rather than shallow markers (page loaded,
+#     element exists).
 
-description: playwright-e2e LLM-as-judge rubrics (deferred to v0.2)
+description: playwright-e2e LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -15,6 +15,59 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is a Playwright end-to-end test. Assess whether its
+    assertions exercise user-visible behavior — what a human would
+    recognize as "the feature works" — versus shallow markers like
+    "an element exists" or "the page didn't error."
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: e2e-test-meaningfulness
+    vars:
+      content: |
+        import { test, expect } from '@playwright/test';
+
+        test('user can complete checkout with a saved card', async ({ page }) => {
+          await page.goto('/cart');
+          await page.getByRole('button', { name: 'Checkout' }).click();
+          await page.getByRole('radio', { name: 'Visa ending 4242' }).check();
+          await page.getByRole('button', { name: 'Pay $42.00' }).click();
+
+          // User-visible confirmation: the success state a human would see
+          await expect(page).toHaveURL(/\/orders\/\w+/);
+          await expect(
+            page.getByRole('heading', { name: 'Order confirmed' }),
+          ).toBeVisible();
+          await expect(page.getByText(/order #\w+/i)).toBeVisible();
+
+          // Confirmation email renders the totals
+          const total = page.getByLabel('Order total');
+          await expect(total).toHaveText('$42.00');
+        });
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the test:
+            - asserts against user-visible text / headings / labels
+              ("Order confirmed", "Pay $42.00") — things a human
+              reviewing the UI would verify
+            - walks the flow via user-level interactions (click,
+              check, fill) not low-level API calls
+            - confirms the terminal state (success page, data
+              visible, URL changed) not just "the page didn't
+              throw"
+            - uses accessible locators (getByRole / getByLabel /
+              getByText) so the assertions double as a11y coverage
+          Score 0 when assertions are shallow ("page.locator('.x')
+          is visible") without asserting meaningful user content,
+          when the test only exercises happy-path without terminal
+          verification, or when it relies on class-based locators
+          that don't map to user-visible structure. Score 0.5 when
+          the test is partially meaningful but skips a key
+          assertion (e.g. confirms URL change but not the visible
+          order number).
