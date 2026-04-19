@@ -91,7 +91,7 @@ Order recommended fixes by **leverage per unit of engineering effort**, not alph
 1. **Images.** Biggest LCP lever on almost every site. Use `next/image` with correct `width`/`height` (fixes CLS for free), `priority` on the hero, AVIF/WebP, right-sized variants via the built-in loader. Replace background-image where semantically possible — `next/image` cannot optimize what it cannot see.
 2. **Fonts.** `next/font` with `display: swap`, preload the critical weights, subset to the glyphs used. Self-host — third-party font servers add a DNS round-trip to every first-paint.
 3. **Bundle.** `@next/bundle-analyzer` to see what is shipped. Dynamic-import heavy client components. Server Components by default; reach for `'use client'` only where `rsc-boundary-audit` says it is required. Tree-shake and prune.
-4. **Caching.** Route segment config (`export const revalidate`), `fetch({ next: { revalidate } })`, `force-cache` for genuinely static data, ISR for stale-while-revalidate, CDN + Vercel Edge for static assets. LCP failures with a fast build often trace here.
+4. **Caching.** Route segment config (`export const revalidate`), `fetch(\{ next: \{ revalidate \} \})`, `force-cache` for genuinely static data, ISR for stale-while-revalidate, CDN + Vercel Edge for static assets. LCP failures with a fast build often trace here.
 
 ### Step 4 — Apply the fix list top-down, re-measure after each category
 

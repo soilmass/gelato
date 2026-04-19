@@ -2,7 +2,7 @@
 
 **Subsystem:** seo · **Phase:** verify · **Type:** procedural
 
-_Eval has not run yet._
+**Pass rate:** 100.0% across 4 cases · **Last run:** 2026-04-19
 
 [View on GitHub](https://github.com/neopolitan/gelato/blob/main/skills/metadata-and-og/SKILL.md) · [Eval suite](https://github.com/neopolitan/gelato/tree/main/evals/metadata-and-og)
 
@@ -49,7 +49,7 @@ Activate when any of the following is true:
 - "Why isn't my OG image showing on Twitter/LinkedIn/Slack"
 - Canonical URL audit — are multi-locale routes consistent
 - A title or description is unexpectedly truncated in SERPs
-- Setting `robots: { index, follow }` on auth'd / draft routes
+- Setting `robots: \{ index, follow \}` on auth'd / draft routes
 
 ## When NOT to Use
 
@@ -160,7 +160,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 
 ### Example 1 — Missing description (`missing-required`)
 
-**Input:** `export const metadata = { title: 'Home' };`
+**Input:** `export const metadata = \{ title: 'Home' \};`
 
 **Output:** Google uses the page's first meaningful text block as the snippet — rarely what you want. Add an explicit description (70-160 chars). Canonical should also be set, or this route risks duplicate-content penalties with the `/index` variant.
 
@@ -172,7 +172,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 
 ### Example 3 — Image without dimensions (`malformed-og`)
 
-**Input:** `openGraph: { images: [{ url: 'https://cdn.example.com/og.png' }] }` (remote URL, no width/height)
+**Input:** `openGraph: \{ images: [\{ url: 'https://cdn.example.com/og.png' \}] \}` (remote URL, no width/height)
 
 **Output:** Slack and LinkedIn refuse to render. Add `width: 1200, height: 630`. Next.js cannot infer dimensions for remote images at build time.
 
@@ -182,8 +182,8 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 
 - **Layout-inherited defaults:** if `app/layout.tsx` sets a default `title.template`, a page's bare `title: 'About'` becomes `'About | Site Name'`. The audit applies to the *merged* shape, not the raw per-file shape.
 - **`metadataBase`:** setting `metadataBase: new URL(...)` in a root layout makes relative `openGraph.images` URLs resolve correctly. Without it, images fail OG scraping.
-- **`noindex` routes:** auth'd pages, draft previews, and admin dashboards should opt out with `robots: { index: false, follow: false }`. The audit flags a missing title on an *indexable* route; `noindex` routes are exempt.
-- **Multi-locale canonicals:** `alternates: { canonical: ..., languages: { 'en-US': '...', 'de-DE': '...' } }`. The duplicate-canonical check scopes to the `canonical` field only; `languages` entries are hreflang territory.
+- **`noindex` routes:** auth'd pages, draft previews, and admin dashboards should opt out with `robots: \{ index: false, follow: false \}`. The audit flags a missing title on an *indexable* route; `noindex` routes are exempt.
+- **Multi-locale canonicals:** `alternates: \{ canonical: ..., languages: \{ 'en-US': '...', 'de-DE': '...' \} \}`. The duplicate-canonical check scopes to the `canonical` field only; `languages` entries are hreflang territory.
 - **Static vs dynamic:** `generateMetadata` can be `async` and fetch per-request. The audit runs on the *shape* of what it returns, not the runtime values — fixtures declare the shape directly.
 
 ---

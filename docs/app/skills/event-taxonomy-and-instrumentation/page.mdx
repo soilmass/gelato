@@ -171,7 +171,7 @@ export async function createPost(formData: FormData) {
 }
 ```
 
-Note: `posthog-node` uses an object form `{ distinctId, event, properties }`; the browser SDK uses `posthog.capture(event, properties)`. Same four rules apply.
+Note: `posthog-node` uses an object form `\{ distinctId, event, properties \}`; the browser SDK uses `posthog.capture(event, properties)`. Same four rules apply.
 
 ---
 
@@ -179,35 +179,35 @@ Note: `posthog-node` uses an object form `{ distinctId, event, properties }`; th
 
 ### Example 1 — Non-snake-case event (`non-snake-case-event`)
 
-**Input:** `posthog.capture('SignUpCompleted', { plan });`.
+**Input:** `posthog.capture('SignUpCompleted', \{ plan \});`.
 
-**Output:** `posthog.capture('signup_completed', { plan });`. Consistent casing lets dashboards group identical events — a mix of `SignUpCompleted`, `signup_completed`, and `signup-completed` shows up as three separate events.
+**Output:** `posthog.capture('signup_completed', \{ plan \});`. Consistent casing lets dashboards group identical events — a mix of `SignUpCompleted`, `signup_completed`, and `signup-completed` shows up as three separate events.
 
 ### Example 2 — Missing properties (`missing-event-properties`)
 
 **Input:** `posthog.capture('invoice_paid');`.
 
-**Output:** `posthog.capture('invoice_paid', { invoiceId, amount, currency });`. Even if the event feels self-descriptive, future segmentation requires context.
+**Output:** `posthog.capture('invoice_paid', \{ invoiceId, amount, currency \});`. Even if the event feels self-descriptive, future segmentation requires context.
 
 ### Example 3 — PII in event properties (`pii-in-event-properties`)
 
-**Input:** `posthog.capture('login_attempted', { email, password });`.
+**Input:** `posthog.capture('login_attempted', \{ email, password \});`.
 
 **Output:** remove `password` (never log) and move `email` to a trait on the `identify` call. Keep events PII-free; put identity on the user record.
 
 ### Example 4 — Email as distinct ID (`email-as-distinct-id`)
 
-**Input:** `posthog.identify(user.email, { plan });`.
+**Input:** `posthog.identify(user.email, \{ plan \});`.
 
-**Output:** `posthog.identify(user.id, { email: user.email, plan });`. The distinct ID is opaque and stable; email is a trait on the record.
+**Output:** `posthog.identify(user.id, \{ email: user.email, plan \});`. The distinct ID is opaque and stable; email is a trait on the record.
 
 ---
 
 ## Edge Cases
 
 - **Anonymous users before identify** — PostHog assigns an anonymous ID by default. First `identify(user.id)` call aliases it to the real user. That's the happy path, no violation.
-- **Server-side `posthog-node` object form** — `posthog.capture({ distinctId, event, properties })`. The four rules still apply: `event` name snake_case, `properties` present, no PII in `properties`, `distinctId` not an email.
-- **Event with no relevant property data** — pass `{}` explicitly. An empty object documents intent; missing it is ambiguous.
+- **Server-side `posthog-node` object form** — `posthog.capture(\{ distinctId, event, properties \})`. The four rules still apply: `event` name snake_case, `properties` present, no PII in `properties`, `distinctId` not an email.
+- **Event with no relevant property data** — pass `\{\}` explicitly. An empty object documents intent; missing it is ambiguous.
 - **Email-as-identifier for pre-signup leads** — if you literally only have the email, use `alias()` to merge later when you get a real ID. Don't leave email as the permanent distinct ID.
 - **Internal debug events** — staging / preview events can still follow the rules. Don't special-case.
 

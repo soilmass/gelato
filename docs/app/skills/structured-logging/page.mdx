@@ -201,25 +201,25 @@ export async function POST(req: Request) {
 
 **Input:** `app/api/auth/route.ts` uses `console.log('user signed in:', email);`.
 
-**Output:** replace with `logger.info({ userEmail: email }, 'user signed in');`. The `console` output is free-text on stdout; the structured log is searchable by field at the aggregator.
+**Output:** replace with `logger.info(\{ userEmail: email \}, 'user signed in');`. The `console` output is free-text on stdout; the structured log is searchable by field at the aggregator.
 
 ### Example 2 — Template-literal log (`string-template-log`)
 
-**Input:** `logger.info(\`post \${postId} created by \${userId}\`);`.
+**Input:** `logger.info(\`post \$\{postId\} created by \$\{userId\}\`);`.
 
-**Output:** `logger.info({ postId, userId }, 'post created');`. Fields become searchable; the message stays stable for grouping.
+**Output:** `logger.info(\{ postId, userId \}, 'post created');`. Fields become searchable; the message stays stable for grouping.
 
 ### Example 3 — Sensitive field logged (`sensitive-data-logged`)
 
-**Input:** `logger.debug({ email, password, apiKey }, 'login attempt');`.
+**Input:** `logger.debug(\{ email, password, apiKey \}, 'login attempt');`.
 
-**Output:** remove `password` and `apiKey` from the payload. If you need to audit the attempt, log `{ email, hasPassword: !!password }`. Configure Pino `redact` so accidental inclusion gets censored at emission.
+**Output:** remove `password` and `apiKey` from the payload. If you need to audit the attempt, log `\{ email, hasPassword: !!password \}`. Configure Pino `redact` so accidental inclusion gets censored at emission.
 
 ### Example 4 — Error log without the Error object (`error-without-object`)
 
 **Input:** `logger.error('db.insert failed');` in a catch block.
 
-**Output:** `logger.error({ err }, 'db.insert failed');` where `err` is the caught exception. Pino's error serializer captures `message`, `stack`, `name`, `code`.
+**Output:** `logger.error(\{ err \}, 'db.insert failed');` where `err` is the caught exception. Pino's error serializer captures `message`, `stack`, `name`, `code`.
 
 ---
 
@@ -227,9 +227,9 @@ export async function POST(req: Request) {
 
 - **`console.error` in a Sentry callback** — sometimes the only way to surface an error before the logger is initialized. Permitted at the module-load-time boundary, noted inline with a comment. This skill's fixtures do not flag top-of-file `console.*` outside a function body.
 - **`logger.warn` from `next.config.*`** — the classifier treats only `route.ts` / `actions.ts` / `page.tsx` / `middleware.ts` as production paths; build-time scripts are exempt.
-- **Pino's `bindings` / `child` loggers** — logging `{ password: '...' }` through a child logger still triggers the sensitive-data check. Redact at config time, don't whitelist at call site.
-- **Logging a plain object that coincidentally has a `token` key** — a `{ csrfToken }` field in a debug log is still banned; use a boolean `{ hasCsrf: true }` instead if you need to audit presence.
-- **Error re-raised after logging** — logging with `{ err }` then re-throwing is fine. Still flagged only if the log omits the Error object.
+- **Pino's `bindings` / `child` loggers** — logging `\{ password: '...' \}` through a child logger still triggers the sensitive-data check. Redact at config time, don't whitelist at call site.
+- **Logging a plain object that coincidentally has a `token` key** — a `\{ csrfToken \}` field in a debug log is still banned; use a boolean `\{ hasCsrf: true \}` instead if you need to audit presence.
+- **Error re-raised after logging** — logging with `\{ err \}` then re-throwing is fine. Still flagged only if the log omits the Error object.
 
 ---
 

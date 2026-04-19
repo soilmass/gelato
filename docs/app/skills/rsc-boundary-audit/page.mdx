@@ -242,9 +242,9 @@ import { listUsers } from './actions';
 
 - **`'use client'` inherited from a wrapper:** a child of a client component is itself "rendered in a client context" but does not need its own `'use client'`. The directive marks the boundary, not the subtree.
 - **Third-party libraries that ship their own `'use client'`:** cannot be changed from outside. The skill notes them in the report as "external client tree" but does not flag as violations.
-- **Server Actions passed as props:** functions are normally not serializable, but Server Actions are — they carry a special tag. A `handleSubmit={serverAction}` prop is a legal boundary crossing; the skill does not flag it.
+- **Server Actions passed as props:** functions are normally not serializable, but Server Actions are — they carry a special tag. A `handleSubmit=\{serverAction\}` prop is a legal boundary crossing; the skill does not flag it.
 - **`typeof window !== 'undefined'` in a Server Component:** almost always a `hydration-mismatch-source` — the server always sees `window` as undefined, the client always as an object. The skill flags it.
-- **Dynamic imports:** `dynamic(() => import('./thing'), { ssr: false })` is the App Router-compatible escape hatch when a component truly needs to be browser-only. Not a violation.
+- **Dynamic imports:** `dynamic(() => import('./thing'), \{ ssr: false \})` is the App Router-compatible escape hatch when a component truly needs to be browser-only. Not a violation.
 
 ---
 

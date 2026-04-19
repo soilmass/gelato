@@ -2,7 +2,7 @@
 
 **Subsystem:** data · **Phase:** build · **Type:** procedural
 
-_Eval has not run yet._
+**Pass rate:** 100.0% across 4 cases · **Last run:** 2026-04-19
 
 [View on GitHub](https://github.com/neopolitan/gelato/blob/main/skills/zod-validation/SKILL.md) · [Eval suite](https://github.com/neopolitan/gelato/tree/main/evals/zod-validation)
 
@@ -113,7 +113,7 @@ export async function POST(req: Request) {
 | Use | When |
 |---|---|
 | `.parse()` | The input MUST be valid; invalid is a programmer error or a malformed request that should surface a 400. Throws on failure. |
-| `.safeParse()` | The input MAY be invalid; you want to branch on success/failure without a try/catch. Returns `{ success, data, error }`. |
+| `.safeParse()` | The input MAY be invalid; you want to branch on success/failure without a try/catch. Returns `\{ success, data, error \}`. |
 
 Route handlers and Server Actions accepting user input: prefer `.safeParse()` and return a structured error response. Env-var schemas on startup: `.parse()` is appropriate (hard fail early).
 
@@ -262,7 +262,7 @@ export async function POST(req: Request) {
 }
 ```
 
-**Output:** `body.title` and `body.body` are untyped `any`. Drizzle will accept whatever shape ships. A client sending `{ title: { sql: "'; DROP TABLE posts;--" } }` lands unescaped into the query pipeline (Drizzle parameterizes, but the type erasure is a latent hazard). Add a Zod schema:
+**Output:** `body.title` and `body.body` are untyped `any`. Drizzle will accept whatever shape ships. A client sending `\{ title: \{ sql: "'; DROP TABLE posts;--" \} \}` lands unescaped into the query pipeline (Drizzle parameterizes, but the type erasure is a latent hazard). Add a Zod schema:
 
 ```ts
 const Schema = z.object({ title: z.string().min(1), body: z.string().min(1) });

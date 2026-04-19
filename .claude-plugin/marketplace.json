@@ -2,15 +2,19 @@
   "name": "gelato-marketplace",
   "description": "Single-plugin marketplace for Gelato — the dogmatic Claude Code kit for modern full-stack TypeScript. A Neopolitan product.",
   "owner": {
-    "name": "Neopolitan"
+    "name": "Neopolitan",
+    "url": "https://github.com/soilmass/gelato"
   },
   "plugins": [
     {
       "name": "gelato",
       "source": ".",
-      "description": "The dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript.",
-      "version": "0.1.0",
-      "license": "MIT"
+      "description": "The dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript. 19 skills covering foundations, data, server, UI, testing, performance, SEO, security, observability, analytics, and deployment — each with methodology citations, deterministic classifier evals, and (for 16 of 19) live LLM-as-judge rubrics.",
+      "version": "0.2.0",
+      "license": "MIT",
+      "homepage": "https://gelato.dev",
+      "repository": "https://github.com/soilmass/gelato",
+      "keywords": ["typescript", "nextjs", "full-stack", "skills", "evals", "web-vitals", "rsc"]
     }
   ]
 }

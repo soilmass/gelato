@@ -201,7 +201,7 @@ test('user can sign up', async ({ page }) => {
 
 **Input:** `page.locator('.signin-btn').click();`.
 
-**Output:** replace with `page.getByRole('button', { name: 'Sign in' }).click();`. The test becomes resilient to class renames and covers the accessible name too.
+**Output:** replace with `page.getByRole('button', \{ name: 'Sign in' \}).click();`. The test becomes resilient to class renames and covers the accessible name too.
 
 ### Example 3 — Imperative assertion (`imperative-assertion`)
 
@@ -223,7 +223,7 @@ test('user can sign up', async ({ page }) => {
 - **`page.waitForResponse`** — not banned; it waits on an observable signal, unlike `waitForTimeout`.
 - **`getByTestId`** — permitted when no semantic alternative exists (e.g., a graphic canvas with no role). Document why in a comment.
 - **Intentional `test.skip`** — not a violation. A skipped test with an inline reference to an issue tracker is a legitimate "known-broken, tracked" marker.
-- **Serial tests** — `test.describe.configure({ mode: 'serial' })` is sometimes necessary (auth flow → dependent test). Not a violation of this skill; just a parallelism trade-off.
+- **Serial tests** — `test.describe.configure(\{ mode: 'serial' \})` is sometimes necessary (auth flow → dependent test). Not a violation of this skill; just a parallelism trade-off.
 
 ---
 

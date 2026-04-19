@@ -252,13 +252,13 @@ export async function login(formData: FormData) {
 
 ### Example 2 — Insecure password comparison (`insecure-password-compare`)
 
-**Input:** `if (user.passwordHash === input.password) { /* grant session */ }`.
+**Input:** `if (user.passwordHash === input.password) \{ /* grant session */ \}`.
 
 **Output:** `===` is a timing oracle on hashed strings; also compares a hash vs a plaintext, which will never match. Use `await compare(input.password, user.passwordHash)`.
 
 ### Example 3 — Insecure session cookie (`insecure-session-cookie`)
 
-**Input:** `cookies().set('session', token, { maxAge: 604800, path: '/' });` — no `httpOnly`, no `secure`, no `sameSite`.
+**Input:** `cookies().set('session', token, \{ maxAge: 604800, path: '/' \});` — no `httpOnly`, no `secure`, no `sameSite`.
 
 **Output:** JS in the page can read the session (XSS → account takeover), MITM can steal it (no `secure`), and CSRF becomes possible (no `sameSite`). Add all three flags.
 
