@@ -30,9 +30,10 @@ jobs:
       - name: Typecheck
         run: bunx tsc --noEmit
 
-      # Step 2 additions (enable when scripts/ exists):
-      # - name: Validate skill frontmatter
-      #   run: bun run validate
+      - name: Validate skill frontmatter
+        run: bun run validate
+
+      # Eval smoke test lands once scripts/eval.ts is complete:
       # - name: Eval smoke test
       #   run: bun run eval --smoke
 

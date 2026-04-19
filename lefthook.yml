@@ -25,3 +25,5 @@ pre-push:
       run: bash scripts/check-branch-name.sh
     typecheck:
       run: bunx tsc --noEmit
+    validate-skills:
+      run: bun run scripts/validate-skills.ts

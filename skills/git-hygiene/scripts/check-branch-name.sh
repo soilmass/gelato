@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # Pre-push branch-name gate. See skills/git-hygiene/SKILL.md § Step 4.
-# Canonical source of the script; the repo's /scripts/check-branch-name.sh is
-# an identical copy invoked by lefthook. Kept in sync by skills/git-hygiene
-# evals (Step 2).
+# This script lives at two paths that must stay byte-identical:
+#   - scripts/check-branch-name.sh               (executed by lefthook)
+#   - skills/git-hygiene/scripts/check-branch-name.sh   (skill asset)
+# Parity is enforced by scripts/validate-skills.ts. Edit either file and the
+# pre-push hook will fail on the typecheck step until they match.
 
 set -euo pipefail
 

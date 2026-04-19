@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # Pre-push branch-name gate. See skills/git-hygiene/SKILL.md § Step 4.
-# Rejects pushes directly to `main` and enforces <type>/<kebab-slug> naming.
-# Canonical copy lives at skills/git-hygiene/scripts/check-branch-name.sh;
-# this root-level copy is what lefthook executes (CWD is repo root).
+# This script lives at two paths that must stay byte-identical:
+#   - scripts/check-branch-name.sh               (executed by lefthook)
+#   - skills/git-hygiene/scripts/check-branch-name.sh   (skill asset)
+# Parity is enforced by scripts/validate-skills.ts. Edit either file and the
+# pre-push hook will fail on the typecheck step until they match.
 
 set -euo pipefail
 
