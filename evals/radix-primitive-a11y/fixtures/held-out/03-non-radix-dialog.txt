@@ -1,0 +1,15 @@
+---
+class: safe
+reason: No @radix-ui import — classifier under-detects (project-local Dialog wrapper).
+---
+import { Dialog } from '@/components/custom-dialog';
+
+export function NotRadix() {
+  return (
+    <Dialog.Root>
+      <Dialog.Content>
+        <form>...</form>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
+}

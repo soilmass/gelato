@@ -1,0 +1,19 @@
+---
+class: portal-missing-for-overlay
+reason: Dialog.Content rendered without Dialog.Portal wrapper — will be clipped by overflow-hidden ancestors.
+---
+'use client';
+import * as Dialog from '@radix-ui/react-dialog';
+
+export function SharePrompt() {
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger>Share</Dialog.Trigger>
+      <Dialog.Overlay />
+      <Dialog.Content aria-describedby={undefined}>
+        <Dialog.Title>Share this page</Dialog.Title>
+        <p>Copy the URL.</p>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
+}

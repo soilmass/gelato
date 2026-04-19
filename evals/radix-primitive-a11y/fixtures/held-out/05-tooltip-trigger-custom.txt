@@ -1,0 +1,22 @@
+---
+class: trigger-without-aschild-role
+reason: Tooltip.Trigger wraps a PascalCase custom component without asChild.
+---
+'use client';
+import * as Tooltip from '@radix-ui/react-tooltip';
+import { InfoIcon } from '@/components/icons';
+
+export function InfoHint() {
+  return (
+    <Tooltip.Provider>
+      <Tooltip.Root>
+        <Tooltip.Trigger>
+          <InfoIcon />
+        </Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Content>The quick brown fox.</Tooltip.Content>
+        </Tooltip.Portal>
+      </Tooltip.Root>
+    </Tooltip.Provider>
+  );
+}

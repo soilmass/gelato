@@ -1,0 +1,21 @@
+---
+class: safe
+reason: aria-describedby={undefined} is the intentional opt-out; Radix docs acknowledge this form.
+---
+'use client';
+import * as Dialog from '@radix-ui/react-dialog';
+
+export function QuickConfirm() {
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger>Confirm</Dialog.Trigger>
+      <Dialog.Portal>
+        <Dialog.Content aria-describedby={undefined}>
+          <Dialog.Title>Ship it?</Dialog.Title>
+          <button>Yes</button>
+          <button>No</button>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}

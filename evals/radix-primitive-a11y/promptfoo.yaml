@@ -1,0 +1,96 @@
+# Promptfoo config for radix-primitive-a11y.
+#
+# One rubric:
+#   - composition-remediation — judges whether a remediation for a
+#     Radix composition violation is implementable as-written
+#     (compiles, keeps the primitive's contract, cites the APG
+#     pattern or Radix doc the rule derives from).
+
+description: radix-primitive-a11y LLM-as-judge rubrics
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a remediation for a Radix UI primitive
+    composition violation on a Next.js 15 + React 19 + @radix-ui/
+    react-* project. Judge whether the fix is implementable as
+    written — an engineer should be able to copy it into their
+    file with only identifier renames, and the result should
+    satisfy the cited Radix docs + APG pattern.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: composition-remediation
+    vars:
+      content: |
+        Violation class: trigger-without-aschild-role
+
+        Pattern cited: Radix UI — Popover docs + WAI-ARIA Menu
+        Button (APG).
+
+        Original:
+          <Popover.Root>
+            <Popover.Trigger>
+              <Button variant="ghost">Filter</Button>
+            </Popover.Trigger>
+            <Popover.Portal>
+              <Popover.Content>Filter options</Popover.Content>
+            </Popover.Portal>
+          </Popover.Root>
+
+        Why it's broken: Radix renders a native <button> for every
+        Trigger without asChild. Nesting a custom <Button> (which
+        also renders a <button>) produces invalid HTML
+        (button-in-button), breaks keyboard focus, and the
+        duplicate interactive layer interferes with screen-reader
+        announcement.
+
+        Fix: add `asChild` so Radix merges its trigger props + refs
+        + event handlers into the child <Button> rather than
+        wrapping it:
+
+          <Popover.Root>
+            <Popover.Trigger asChild>
+              <Button variant="ghost">Filter</Button>
+            </Popover.Trigger>
+            <Popover.Portal>
+              <Popover.Content>Filter options</Popover.Content>
+            </Popover.Portal>
+          </Popover.Root>
+
+        Why it satisfies the contract:
+          - Radix's asChild prop is the documented composition
+            primitive for wrapping custom interactive elements.
+          - The resulting DOM has exactly one <button> element
+            (rendered by the <Button> component) carrying all the
+            popover trigger's event handlers and aria-* props.
+          - APG's Menu Button pattern requires a single focusable
+            trigger element with aria-haspopup="dialog" (or
+            equivalent) — asChild preserves Radix's auto-applied
+            aria wiring on the underlying <button>.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the remediation:
+            - names the Radix primitive and its docs section
+              (Popover, Tooltip, DropdownMenu, etc.)
+            - names the APG pattern the primitive implements
+            - shows the corrected JSX in full
+            - explains WHY the fix works (asChild merges refs /
+              preserves aria attrs)
+            - doesn't introduce new violations (no missing Title,
+              no missing Portal)
+          Score 0.5 if the fix compiles but omits the docs /
+          pattern citation OR skips the "why it works" paragraph.
+          Score 0 if the fix is wrong (e.g. removing the custom
+          component instead of adding asChild), contradicts
+          Radix's contract, or requires looking up docs to apply.

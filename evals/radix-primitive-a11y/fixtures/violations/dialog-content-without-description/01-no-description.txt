@@ -1,0 +1,21 @@
+---
+class: dialog-content-without-description
+reason: Dialog.Content has Title but no Dialog.Description and no aria-describedby.
+---
+'use client';
+import * as Dialog from '@radix-ui/react-dialog';
+
+export function UnsavedChangesDialog() {
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger>Close</Dialog.Trigger>
+      <Dialog.Portal>
+        <Dialog.Content>
+          <Dialog.Title>Unsaved changes</Dialog.Title>
+          <button>Discard</button>
+          <button>Keep editing</button>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}

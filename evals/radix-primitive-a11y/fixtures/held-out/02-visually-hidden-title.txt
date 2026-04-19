@@ -1,0 +1,24 @@
+---
+class: safe
+reason: VisuallyHidden wraps Dialog.Title — classifier sees the Title tag regardless of wrapper.
+---
+'use client';
+import * as Dialog from '@radix-ui/react-dialog';
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
+
+export function FiltersDrawer() {
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger>Filters</Dialog.Trigger>
+      <Dialog.Portal>
+        <Dialog.Content>
+          <VisuallyHidden.Root>
+            <Dialog.Title>Filters</Dialog.Title>
+          </VisuallyHidden.Root>
+          <Dialog.Description>Narrow the list.</Dialog.Description>
+          <form>...</form>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
