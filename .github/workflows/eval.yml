@@ -1,17 +1,19 @@
 name: Eval
 
-# Per EVAL_SPEC.md: runs on PRs touching skills/** or evals/**, and nightly
-# on main. Fails if any skill's pass rate drops by more than 0.05.
-#
-# Step 2 of BRIEF.md lands the runner (scripts/eval.ts + update-pass-rate.ts).
-# Until then, this job short-circuits to green so CI does not block PRs that
-# legitimately touch briefing docs in those paths.
+# Per EVAL_SPEC.md § CI behavior: runs on PRs touching skills/** or evals/**,
+# and nightly on main. The orchestrator (scripts/eval.ts) writes pass rates
+# back into each SKILL.md frontmatter; scripts/validate-skills.ts ensures no
+# one hand-edits the three runner-owned fields. Regression gating (fail if
+# any skill's pass_rate drops by more than 0.05) lands in a follow-up
+# workflow step once baseline pass rates are stable on main.
 
 on:
   pull_request:
     paths:
       - 'skills/**'
       - 'evals/**'
+      - 'packages/eval-harness/**'
+      - 'scripts/**'
   schedule:
     - cron: '0 2 * * *'
   workflow_dispatch:
@@ -23,31 +25,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check runner presence
-        id: runner
-        run: |
-          if [ -f scripts/eval.ts ]; then
-            echo "ready=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Setup Bun
-        if: steps.runner.outputs.ready == 'true'
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.1.0
 
       - name: Install dependencies
-        if: steps.runner.outputs.ready == 'true'
         run: bun install --frozen-lockfile
 
+      - name: Install Playwright Chromium
+        # core-web-vitals-audit eval drives Lighthouse via chrome-launcher;
+        # Playwright's bundled chromium is the most reliable headless browser
+        # on Ubuntu runners.
+        run: bunx playwright install --with-deps chromium
+
+      - name: Locate Playwright Chromium
+        id: chrome
+        # Sets CHROME_PATH for the Lighthouse run. The path is deterministic
+        # under ~/.cache/ms-playwright/chromium-*/chrome-linux/chrome.
+        run: |
+          CHROME="$(find "$HOME/.cache/ms-playwright" -name chrome -type f -path '*chrome-linux*' | head -1)"
+          echo "CHROME_PATH=$CHROME" >> "$GITHUB_ENV"
+          echo "Resolved chrome: $CHROME"
+
+      - name: Install fixture-app dependencies
+        # Each metric-eval fixture has its own node_modules because it
+        # simulates a consumer project; install them before the eval runs.
+        run: |
+          for app in evals/*/fixtures/app; do
+            if [ -f "$app/package.json" ]; then
+              echo "Installing $app"
+              (cd "$app" && bun install --frozen-lockfile)
+            fi
+          done
+
       - name: Run eval suite
-        if: steps.runner.outputs.ready == 'true'
         run: bun run eval
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-
-      - name: Step 2 notice
-        if: steps.runner.outputs.ready != 'true'
-        run: echo "scripts/eval.ts does not exist yet — lands in Step 2 of BRIEF.md."
