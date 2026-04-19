@@ -1,0 +1,9 @@
+---
+class: missing-event-properties
+reason: Explicit undefined as second argument — same as missing.
+---
+import posthog from 'posthog-js';
+
+export function onSearchPerformed() {
+  posthog.capture('search_performed', undefined);
+}

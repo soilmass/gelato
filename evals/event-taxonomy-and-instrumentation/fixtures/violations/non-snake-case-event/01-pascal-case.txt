@@ -1,0 +1,9 @@
+---
+class: non-snake-case-event
+reason: PascalCase event name — dashboards can't group this with post_created.
+---
+import posthog from 'posthog-js';
+
+export function onPostCreated(postId: string, lengthChars: number) {
+  posthog.capture('PostCreated', { postId, lengthChars });
+}

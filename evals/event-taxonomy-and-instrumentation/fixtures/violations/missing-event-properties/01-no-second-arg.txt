@@ -1,0 +1,9 @@
+---
+class: missing-event-properties
+reason: capture called with just the event name — no properties, no context for segmentation.
+---
+import posthog from 'posthog-js';
+
+export function onInvoicePaid() {
+  posthog.capture('invoice_paid');
+}

@@ -1,0 +1,9 @@
+---
+class: safe
+reason: "`tokenCount` contains the substring `token` but is a count, not a secret. Exact-key match (not substring) distinguishes."
+---
+import posthog from 'posthog-js';
+
+export function trackPromptCompleted(tokenCount: number, promptLengthChars: number) {
+  posthog.capture('prompt_completed', { tokenCount, promptLengthChars });
+}

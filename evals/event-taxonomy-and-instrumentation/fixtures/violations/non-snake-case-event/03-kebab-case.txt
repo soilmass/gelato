@@ -1,0 +1,9 @@
+---
+class: non-snake-case-event
+reason: kebab-case event name — inconsistent with snake_case convention.
+---
+import posthog from 'posthog-js';
+
+export function trackSubscribe(plan: string) {
+  posthog.capture('subscription-started', { plan });
+}

@@ -1,0 +1,12 @@
+---
+class: safe
+reason: "identify uses user.id; email appears only inside the second-arg traits object — the correct location."
+---
+import posthog from 'posthog-js';
+
+export function afterLogin(user: { id: string; email: string; plan: string }) {
+  posthog.identify(user.id, {
+    email: user.email,
+    plan: user.plan,
+  });
+}

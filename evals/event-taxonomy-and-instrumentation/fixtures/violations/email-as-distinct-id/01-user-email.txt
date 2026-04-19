@@ -1,0 +1,9 @@
+---
+class: email-as-distinct-id
+reason: identify called with user.email — couples analytics to a PII-laden field that can change.
+---
+import posthog from 'posthog-js';
+
+export function afterLogin(user: { email: string; plan: string }) {
+  posthog.identify(user.email, { plan: user.plan });
+}

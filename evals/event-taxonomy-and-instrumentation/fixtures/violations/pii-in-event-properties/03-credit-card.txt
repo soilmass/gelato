@@ -1,0 +1,17 @@
+---
+class: pii-in-event-properties
+reason: creditCard in event properties — catastrophic PII leak. Analytics must never see payment data.
+---
+import posthog from 'posthog-js';
+
+export function trackCheckoutCompleted(
+  orderId: string,
+  amountCents: number,
+  creditCard: string,
+) {
+  posthog.capture('checkout_completed', {
+    orderId,
+    amountCents,
+    creditCard,
+  });
+}
