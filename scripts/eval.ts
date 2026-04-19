@@ -13,7 +13,14 @@
 // still produces measurements worth recording.
 
 import { existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+
+// Bun invokes package.json scripts through bash, which loses the path to the
+// bun binary on minimal PATHs. Re-advertise the directory containing the
+// running bun binary so `bunx vitest` resolves and subsequent spawns stay
+// inside the same bun toolchain.
+const BUN_BIN_DIR = dirname(process.execPath);
+const AUGMENTED_PATH = [BUN_BIN_DIR, process.env.PATH ?? ''].filter(Boolean).join(':');
 
 const args = process.argv.slice(2);
 const smoke = args.includes('--smoke');
@@ -45,7 +52,7 @@ console.log(`\u25b6 ${vitestArgs.join(' ')}`);
 const proc = Bun.spawn(['bunx', ...vitestArgs], {
   stdout: 'inherit',
   stderr: 'inherit',
-  env: { ...process.env, FORCE_COLOR: '1' },
+  env: { ...process.env, PATH: AUGMENTED_PATH, FORCE_COLOR: '1' },
 });
 
 const vitestExit = await proc.exited;
@@ -57,9 +64,10 @@ if (!existsSync(outputFile)) {
 
 console.log('');
 console.log(`\u25b6 bun run scripts/update-pass-rate.ts ${outputFile}`);
-const writer = Bun.spawn(['bun', 'run', 'scripts/update-pass-rate.ts', outputFile], {
+const writer = Bun.spawn([process.execPath, 'run', 'scripts/update-pass-rate.ts', outputFile], {
   stdout: 'inherit',
   stderr: 'inherit',
+  env: { ...process.env, PATH: AUGMENTED_PATH },
 });
 const writerExit = await writer.exited;
 

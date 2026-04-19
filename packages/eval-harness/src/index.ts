@@ -29,6 +29,10 @@ export {
   judgeWithPromptfoo,
 } from './judge.ts';
 
+export type { CWVMetrics, RunLighthouseOptions } from './lighthouse.ts';
+
+export { runLighthouse } from './lighthouse.ts';
+
 import type { Fixture } from './fixtures.ts';
 
 export interface ApplySkillGuidanceOptions {

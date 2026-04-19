@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "@gelato/schema": "workspace:*",
-    "gray-matter": "^4.0.3"
+    "chrome-launcher": "^1.2.1",
+    "gray-matter": "^4.0.3",
+    "lighthouse": "^13.1.0"
   },
   "peerDependencies": {
     "promptfoo": "^0.90.0"
