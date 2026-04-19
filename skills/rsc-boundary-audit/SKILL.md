@@ -13,8 +13,8 @@ description: >
   checking whether a component actually needs to be a client component,
   "can I make this a Server Component".
   Do NOT use for: general performance audits (→ core-web-vitals-audit),
-  server-side data fetching patterns (→ rsc-data-fetching when built),
-  form + server-action wiring (→ form-with-server-action when built),
+  server-side data fetching patterns (→ rsc-data-fetching),
+  form + server-action wiring (→ form-with-server-action),
   non-Next.js React apps.
 license: MIT
 metadata:
@@ -99,8 +99,8 @@ Activate when any of the following is true:
 
 Do NOT activate for:
 - General performance audits — use `core-web-vitals-audit`
-- Server-side data fetching patterns (cache keys, revalidate, fetch options) — use `rsc-data-fetching` (v0.2+)
-- Form handling and Server Actions — use `form-with-server-action` (v0.2+)
+- Server-side data fetching patterns (cache keys, revalidate, fetch options) — use `rsc-data-fetching`
+- Form handling and Server Actions — use `form-with-server-action`
 - Non-Next.js React apps — the skill assumes App Router semantics
 
 ---

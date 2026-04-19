@@ -83,7 +83,7 @@ Do NOT activate for:
 - **Unit / component tests** — `tdd-cycle`.
 - **Accessibility scanning** — v0.2 candidate `axe-playwright` skill.
 - **Visual regression** — v0.2 candidate `visual-regression` skill.
-- **CI wiring** — `ci-cd-next-on-vercel` (when built).
+- **CI wiring** — `ci-cd-next-on-vercel`.
 
 ---
 
@@ -282,7 +282,7 @@ No LLM-as-judge half for v0.1. A v0.2 `test-design-quality` rubric would judge w
 - **Unit / component test design** → `tdd-cycle`
 - **Accessibility scanning** → v0.2 candidate `axe-playwright` skill
 - **Visual regression** → v0.2 candidate `visual-regression` skill
-- **CI wiring** → `ci-cd-next-on-vercel` (when built)
+- **CI wiring** → `ci-cd-next-on-vercel`
 
 ---
 

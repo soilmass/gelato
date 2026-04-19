@@ -1,4 +1,4 @@
-> Audit a Next.js App Router codebase for Server/Client Component boundary violations and produce a prioritized remediation plan ordered by measured bundle-size impact. Classifies violations into five classes: unnecessary `'use client'` directive, server-only imports inside a client component, non-serializable props across the boundary, barrel-file leakage that drags a large client tree into the bundle, and hydration-mismatch sources. Use when: auditing RSC boundaries, reviewing a PR that adds `'use client'`, "why is my bundle so big", unexpected hydration errors, serialization errors at the boundary, migrating from Pages Router to App Router, checking whether a component actually needs to be a client component, "can I make this a Server Component". Do NOT use for: general performance audits (→ core-web-vitals-audit), server-side data fetching patterns (→ rsc-data-fetching when built), form + server-action wiring (→ form-with-server-action when built), non-Next.js React apps.
+> Audit a Next.js App Router codebase for Server/Client Component boundary violations and produce a prioritized remediation plan ordered by measured bundle-size impact. Classifies violations into five classes: unnecessary `'use client'` directive, server-only imports inside a client component, non-serializable props across the boundary, barrel-file leakage that drags a large client tree into the bundle, and hydration-mismatch sources. Use when: auditing RSC boundaries, reviewing a PR that adds `'use client'`, "why is my bundle so big", unexpected hydration errors, serialization errors at the boundary, migrating from Pages Router to App Router, checking whether a component actually needs to be a client component, "can I make this a Server Component". Do NOT use for: general performance audits (→ core-web-vitals-audit), server-side data fetching patterns (→ rsc-data-fetching), form + server-action wiring (→ form-with-server-action), non-Next.js React apps.
 
 **Subsystem:** ui · **Phase:** verify · **Type:** judgment
 
@@ -55,8 +55,8 @@ Activate when any of the following is true:
 
 Do NOT activate for:
 - General performance audits — use `core-web-vitals-audit`
-- Server-side data fetching patterns (cache keys, revalidate, fetch options) — use `rsc-data-fetching` (v0.2+)
-- Form handling and Server Actions — use `form-with-server-action` (v0.2+)
+- Server-side data fetching patterns (cache keys, revalidate, fetch options) — use `rsc-data-fetching`
+- Form handling and Server Actions — use `form-with-server-action`
 - Non-Next.js React apps — the skill assumes App Router semantics
 
 ---

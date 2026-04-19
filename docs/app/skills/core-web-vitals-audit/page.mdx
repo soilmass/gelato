@@ -224,7 +224,7 @@ Auto-updated by `bun run eval`. See `metadata.eval.pass_rate` in the frontmatter
 
 This skill is scoped to the three Core Web Vitals (LCP, INP, CLS) on Next.js App Router. Explicitly NOT absorbed:
 
-- **Server-side latency / TTFB as a first-class metric** — use `sentry-setup` and Sentry tracing (not yet built)
+- **Server-side latency / TTFB as a first-class metric** — use `sentry-setup` and Sentry tracing
 - **Server/Client component boundary regressions that surface as bundle bloat** — use `rsc-boundary-audit`
 - **Composite Lighthouse "Performance score"** — deliberately not a target; the three Web Vitals are the ranking-relevant signal
 - **Non-Next.js apps** — fork the suite
