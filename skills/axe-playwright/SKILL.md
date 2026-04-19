@@ -47,7 +47,7 @@ metadata:
     - "bun@1.1+"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T14:29:11.711Z"
+    last_run: "2026-04-19T16:00:08.237Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Procedural skill. Four mechanical violation

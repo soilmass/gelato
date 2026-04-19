@@ -38,7 +38,7 @@ metadata:
     - "bun@1.1+"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T13:13:48.433Z"
+    last_run: "2026-04-19T16:00:08.240Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Four mechanical violations (v3 CSS directives,

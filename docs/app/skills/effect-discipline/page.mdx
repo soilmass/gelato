@@ -154,8 +154,21 @@ No shipped CLI. Classifier lives in the eval.
 
 ### Example 2 — `effect-for-derived-value`
 
-**Input:** `useEffect(() => \{ setFullName(`${first} ${last}`); \}, [first, last]);`
-**Output:** derivation done in an effect runs a render cycle extra. Fix: `const fullName = \`$\{first\} $\{last\}\`;` as a `const`, or `useMemo` if the derivation is expensive.
+**Input:**
+
+```tsx
+useEffect(() => {
+  setFullName(`${first} ${last}`);
+}, [first, last]);
+```
+
+**Output:** derivation done in an effect runs a render cycle extra. Fix:
+
+```tsx
+const fullName = `${first} ${last}`;
+```
+
+as a `const`, or `useMemo` if the derivation is expensive.
 
 ---
 
