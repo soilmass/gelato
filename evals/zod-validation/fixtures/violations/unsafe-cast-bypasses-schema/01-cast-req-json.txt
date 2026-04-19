@@ -1,0 +1,17 @@
+---
+class: unsafe-cast-bypasses-schema
+reason: TypeScript cast on req.json() bypasses the Zod runtime check entirely. The type annotation is a lie at runtime.
+---
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+
+interface SignupInput {
+  email: string;
+  password: string;
+}
+
+export async function POST(req: Request) {
+  const input = (await req.json()) as SignupInput;
+  await db.insert({ email: input.email, password_hash: await hash(input.password) });
+  return NextResponse.json({ ok: true });
+}

@@ -1,0 +1,17 @@
+---
+class: unsafe-cast-bypasses-schema
+reason: Cast through `as unknown as ContactInput` bypasses any runtime shape check on FormData. The cast just tells TypeScript to stop complaining.
+---
+'use server';
+import { sendContactEmail } from '@/lib/email';
+
+interface ContactInput {
+  email: string;
+  message: string;
+}
+
+export async function contact(formData: FormData) {
+  const input = Object.fromEntries(formData) as unknown as ContactInput;
+  await sendContactEmail(input);
+  return { ok: true };
+}

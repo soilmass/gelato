@@ -1,0 +1,20 @@
+---
+class: parse-should-be-safe-parse
+reason: Same shape — Schema.parse in a try block that logs and returns 400 without surfacing the Zod error flatten data.
+---
+import { z } from 'zod';
+
+const Schema = z.object({
+  name: z.string().min(1),
+  quantity: z.number().int().positive(),
+});
+
+export async function POST(req: Request) {
+  try {
+    const input = Schema.parse(await req.json());
+    return Response.json({ ok: true, input });
+  } catch (err) {
+    console.error('validation failed', err);
+    return new Response('Bad request', { status: 400 });
+  }
+}

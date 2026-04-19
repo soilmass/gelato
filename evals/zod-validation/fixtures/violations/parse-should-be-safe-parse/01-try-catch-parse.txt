@@ -1,0 +1,23 @@
+---
+class: parse-should-be-safe-parse
+reason: .parse inside try/catch that swallows the ZodError as unknown. The structured .flatten() diagnostic data is thrown away.
+---
+import { z } from 'zod';
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+
+const Schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  try {
+    const input = Schema.parse(body);
+    await db.insert({ email: input.email });
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    return new Response('Invalid input', { status: 400 });
+  }
+}

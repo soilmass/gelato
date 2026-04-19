@@ -1,0 +1,16 @@
+---
+class: unsafe-cast-bypasses-schema
+reason: Non-null assertion on the result of req.json() — same shape as an `as` cast, same failure mode.
+---
+import { NextResponse } from 'next/server';
+
+interface OrderPayload {
+  items: { id: string; quantity: number }[];
+  total: number;
+}
+
+export async function POST(req: Request) {
+  const payload = (await req.json()) as OrderPayload;
+  const total = payload.items.reduce((sum, item) => sum + item.quantity * 10, 0);
+  return NextResponse.json({ total });
+}

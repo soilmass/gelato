@@ -1,0 +1,15 @@
+---
+expected: safe
+reason: The `as` cast is on a local computed value (never input), not on req.json/formData. Not a boundary-bypass.
+---
+import { z } from 'zod';
+
+const Schema = z.object({ hours: z.number() });
+
+export async function POST(req: Request) {
+  const result = Schema.safeParse(await req.json());
+  if (!result.success) return Response.json({ errors: result.error.flatten() }, { status: 400 });
+  const hours = result.data.hours;
+  const seconds = (hours * 3600) as number;
+  return Response.json({ seconds });
+}

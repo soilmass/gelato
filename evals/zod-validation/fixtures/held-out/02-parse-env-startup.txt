@@ -1,0 +1,12 @@
+---
+expected: safe
+reason: .parse on process.env at module load is the canonical env schema. Classifier must not flag top-level parse on env as parse-should-be-safe-parse or validation-after-consumption.
+---
+import { z } from 'zod';
+
+export const env = z
+  .object({
+    DATABASE_URL: z.string().url(),
+    NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  })
+  .parse(process.env);

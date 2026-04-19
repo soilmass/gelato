@@ -1,0 +1,21 @@
+---
+expected: safe
+reason: Server Action with FormData — parsed via Object.fromEntries, schema at top, result.data used downstream.
+---
+'use server';
+import { z } from 'zod';
+import { createSubscription } from '@/lib/subscriptions';
+
+const SubscribeSchema = z.object({
+  email: z.string().email(),
+  plan: z.enum(['starter', 'pro', 'team']),
+});
+
+export async function subscribe(formData: FormData) {
+  const result = SubscribeSchema.safeParse(Object.fromEntries(formData));
+  if (!result.success) {
+    return { ok: false, errors: result.error.flatten() };
+  }
+  await createSubscription(result.data);
+  return { ok: true };
+}

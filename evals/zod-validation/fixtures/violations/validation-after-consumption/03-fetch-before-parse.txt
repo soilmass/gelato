@@ -1,0 +1,21 @@
+---
+class: validation-after-consumption
+reason: fetch is called with unvalidated body fields; the Zod parse afterwards is cosmetic.
+---
+import { z } from 'zod';
+import { NextResponse } from 'next/server';
+
+const WebhookSchema = z.object({
+  event: z.string(),
+  payload: z.record(z.unknown()),
+});
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  await fetch(`https://downstream.example.com/hook?event=${body.event}`, {
+    method: 'POST',
+    body: JSON.stringify(body.payload),
+  });
+  WebhookSchema.parse(body);
+  return NextResponse.json({ forwarded: true });
+}

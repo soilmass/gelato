@@ -1,0 +1,18 @@
+---
+expected: safe
+reason: Discriminated union schema parsed at the boundary via safeParse. Complex Zod shape — classifier must recognize it as a valid parse call.
+---
+import { z } from 'zod';
+
+const EventSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('post.created'), postId: z.string().uuid() }),
+  z.object({ type: z.literal('post.deleted'), postId: z.string().uuid(), reason: z.string() }),
+  z.object({ type: z.literal('user.signup'), userId: z.string().uuid(), email: z.string().email() }),
+]);
+
+export async function POST(req: Request) {
+  const result = EventSchema.safeParse(await req.json());
+  if (!result.success) return Response.json({ errors: result.error.flatten() }, { status: 400 });
+  await dispatch(result.data);
+  return Response.json({ ok: true });
+}
