@@ -1,0 +1,19 @@
+---
+class: safe
+reason: http://schema.org (deprecated form) still accepted by Google.
+---
+export default function Page() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "http://schema.org",
+          "@type": "Product",
+          name: "Widget",
+          image: "https://ex/w.jpg",
+        }),
+      }}
+    />
+  );
+}

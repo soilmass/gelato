@@ -1,0 +1,19 @@
+---
+class: article-missing-required
+reason: BlogPosting subclass missing author.
+---
+export default function Post() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: "Hello",
+          datePublished: "2026-04-19",
+        }),
+      }}
+    />
+  );
+}

@@ -1,0 +1,22 @@
+---
+class: breadcrumb-out-of-order
+reason: Breadcrumb positions are 1, 3, 2 — out of sequence.
+---
+export default function Page() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://ex/" },
+            { "@type": "ListItem", position: 3, name: "Post", item: "https://ex/blog/x" },
+            { "@type": "ListItem", position: 2, name: "Blog", item: "https://ex/blog" },
+          ],
+        }),
+      }}
+    />
+  );
+}

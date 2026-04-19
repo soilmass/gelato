@@ -1,0 +1,19 @@
+---
+class: safe
+reason: Product with name + offers (no image) satisfies "at least one of".
+---
+export default function Page() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: "Widget",
+          offers: { "@type": "Offer", priceCurrency: "USD", price: "9.99" },
+        }),
+      }}
+    />
+  );
+}

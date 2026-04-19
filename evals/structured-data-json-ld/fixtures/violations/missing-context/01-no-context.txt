@@ -1,0 +1,11 @@
+---
+class: missing-context
+reason: JSON-LD object missing @context.
+---
+export default function Page() {
+  return (
+    <script type="application/ld+json">
+      {JSON.stringify({ "@type": "Product", name: "Widget", image: "https://ex/w.jpg" })}
+    </script>
+  );
+}
