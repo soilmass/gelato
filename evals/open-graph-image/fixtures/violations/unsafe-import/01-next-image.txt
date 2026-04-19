@@ -1,0 +1,14 @@
+---
+class: unsafe-import
+filename: app/opengraph-image.tsx
+reason: next/image imported at module scope — breaks Satori runtime.
+---
+import { ImageResponse } from 'next/og';
+import Image from 'next/image';
+
+export const size = { width: 1200, height: 630 };
+export const contentType = 'image/png';
+
+export default function OG() {
+  return new ImageResponse(<Image src="/logo.png" width={120} height={40} alt="" />, size);
+}

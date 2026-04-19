@@ -1,0 +1,16 @@
+---
+class: tailwind-in-satori
+filename: app/opengraph-image.tsx
+reason: JSX uses Tailwind className — Satori ignores it.
+---
+import { ImageResponse } from 'next/og';
+
+export const size = { width: 1200, height: 630 };
+export const contentType = 'image/png';
+
+export default function OG() {
+  return new ImageResponse(
+    <div className="flex text-6xl font-bold">Gelato</div>,
+    size,
+  );
+}

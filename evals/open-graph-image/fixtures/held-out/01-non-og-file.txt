@@ -1,0 +1,8 @@
+---
+class: safe
+filename: app/page.tsx
+reason: Not an og-image file — classifier inactive.
+---
+export default function Page() {
+  return <h1 className="text-6xl">Hi</h1>;
+}

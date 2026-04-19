@@ -1,0 +1,17 @@
+---
+filename: app/blog/[slug]/opengraph-image.tsx
+reason: Dynamic OG per slug — canonical shape with params.
+---
+import { ImageResponse } from 'next/og';
+
+export const size = { width: 1200, height: 630 };
+export const contentType = 'image/png';
+
+export default async function OG({ params }: { params: { slug: string } }) {
+  return new ImageResponse(
+    <div style={{ display: 'flex', flexDirection: 'column', padding: 80, background: 'linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%)' }}>
+      <h1 style={{ fontSize: 72, color: '#111' }}>{params.slug}</h1>
+    </div>,
+    size,
+  );
+}

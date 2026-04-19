@@ -1,0 +1,19 @@
+---
+class: safe
+filename: app/opengraph-image.tsx
+reason: generateImageMetadata present — file-level size / contentType check is lenient.
+---
+import { ImageResponse } from 'next/og';
+
+export async function generateImageMetadata() {
+  return [
+    { id: 'twitter', size: { width: 1200, height: 630 }, contentType: 'image/png' },
+  ];
+}
+
+export default function OG({ id }: { id: string }) {
+  return new ImageResponse(
+    <div style={{ display: 'flex' }}>{id}</div>,
+    { width: 1200, height: 630 },
+  );
+}

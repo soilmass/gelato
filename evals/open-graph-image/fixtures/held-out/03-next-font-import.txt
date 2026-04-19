@@ -1,0 +1,19 @@
+---
+class: unsafe-import
+filename: app/opengraph-image.tsx
+reason: next/font/google imported at top level — breaks Satori.
+---
+import { ImageResponse } from 'next/og';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const size = { width: 1200, height: 630 };
+export const contentType = 'image/png';
+
+export default function OG() {
+  return new ImageResponse(
+    <div style={{ fontFamily: inter.style.fontFamily, display: 'flex' }}>Gelato</div>,
+    size,
+  );
+}

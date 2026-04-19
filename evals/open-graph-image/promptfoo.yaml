@@ -1,0 +1,75 @@
+description: open-graph-image LLM-as-judge rubric
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a remediation for an open-graph-image
+    violation. Judge whether the fix satisfies Next.js's
+    opengraph-image + ImageResponse contract.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: og-image-remediation-implementability
+    vars:
+      content: |
+        Violation class: tailwind-in-satori
+
+        Rule cited: Next.js ImageResponse docs — Satori does not
+        process Tailwind classes. Use inline style instead.
+
+        Original:
+          import { ImageResponse } from 'next/og';
+          export const size = { width: 1200, height: 630 };
+          export const contentType = 'image/png';
+
+          export default function OG() {
+            return new ImageResponse(
+              <div className="flex text-6xl font-bold">Gelato</div>,
+              size,
+            );
+          }
+
+        Fix: convert each Tailwind class to an equivalent CSS
+        property set via inline style.
+
+          import { ImageResponse } from 'next/og';
+          export const size = { width: 1200, height: 630 };
+          export const contentType = 'image/png';
+
+          export default function OG() {
+            return new ImageResponse(
+              <div style={{ display: 'flex', fontSize: 96, fontWeight: 'bold' }}>Gelato</div>,
+              size,
+            );
+          }
+
+        Why it satisfies the rule:
+          - Satori reads inline `style` attributes and renders
+            accordingly.
+          - `display: 'flex'` replaces `flex`.
+          - `fontSize: 96` replaces `text-6xl` (text-6xl = 3.75rem
+            ≈ 60px in Tailwind v4 default — pick a pixel value
+            per design).
+          - `fontWeight: 'bold'` replaces `font-bold`.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the remediation:
+            - cites the ImageResponse + Satori docs
+            - shows the corrected file in full
+            - removes all className usage
+            - uses inline style={...} for each visual property
+            - preserves ImageResponse + size/contentType exports
+          Score 0.5 when the fix is correct but omits citations
+          or doesn't explain the Tailwind-to-style mapping.
+          Score 0 when className is retained, or when a new
+          violation (missing export, etc.) is introduced.
