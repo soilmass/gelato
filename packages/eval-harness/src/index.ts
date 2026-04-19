@@ -1,17 +1,39 @@
 // Gelato eval harness — shared primitives for skill evals.
-// v0.1 Step 1 scaffolding stubs. Implementations land in Step 2 of BRIEF.md
-// alongside scripts/eval.ts and scripts/update-pass-rate.ts.
+//
+// Fixture loading and judge scaffolding ship in Step 2. The skill-running
+// primitives (applySkillGuidance, runSkillOnFixtures) require direct
+// Anthropic SDK calls and land alongside the first skill that needs them:
+// core-web-vitals-audit uses Lighthouse CI without Claude, so Step 3 does
+// not force the issue; rsc-boundary-audit does force it in Step 4.
+
+export type {
+  Fixture,
+  LoadFixturesOptions,
+} from './fixtures.ts';
+
+export {
+  fixtureDisplayName,
+  groupByCategory,
+  loadFixtures,
+} from './fixtures.ts';
+
+export type {
+  JudgeOptions,
+  JudgeResult,
+} from './judge.ts';
+
+export {
+  JudgeApiKeyMissing,
+  JudgeNotImplemented,
+  isJudgeAvailable,
+  judgeWithPromptfoo,
+} from './judge.ts';
+
+import type { Fixture } from './fixtures.ts';
 
 export interface ApplySkillGuidanceOptions {
   skill: string;
   fixturePath: string;
-}
-
-export interface Fixture {
-  path: string;
-  name: string;
-  expected: unknown;
-  metadata?: Record<string, unknown>;
 }
 
 export interface SkillRunResult {
@@ -21,21 +43,15 @@ export interface SkillRunResult {
   bundleImpact?: number;
 }
 
-const UNIMPLEMENTED = 'not implemented until Step 2 of BRIEF.md';
+const DEFERRED = 'lands alongside the first skill that exercises it (see BRIEF.md § build order).';
 
-export async function applySkillGuidance(_options: ApplySkillGuidanceOptions): Promise<void> {
-  throw new Error(`applySkillGuidance: ${UNIMPLEMENTED}`);
+export async function applySkillGuidance(_options: ApplySkillGuidanceOptions): Promise<string> {
+  throw new Error(`applySkillGuidance: ${DEFERRED}`);
 }
 
 export async function runSkillOnFixtures(
   _skill: string,
   _fixtures: Fixture[],
 ): Promise<SkillRunResult[]> {
-  throw new Error(`runSkillOnFixtures: ${UNIMPLEMENTED}`);
+  throw new Error(`runSkillOnFixtures: ${DEFERRED}`);
 }
-
-export async function loadFixtures(_path: string): Promise<Fixture[]> {
-  throw new Error(`loadFixtures: ${UNIMPLEMENTED}`);
-}
-
-export * from './judge.ts';
