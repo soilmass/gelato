@@ -1,0 +1,15 @@
+---
+filename: app/blog/[slug]/page.tsx
+has_loading_sibling: true
+reason: generateStaticParams without force-dynamic — correct static-rendering shape.
+---
+import { getPost } from '@/lib/posts';
+
+export async function generateStaticParams() {
+  return [{ slug: 'hello' }, { slug: 'world' }];
+}
+
+export default async function Page({ params }: { params: { slug: string } }) {
+  const post = await getPost(params.slug);
+  return <article>{post.body}</article>;
+}

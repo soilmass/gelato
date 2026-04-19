@@ -1,0 +1,25 @@
+---
+class: safe
+filename: app/home/page.tsx
+has_loading_sibling: false
+reason: Page has header plus a nested <Suspense fallback=...>.
+---
+import { Suspense } from 'react';
+import { Hero } from '@/components/hero';
+import { Feed } from '@/components/feed';
+
+export default async function Page() {
+  const hero = await fetchHero();
+  return (
+    <>
+      <Hero data={hero} />
+      <Suspense fallback={<span>…</span>}>
+        <Feed />
+      </Suspense>
+    </>
+  );
+}
+
+async function fetchHero() {
+  return fetch('/api/hero').then((r) => r.json());
+}

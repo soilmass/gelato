@@ -1,0 +1,15 @@
+---
+class: force-dynamic-with-static-params
+filename: app/shop/[sku]/page.tsx
+has_loading_sibling: true
+reason: Order of declarations doesn't matter — both present is still a violation.
+---
+export async function generateStaticParams() {
+  return [{ sku: 'abc' }];
+}
+
+export const dynamic = 'force-dynamic';
+
+export default async function Page() {
+  return <p>ok</p>;
+}

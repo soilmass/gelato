@@ -1,0 +1,16 @@
+---
+class: suspense-missing-fallback
+filename: components/client-widget.tsx
+reason: <Suspense> without fallback even in a client component still crashes.
+---
+'use client';
+import { Suspense } from 'react';
+import { LazyChart } from './lazy-chart';
+
+export function ClientWidget() {
+  return (
+    <Suspense>
+      <LazyChart />
+    </Suspense>
+  );
+}

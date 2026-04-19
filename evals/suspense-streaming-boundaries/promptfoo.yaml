@@ -1,0 +1,93 @@
+description: suspense-streaming-boundaries LLM-as-judge rubrics
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a remediation for a suspense-streaming-
+    boundaries violation in a Next.js 15 App Router + React 19
+    codebase. Judge whether the fix is implementable as written
+    and whether it satisfies the cited Next.js docs + React 19
+    Suspense contract.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: streaming-remediation-implementability
+    vars:
+      content: |
+        Violation class: async-server-component-no-suspense
+
+        Rule cited: Next.js docs — Loading UI and Streaming.
+        An async Server Component Page that awaits data must
+        stream behind <Suspense> or a sibling loading.tsx,
+        otherwise the route blocks TTFB on the slowest fetch.
+
+        Original:
+          // app/posts/page.tsx
+          import { getPosts } from '@/lib/posts';
+          import { PostList } from '@/components/post-list';
+
+          export default async function Page() {
+            const posts = await getPosts();
+            return <PostList posts={posts} />;
+          }
+
+        Fix: extract the awaiting subtree into its own Server
+        Component and wrap with <Suspense fallback=...>:
+
+          // app/posts/page.tsx
+          import { Suspense } from 'react';
+          import { PostList } from '@/components/post-list';
+          import { PostsSkeleton } from '@/components/posts-skeleton';
+
+          export default function Page() {
+            return (
+              <>
+                <h1>Recent posts</h1>
+                <Suspense fallback={<PostsSkeleton />}>
+                  <PostListStream />
+                </Suspense>
+              </>
+            );
+          }
+
+          async function PostListStream() {
+            const posts = await getPosts();
+            return <PostList posts={posts} />;
+          }
+
+        Why it satisfies the rule:
+          - Page is no longer async; the header renders
+            immediately.
+          - The awaiting work moves into PostListStream, wrapped
+            in a Suspense boundary with a named fallback.
+          - The user sees <h1> + skeleton instantly; PostList
+            streams in when getPosts resolves.
+          - Alternative (shorter) fix: add an
+            app/posts/loading.tsx sibling. Either satisfies
+            Step 1.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the fix:
+            - cites the Next.js streaming docs
+            - shows the corrected files in full
+            - either wraps the awaiting subtree in
+              <Suspense fallback=...> OR adds a sibling
+              loading.tsx (both are valid per the skill)
+            - preserves the existing data-fetch contract
+              (getPosts still called, PostList still rendered)
+            - explains WHY streaming improves TTFB
+          Score 0.5 if a valid fix compiles but omits the Next
+          docs citation or the rationale.
+          Score 0 if the fix removes the data fetch entirely, or
+          uses a non-existent API, or introduces a new rule
+          violation (e.g. Suspense without fallback).

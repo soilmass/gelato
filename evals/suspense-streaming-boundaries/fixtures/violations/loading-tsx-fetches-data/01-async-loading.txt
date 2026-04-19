@@ -1,0 +1,9 @@
+---
+class: loading-tsx-fetches-data
+filename: app/posts/loading.tsx
+reason: loading.tsx awaits a fetch before rendering — defeats the skeleton.
+---
+export default async function Loading() {
+  const config = await fetch('/api/skeleton-config').then((r) => r.json());
+  return <div style={{ background: config.color }}>Loading…</div>;
+}

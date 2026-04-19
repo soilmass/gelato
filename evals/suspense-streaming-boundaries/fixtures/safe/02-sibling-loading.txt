@@ -1,0 +1,12 @@
+---
+filename: app/team/page.tsx
+has_loading_sibling: true
+reason: async page + sibling loading.tsx — Next auto-wraps the segment.
+---
+import { getTeam } from '@/lib/team';
+import { TeamGrid } from '@/components/team-grid';
+
+export default async function Page() {
+  const members = await getTeam();
+  return <TeamGrid members={members} />;
+}

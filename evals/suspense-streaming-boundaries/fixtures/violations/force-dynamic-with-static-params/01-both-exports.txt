@@ -1,0 +1,15 @@
+---
+class: force-dynamic-with-static-params
+filename: app/blog/[slug]/page.tsx
+has_loading_sibling: true
+reason: force-dynamic and generateStaticParams are mutually exclusive.
+---
+export const dynamic = 'force-dynamic';
+
+export async function generateStaticParams() {
+  return [{ slug: 'hello' }, { slug: 'world' }];
+}
+
+export default function Page({ params }: { params: { slug: string } }) {
+  return <h1>{params.slug}</h1>;
+}
