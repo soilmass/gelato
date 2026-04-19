@@ -1,0 +1,14 @@
+---
+class: route-handler-for-form
+reason: Newsletter signup form — formData consumed by route handler, no webhook signature, no Bearer. Should be a Server Action.
+---
+// app/api/newsletter/route.ts
+import { db, subscribers } from '@/lib/db';
+
+export async function POST(req: Request) {
+  const form = await req.formData();
+  const email = String(form.get('email') ?? '').trim();
+  if (!email) return new Response('email required', { status: 400 });
+  await db.insert(subscribers).values({ email });
+  return Response.redirect(new URL('/subscribed', req.url), 303);
+}

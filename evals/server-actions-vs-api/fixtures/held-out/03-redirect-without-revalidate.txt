@@ -1,0 +1,13 @@
+---
+class: action-no-revalidation
+reason: Action mutates and calls redirect() but never revalidates. Redirect changes URL; it does not invalidate cached data on /feed.
+---
+'use server';
+import { redirect } from 'next/navigation';
+import { db, posts } from '@/lib/db';
+import { eq } from 'drizzle-orm';
+
+export async function archivePost(id: string) {
+  await db.update(posts).set({ archived: true }).where(eq(posts.id, id));
+  redirect('/feed');
+}

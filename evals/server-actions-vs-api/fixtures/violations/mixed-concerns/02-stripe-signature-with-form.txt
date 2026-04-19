@@ -1,0 +1,33 @@
+---
+class: mixed-concerns
+reason: Single handler checks stripe-signature for the webhook path AND reads formData for the React-app path — split into two handlers.
+---
+// app/api/checkout/route.ts
+import { stripe } from '@/lib/stripe';
+import { db, orders } from '@/lib/db';
+
+export async function POST(req: Request) {
+  const signature = req.headers.get('stripe-signature');
+  if (signature) {
+    const body = await req.text();
+    const event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET!,
+    );
+    if (event.type === 'checkout.session.completed') {
+      await db.insert(orders).values({
+        stripeSessionId: event.data.object.id,
+        status: 'paid',
+      });
+    }
+    return new Response(null, { status: 204 });
+  }
+
+  const form = await req.formData();
+  await db.insert(orders).values({
+    items: String(form.get('items') ?? ''),
+    status: 'pending',
+  });
+  return Response.redirect(new URL('/checkout/pending', req.url), 303);
+}

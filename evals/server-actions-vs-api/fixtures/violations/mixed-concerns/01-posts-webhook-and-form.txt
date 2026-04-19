@@ -1,0 +1,30 @@
+---
+class: mixed-concerns
+reason: Single route handler branches on user-agent — handles both React-app form submissions AND a partner webhook. Split in two.
+---
+// app/api/posts/route.ts
+import { db, posts } from '@/lib/db';
+import { verifyPartnerSignature } from '@/lib/webhook-auth';
+
+export async function POST(req: Request) {
+  const ua = req.headers.get('user-agent') ?? '';
+  const isWebhook = ua.includes('PartnerWebhook');
+
+  if (isWebhook) {
+    const signature = req.headers.get('x-webhook-signature') ?? '';
+    const body = await req.text();
+    if (!verifyPartnerSignature(body, signature)) {
+      return new Response('invalid signature', { status: 401 });
+    }
+    const event = JSON.parse(body);
+    await db.insert(posts).values(event.post);
+    return new Response(null, { status: 204 });
+  }
+
+  const form = await req.formData();
+  await db.insert(posts).values({
+    title: String(form.get('title') ?? ''),
+    body: String(form.get('body') ?? ''),
+  });
+  return Response.redirect(new URL('/posts', req.url), 303);
+}

@@ -1,0 +1,30 @@
+---
+class: mixed-concerns
+reason: GitHub webhook signature header AND React formData submission both handled in the same POST — two audiences, one endpoint.
+---
+// app/api/repos/route.ts
+import { db, repoEvents } from '@/lib/db';
+import { verifyGithubSignature } from '@/lib/github-auth';
+
+export async function POST(req: Request) {
+  const ghSig = req.headers.get('x-hub-signature-256');
+  if (ghSig) {
+    const body = await req.text();
+    if (!verifyGithubSignature(body, ghSig)) {
+      return new Response('invalid signature', { status: 401 });
+    }
+    const event = JSON.parse(body);
+    await db.insert(repoEvents).values({
+      repo: event.repository.full_name,
+      action: event.action,
+    });
+    return new Response(null, { status: 204 });
+  }
+
+  const form = await req.formData();
+  await db.insert(repoEvents).values({
+    repo: String(form.get('repo') ?? ''),
+    action: 'manual',
+  });
+  return Response.redirect(new URL('/repos', req.url), 303);
+}

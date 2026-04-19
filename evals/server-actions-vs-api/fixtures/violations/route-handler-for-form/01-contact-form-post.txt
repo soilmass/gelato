@@ -1,0 +1,15 @@
+---
+class: route-handler-for-form
+reason: Contact form posts to route handler that reads formData and redirects — canonical case for a Server Action instead.
+---
+// app/api/contact/route.ts
+import { db, contacts } from '@/lib/db';
+
+export async function POST(req: Request) {
+  const data = await req.formData();
+  await db.insert(contacts).values({
+    email: String(data.get('email') ?? ''),
+    body: String(data.get('body') ?? ''),
+  });
+  return Response.redirect(new URL('/thanks', req.url), 303);
+}

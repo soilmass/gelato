@@ -1,0 +1,29 @@
+---
+expected: safe
+reason: Canonical Stripe webhook — verifies signature, reads raw text body, never consumes formData from a React form.
+---
+import { stripe } from '@/lib/stripe';
+import type { NextRequest } from 'next/server';
+
+export async function POST(req: NextRequest) {
+  const signature = req.headers.get('stripe-signature');
+  if (!signature) return new Response('missing signature', { status: 400 });
+
+  const body = await req.text();
+  const event = stripe.webhooks.constructEvent(
+    body,
+    signature,
+    process.env.STRIPE_WEBHOOK_SECRET!,
+  );
+
+  switch (event.type) {
+    case 'checkout.session.completed':
+      await handleCheckout(event.data.object);
+      break;
+    case 'invoice.payment_failed':
+      await handlePaymentFailed(event.data.object);
+      break;
+  }
+
+  return new Response(null, { status: 204 });
+}

@@ -1,0 +1,21 @@
+---
+expected: safe
+reason: Server Action that only reads — no db.insert/update/delete — does not need revalidation. Used for dynamic search within a React UI.
+---
+'use server';
+import { z } from 'zod';
+import { db, posts } from '@/lib/db';
+import { ilike } from 'drizzle-orm';
+
+const SearchSchema = z.object({ query: z.string().min(1).max(200) });
+
+export async function searchPosts(formData: FormData) {
+  const result = SearchSchema.safeParse(Object.fromEntries(formData));
+  if (!result.success) return { ok: false, errors: result.error.flatten() };
+  const rows = await db
+    .select()
+    .from(posts)
+    .where(ilike(posts.title, `%${result.data.query}%`))
+    .limit(20);
+  return { ok: true, rows };
+}

@@ -1,0 +1,21 @@
+---
+class: safe
+reason: Revalidation inside a try block is still present — the classifier must recognize revalidateTag anywhere in the function body, not just at the happy path.
+---
+'use server';
+import { revalidateTag } from 'next/cache';
+import { db, posts } from '@/lib/db';
+
+export async function createPost(formData: FormData) {
+  try {
+    await db.insert(posts).values({
+      title: String(formData.get('title') ?? ''),
+      body: String(formData.get('body') ?? ''),
+    });
+    revalidateTag('posts');
+    return { ok: true };
+  } catch (err) {
+    console.error(err);
+    return { ok: false, error: 'insert failed' };
+  }
+}
