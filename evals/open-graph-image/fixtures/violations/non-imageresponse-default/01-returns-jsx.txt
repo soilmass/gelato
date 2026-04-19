@@ -1,0 +1,11 @@
+---
+class: non-imageresponse-default
+filename: app/opengraph-image.tsx
+reason: Default export returns plain JSX instead of new ImageResponse.
+---
+export const size = { width: 1200, height: 630 };
+export const contentType = 'image/png';
+
+export default function OG() {
+  return <div style={{ display: 'flex' }}>Hi</div>;
+}

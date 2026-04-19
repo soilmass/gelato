@@ -1,0 +1,12 @@
+---
+class: missing-size-export
+filename: app/opengraph-image.tsx
+reason: "opengraph-image file missing export const size."
+---
+import { ImageResponse } from 'next/og';
+
+export const contentType = 'image/png';
+
+export default function OG() {
+  return new ImageResponse(<div style={{ display: 'flex' }}>Hi</div>, { width: 1200, height: 630 });
+}

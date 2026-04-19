@@ -1,0 +1,15 @@
+---
+class: missing-size-export
+filename: app/blog/[slug]/twitter-image.tsx
+reason: Nested twitter-image missing size export.
+---
+import { ImageResponse } from 'next/og';
+
+export const contentType = 'image/png';
+
+export default function Twitter() {
+  return new ImageResponse(
+    <div style={{ display: 'flex' }}>T</div>,
+    { width: 1200, height: 630 },
+  );
+}
