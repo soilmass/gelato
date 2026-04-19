@@ -22,6 +22,8 @@
     "docs:generate": "bun run scripts/generate-docs.ts",
     "docs:dev": "bun --cwd docs run dev",
     "docs:build": "bun --cwd docs run build",
+    "publint": "bunx publint && bunx publint packages/schema && bunx publint packages/eval-harness",
+    "check:publish": "bunx changeset status --verbose",
     "prepare": "lefthook install || true"
   },
   "devDependencies": {
