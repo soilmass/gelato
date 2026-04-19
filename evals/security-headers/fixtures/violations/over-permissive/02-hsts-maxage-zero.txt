@@ -1,0 +1,19 @@
+---
+class: over-permissive
+reason: HSTS max-age=0 tells browsers to drop any existing HSTS policy for this host. Effectively disables HSTS.
+---
+export default {
+  async headers() {
+    return [{
+      source: '/:path*',
+      headers: [
+        { key: 'Strict-Transport-Security', value: 'max-age=0' },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        { key: 'Content-Security-Policy', value: "default-src 'self';" },
+        { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+      ],
+    }];
+  },
+};

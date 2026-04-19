@@ -1,0 +1,28 @@
+---
+class: conflicting-source
+reason: Content-Security-Policy set in both next.config.ts and middleware.ts with different values. Middleware wins; next.config edit is a silent no-op. Maintenance hazard.
+---
+// next.config.ts
+export default {
+  async headers() {
+    return [{
+      source: '/:path*',
+      headers: [
+        { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains' },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        { key: 'Content-Security-Policy', value: "default-src 'self';" },
+        { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+      ],
+    }];
+  },
+};
+
+// middleware.ts
+import { NextResponse } from 'next/server';
+export function middleware() {
+  const response = NextResponse.next();
+  response.headers.set('Content-Security-Policy', "default-src 'self' https://cdn.example.com;");
+  return response;
+}
