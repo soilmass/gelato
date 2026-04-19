@@ -1,11 +1,14 @@
-# Promptfoo config for zod-validation LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for zod-validation LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. A v0.2 `error-response-quality`
-# rubric would judge whether a generated 400-response body returns actionable
-# validation errors (shape: per-field messages via .error.flatten()) rather
-# than an opaque "invalid input" string.
+# Invoked by packages/eval-harness's judgeWithPromptfoo() wrapper via
+# `bunx promptfoo eval --config <this> --filter-description <rubric>`.
+#
+# One rubric per SKILL.md § Evaluation:
+#   - error-response-quality — judges whether a 400-response body returns
+#     actionable per-field validation errors (via .error.flatten())
+#     rather than an opaque "invalid input" string.
 
-description: zod-validation LLM-as-judge rubrics (deferred to v0.2)
+description: zod-validation LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -14,6 +17,67 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is a Server Action or route handler's error-response
+    branch after a Zod schema fails to validate the incoming payload.
+    Assess whether the response body returns actionable validation
+    information that a client can present to the user per field, or
+    whether it's an opaque string that forces the user to re-try blindly.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: error-response-quality
+    vars:
+      content: |
+        // app/actions/subscribe.ts (Server Action)
+        'use server';
+        import { z } from 'zod';
+
+        const SubscribeSchema = z.object({
+          email: z.string().email(),
+          plan: z.enum(['starter', 'pro', 'team']),
+        });
+
+        export async function subscribe(formData: FormData) {
+          const result = SubscribeSchema.safeParse(
+            Object.fromEntries(formData),
+          );
+          if (!result.success) {
+            return {
+              ok: false as const,
+              errors: result.error.flatten().fieldErrors,
+            };
+          }
+          // ...happy path
+          return { ok: true as const };
+        }
+
+        Example error payload the client receives:
+        {
+          "ok": false,
+          "errors": {
+            "email": ["Invalid email"],
+            "plan": ["Invalid enum value. Expected 'starter' | 'pro' | 'team'"]
+          }
+        }
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the error-response branch:
+            - uses .safeParse() (not .parse() in a try/catch)
+            - returns per-field errors keyed by field name (via
+              .error.flatten().fieldErrors or equivalent)
+            - returns HTTP-appropriate failure semantics (ok: false,
+              or status 400 for route handlers) alongside the errors
+            - surfaces enough detail that a client can render a
+              field-adjacent error message without guessing which
+              field failed
+          Score 0 when the response is an opaque string ("invalid
+          input", "bad request") or when all field errors are
+          collapsed into one joined message. Score 0.5 when per-field
+          errors are present but the overall shape is non-standard
+          (e.g. all-field concatenation, missing ok/success flag).

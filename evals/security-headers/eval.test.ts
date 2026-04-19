@@ -17,10 +17,11 @@
 
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadFixtures } from '@gelato/eval-harness';
+import { isJudgeAvailable, judgeWithPromptfoo, loadFixtures } from '@gelato/eval-harness';
 import { describe, expect, it } from 'vitest';
 
 const here = dirname(fileURLToPath(import.meta.url));
+const PROMPTFOO_CONFIG = resolve(here, 'promptfoo.yaml');
 const SAFE_DIR = resolve(here, 'fixtures/safe');
 const VIOLATIONS_DIR = resolve(here, 'fixtures/violations');
 const HELD_OUT_DIR = resolve(here, 'fixtures/held-out');
@@ -239,5 +240,18 @@ describe('security-headers', () => {
     for (const c of CLASSES) {
       expect(byClass.get(c) ?? 0, `class ${c} has at least one fixture`).toBeGreaterThan(0);
     }
+  });
+
+  describe.skipIf(!isJudgeAvailable())('qualitative — LLM-as-judge', () => {
+    it('"fix-orderedness" rubric scores ≥ 0.85', async () => {
+      const result = await judgeWithPromptfoo({
+        config: PROMPTFOO_CONFIG,
+        rubric: 'fix-orderedness',
+      });
+      expect(
+        result.score,
+        `n=${result.nCases} reasons=${result.reasons.join(' | ')}`,
+      ).toBeGreaterThanOrEqual(0.85);
+    });
   });
 });
