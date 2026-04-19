@@ -1,0 +1,14 @@
+---
+class: plaintext-password
+reason: Signup stores plain password in DB — no hash call anywhere. Classic breach magnet.
+---
+'use server';
+import { db, users } from '@/lib/db';
+
+export async function signup(input: { email: string; password: string }) {
+  await db.insert(users).values({
+    email: input.email,
+    password: input.password,
+  });
+  return { ok: true };
+}

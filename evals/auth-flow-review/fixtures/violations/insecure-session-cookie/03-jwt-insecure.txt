@@ -1,0 +1,18 @@
+---
+class: insecure-session-cookie
+reason: JWT cookie set without secure flag — MITM can strip and steal. All three flags required.
+---
+'use server';
+import { cookies } from 'next/headers';
+import { signJwt } from '@/lib/jwt';
+
+export async function issueJwt(userId: string) {
+  const jwt = await signJwt({ sub: userId });
+  cookies().set('jwt', jwt, {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 3600,
+  });
+  return { ok: true };
+}

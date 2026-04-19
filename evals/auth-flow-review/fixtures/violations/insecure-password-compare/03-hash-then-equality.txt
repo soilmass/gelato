@@ -1,0 +1,22 @@
+---
+class: insecure-password-compare
+reason: Hashes input, then compares hash with === — still vulnerable to timing (bcrypt hash is deterministic with same salt, but salts differ).
+---
+'use server';
+import { createHash } from 'node:crypto';
+import { db, users } from '@/lib/db';
+import { eq } from 'drizzle-orm';
+
+function sha256(s: string) {
+  return createHash('sha256').update(s).digest('hex');
+}
+
+export async function login(input: { email: string; password: string }) {
+  const user = await db.query.users.findFirst({ where: eq(users.email, input.email) });
+  if (!user) throw new Error('invalid');
+  const candidate = sha256(input.password);
+  if (candidate === user.passwordHash) {
+    return { ok: true };
+  }
+  throw new Error('invalid');
+}

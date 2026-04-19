@@ -1,0 +1,36 @@
+---
+expected: safe
+reason: argon2.hash + argon2.verify — also OWASP-approved. No violations.
+---
+'use server';
+import argon2 from 'argon2';
+import { cookies } from 'next/headers';
+import { db, users } from '@/lib/db';
+import { eq } from 'drizzle-orm';
+import { createSession } from '@/lib/session';
+
+export async function signupAndLogin(input: { email: string; password: string }) {
+  const passwordHash = await argon2.hash(input.password);
+  const [user] = await db
+    .insert(users)
+    .values({ email: input.email, passwordHash })
+    .returning();
+
+  const token = await createSession(user.id);
+  cookies().set('session', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict',
+    path: '/',
+    maxAge: 3600,
+  });
+  return { ok: true };
+}
+
+export async function login(input: { email: string; password: string }) {
+  const user = await db.query.users.findFirst({ where: eq(users.email, input.email) });
+  if (!user) throw new Error('invalid');
+  const ok = await argon2.verify(user.passwordHash, input.password);
+  if (!ok) throw new Error('invalid');
+  return { ok: true };
+}

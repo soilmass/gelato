@@ -1,0 +1,10 @@
+---
+class: unvalidated-redirect
+reason: redirect(returnTo) — returnTo from searchParams used directly. Open redirect to attacker-controlled URL.
+---
+import { redirect } from 'next/navigation';
+
+export async function afterLogin(searchParams: URLSearchParams) {
+  const returnTo = searchParams.get('returnTo') ?? '/';
+  redirect(returnTo);
+}

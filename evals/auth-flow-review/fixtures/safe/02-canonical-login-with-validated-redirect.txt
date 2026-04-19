@@ -1,0 +1,35 @@
+---
+expected: safe
+reason: "Canonical login: bcrypt.compare, cookie has flags, returnTo validated as same-origin before redirect."
+---
+'use server';
+import { compare } from 'bcrypt';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { db, users } from '@/lib/db';
+import { eq } from 'drizzle-orm';
+import { createSession } from '@/lib/session';
+
+export async function login(formData: FormData) {
+  const email = String(formData.get('email') ?? '');
+  const password = String(formData.get('password') ?? '');
+  const returnTo = String(formData.get('returnTo') ?? '/');
+
+  const user = await db.query.users.findFirst({ where: eq(users.email, email) });
+  if (!user) throw new Error('invalid credentials');
+
+  const ok = await compare(password, user.passwordHash);
+  if (!ok) throw new Error('invalid credentials');
+
+  const token = await createSession(user.id);
+  cookies().set('session', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
+  const safe = returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : '/';
+  redirect(safe);
+}

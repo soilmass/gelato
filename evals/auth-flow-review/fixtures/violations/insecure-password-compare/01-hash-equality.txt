@@ -1,0 +1,18 @@
+---
+class: insecure-password-compare
+reason: passwordHash compared with === — timing oracle and wrong semantics (comparing hash to plaintext).
+---
+'use server';
+import { db, users } from '@/lib/db';
+import { eq } from 'drizzle-orm';
+import { createSession } from '@/lib/session';
+
+export async function login(input: { email: string; password: string }) {
+  const user = await db.query.users.findFirst({ where: eq(users.email, input.email) });
+  if (!user) throw new Error('invalid');
+
+  if (user.passwordHash === input.password) {
+    return createSession(user.id);
+  }
+  throw new Error('invalid');
+}

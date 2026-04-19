@@ -1,0 +1,16 @@
+---
+class: insecure-session-cookie
+reason: Session cookie set with only path and maxAge — no httpOnly, no secure, no sameSite. Open to XSS session theft, MITM, and CSRF.
+---
+'use server';
+import { cookies } from 'next/headers';
+import { createSession } from '@/lib/session';
+
+export async function startSession(userId: string) {
+  const token = await createSession(userId);
+  cookies().set('session', token, {
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7,
+  });
+  return { ok: true };
+}

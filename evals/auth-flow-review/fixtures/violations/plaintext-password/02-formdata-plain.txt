@@ -1,0 +1,13 @@
+---
+class: plaintext-password
+reason: Signup via FormData — plain password inserted. Still a breach magnet.
+---
+'use server';
+import { db, users } from '@/lib/db';
+
+export async function signup(formData: FormData) {
+  const email = String(formData.get('email') ?? '');
+  const password = String(formData.get('password') ?? '');
+  await db.insert(users).values({ email, password });
+  return { ok: true };
+}
