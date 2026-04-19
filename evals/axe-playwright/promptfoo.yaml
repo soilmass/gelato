@@ -1,0 +1,91 @@
+# Promptfoo config for axe-playwright.
+#
+# One rubric:
+#   - scan-coverage-remediation — judges whether a remediation for a
+#     missed-axe-scan violation (Step 1 or Step 2) gives concrete
+#     Playwright code the engineer can drop in.
+
+description: axe-playwright LLM-as-judge rubrics
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a remediation for an axe-playwright violation
+    on a Next.js 15 + @playwright/test + @axe-core/playwright
+    project. Judge whether the fix is implementable as written and
+    whether it satisfies the cited skill rule.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: scan-coverage-remediation
+    vars:
+      content: |
+        Violation class: page-without-axe-scan
+
+        Rule cited: Step 1 of the axe-playwright skill. A spec that
+        navigates to a route must run AxeBuilder at least once.
+        axe-core docs + @axe-core/playwright README both present
+        this as the minimum viable integration.
+
+        Original:
+          import { test, expect } from '@playwright/test';
+
+          test('home renders', async ({ page }) => {
+            await page.goto('/');
+            await expect(page.getByRole('heading', { level: 1 }))
+              .toBeVisible();
+          });
+
+        Fix: add one AxeBuilder scan + zero-violations assertion to
+        the same test. This keeps the existing visibility assertion
+        for the happy-path check and layers runtime a11y on top.
+
+          import { test, expect } from '@playwright/test';
+          import AxeBuilder from '@axe-core/playwright';
+
+          test('home renders without a11y violations', async ({ page }) => {
+            await page.goto('/');
+            await expect(page.getByRole('heading', { level: 1 }))
+              .toBeVisible();
+            const { violations } = await new AxeBuilder({ page })
+              .analyze();
+            expect(violations).toEqual([]);
+          });
+
+        Why it satisfies the rule:
+          - One `new AxeBuilder({ page }).analyze()` per file meets
+            Step 1's coverage requirement.
+          - `{ violations }` destructuring + `toEqual([])` satisfies
+            Step 2 — the scan result is asserted, not discarded.
+          - Default AxeBuilder (no `.options()` / no
+            `.disableRules`) runs the full WCAG 2.2 AA tag-set, so
+            Steps 3 and 4 don't activate.
+          - Keeps the existing visibility check for unrelated
+            regressions; axe-core is the a11y half.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the remediation:
+            - names the skill rule (Step 1 / Step 2) that was
+              violated
+            - cites the @axe-core/playwright or axe-core docs that
+              ground the fix
+            - shows the corrected spec in full (imports + test body)
+            - explains WHY the fix satisfies every relevant skill
+              step, not just the failing one
+            - preserves any surrounding constraints (existing
+              assertions, test name shape, other imports)
+          Score 0.5 when the fix compiles and passes the rule but
+          omits citations OR doesn't discuss adjacent steps.
+          Score 0 when the fix introduces a new violation (e.g.
+          silences a rule without a comment), swallows the original
+          test logic, or requires consulting docs to apply.

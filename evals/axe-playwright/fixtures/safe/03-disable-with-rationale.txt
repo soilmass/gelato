@@ -1,0 +1,15 @@
+---
+reason: disableRules call preceded by a comment explaining the allowlist.
+---
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('marketing page clean', async ({ page }) => {
+  await page.goto('/');
+  const results = await new AxeBuilder({ page })
+    // color-contrast: design tokens enforce in CI; axe false-positives on
+    // layered hero SVG. Re-evaluate Q3 2026 once tokens-in-SVG normalize.
+    .disableRules(['color-contrast'])
+    .analyze();
+  expect(results.violations).toEqual([]);
+});

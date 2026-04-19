@@ -1,0 +1,12 @@
+---
+class: safe
+reason: Imported axe wrapper satisfies Step 1 — wrapper contains AxeBuilder internally.
+---
+import { test, expect } from '@playwright/test';
+import { scanA11y } from './helpers/axe-helpers';
+
+test('dashboard a11y', async ({ page }) => {
+  await page.goto('/dashboard');
+  const { violations } = await scanA11y(page);
+  expect(violations).toEqual([]);
+});

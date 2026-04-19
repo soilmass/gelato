@@ -1,0 +1,13 @@
+---
+reason: runOnly tags include wcag22aa explicitly — satisfies the WCAG rule-pack rule.
+---
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('home wcag22aa', async ({ page }) => {
+  await page.goto('/');
+  const { violations } = await new AxeBuilder({ page })
+    .options({ runOnly: { type: 'tag', values: ['wcag22aa', 'wcag2aa'] } })
+    .analyze();
+  expect(violations).toEqual([]);
+});
