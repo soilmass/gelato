@@ -1,0 +1,11 @@
+---
+expected: pass
+reason: "feat with a Closes trailer — links the commit to an auto-closing issue."
+---
+feat(ci): add drift-check snapshot comparison
+
+Weekly cron compares pinned upstream sources against the current
+fetch and opens a PR when a methodology source changes. Covers
+the drift-check.ts portion of Phase 1 H7.
+
+Closes: #45

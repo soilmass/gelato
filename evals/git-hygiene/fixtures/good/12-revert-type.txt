@@ -1,0 +1,8 @@
+---
+expected: pass
+reason: revert type — lowercase, imperative, describes what's being reverted.
+---
+revert: roll back zod-validation schema extraction
+
+Reverts commit ed6677f. The extraction regressed the eval pass rate
+from 1.0 to 0.83; fixing the regex shape is a follow-up.

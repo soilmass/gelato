@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: "`feature` is not in the allowlist (it's `feat`). type-enum rejects the full-word variant."
+---
+feature: add onboarding flow

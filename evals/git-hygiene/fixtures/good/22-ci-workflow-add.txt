@@ -1,0 +1,5 @@
+---
+expected: pass
+reason: ci(workflows) — CI / workflow-edit commits live under the ci type.
+---
+ci(workflows): add pass-rate regression gate to eval job

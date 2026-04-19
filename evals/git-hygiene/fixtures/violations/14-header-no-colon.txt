@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: Missing the colon separator between type and subject — header does not parse as Conventional Commits.
+---
+feat add new skill

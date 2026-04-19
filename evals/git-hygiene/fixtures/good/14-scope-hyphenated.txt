@@ -1,0 +1,5 @@
+---
+expected: pass
+reason: Hyphenated scope name — kebab-case scopes are legal under config-conventional's scope-case rule.
+---
+feat(rsc-boundary-audit): harden held-out set to 15 fixtures

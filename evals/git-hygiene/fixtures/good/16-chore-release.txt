@@ -1,0 +1,8 @@
+---
+expected: pass
+reason: Canonical release-prep commit from Changesets — chore(release) scope, version in body.
+---
+chore(release): prepare v0.2.0
+
+Bumps @gelato/schema and @gelato/eval-harness to 0.2.0. See
+CHANGELOG.md for the full list of skills and hardening items.

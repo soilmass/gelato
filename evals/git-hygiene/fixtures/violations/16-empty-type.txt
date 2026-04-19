@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: Colon with no type before it — type-empty rule.
+---
+: add a thing without a type

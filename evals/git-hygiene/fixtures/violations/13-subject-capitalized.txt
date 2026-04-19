@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: Subject starts with a capital letter — subject-case rule forbids Sentence/Start/Pascal/Upper.
+---
+feat: Add the new analytics provider

@@ -1,0 +1,7 @@
+---
+expected: fail
+reason: Body line far exceeds 72 characters — multi-token over-length to distinguish from boundary cases.
+---
+feat: add thing
+
+This is a body line that was composed specifically to exceed the seventy-two character body-max-line-length limit by a comfortable margin on purpose.

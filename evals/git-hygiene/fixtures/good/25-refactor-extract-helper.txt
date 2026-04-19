@@ -1,0 +1,5 @@
+---
+expected: pass
+reason: refactor type — code restructuring without behavior change. Scope indicates the affected classifier.
+---
+refactor(classifier): extract matchBrace into a shared helper

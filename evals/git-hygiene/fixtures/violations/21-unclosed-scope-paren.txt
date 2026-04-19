@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: Unclosed scope parenthesis — header-format parser cannot match the Conventional Commits shape.
+---
+feat(unclosed-scope: add the new skill

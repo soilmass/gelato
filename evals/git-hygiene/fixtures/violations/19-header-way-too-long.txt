@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: Header length far exceeds 72 — multi-violation, definitively caught by header-max-length.
+---
+feat(packages/eval-harness/fixtures/loader): introduce an entirely rewritten streaming fixture-loader pipeline with caching, retries, and a completely new directory-traversal strategy

@@ -1,0 +1,5 @@
+---
+expected: pass
+reason: Scope with slash — config-conventional's scope-case permits slashes for nested-path scopes.
+---
+fix(packages/schema): accept array form in methodology_source
