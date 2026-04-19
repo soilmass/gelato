@@ -1,0 +1,15 @@
+---
+class: sitemap-bad-locale
+filename: app/sitemap.ts
+reason: "EN-us is uppercase primary language; BCP 47 requires lowercase."
+---
+import type { MetadataRoute } from 'next';
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    {
+      url: 'https://ex.com/docs',
+      alternates: { languages: { 'EN-us': 'https://ex.com/docs', 'es-MX': 'https://ex.com/es/docs' } },
+    },
+  ];
+}

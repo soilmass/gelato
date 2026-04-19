@@ -1,0 +1,8 @@
+---
+class: safe
+filename: app/page.tsx
+reason: File isn't sitemap.ts or robots.ts — classifier inactive.
+---
+export default function Page() {
+  return <h1>Hi</h1>;
+}

@@ -1,0 +1,10 @@
+---
+class: safe
+filename: app/robots.ts
+reason: Robots without rules — classifier only activates the sitemap-ref rule on rules-bearing robots.
+---
+import type { MetadataRoute } from 'next';
+
+export default function robots(): MetadataRoute.Robots {
+  return {};
+}

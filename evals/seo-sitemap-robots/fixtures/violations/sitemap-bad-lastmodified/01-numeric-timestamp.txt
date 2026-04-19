@@ -1,0 +1,12 @@
+---
+class: sitemap-bad-lastmodified
+filename: app/sitemap.ts
+reason: lastModified is a numeric unix timestamp — neither Date nor ISO 8601 string.
+---
+import type { MetadataRoute } from 'next';
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    { url: 'https://ex.com/', lastModified: 1776611200000 },
+  ];
+}

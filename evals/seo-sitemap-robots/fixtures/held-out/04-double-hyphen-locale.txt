@@ -1,0 +1,15 @@
+---
+class: sitemap-bad-locale
+filename: app/sitemap.ts
+reason: "es--MX has a double hyphen; invalid BCP 47."
+---
+import type { MetadataRoute } from 'next';
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    {
+      url: 'https://ex.com/',
+      alternates: { languages: { en: 'https://ex.com/', 'es--MX': 'https://ex.com/es/' } },
+    },
+  ];
+}

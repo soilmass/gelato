@@ -1,0 +1,12 @@
+---
+class: robots-missing-sitemap-ref
+filename: app/robots.ts
+reason: robots.ts has rules but no sitemap field.
+---
+import type { MetadataRoute } from 'next';
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [{ userAgent: '*', allow: '/', disallow: '/admin' }],
+  };
+}

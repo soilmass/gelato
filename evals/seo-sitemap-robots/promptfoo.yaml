@@ -1,0 +1,76 @@
+description: seo-sitemap-robots LLM-as-judge rubric
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a remediation for a seo-sitemap-robots
+    violation in a Next.js 15 App Router app. Judge whether the
+    fix satisfies sitemaps.org 0.9, Next.js MetadataRoute type,
+    and BCP 47.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: sitemap-remediation-implementability
+    vars:
+      content: |
+        Violation class: sitemap-bad-locale
+
+        Rule cited: BCP 47 (RFC 5646). alternates.languages keys
+        must be valid BCP 47 tags; Next passes the keys straight
+        through to the <xhtml:link rel="alternate" hreflang="..."/>
+        element Google reads.
+
+        Original:
+          export default function sitemap(): MetadataRoute.Sitemap {
+            return [{
+              url: 'https://ex.com/docs',
+              alternates: {
+                languages: {
+                  'EN-us': 'https://ex.com/docs',
+                  'es-MX': 'https://ex.com/es/docs',
+                },
+              },
+            }];
+          }
+
+        Fix: BCP 47 language primary tag is lowercase, region
+        uppercase. Correct `EN-us` to `en-US`.
+
+          export default function sitemap(): MetadataRoute.Sitemap {
+            return [{
+              url: 'https://ex.com/docs',
+              alternates: {
+                languages: {
+                  'en-US': 'https://ex.com/docs',
+                  'es-MX': 'https://ex.com/es/docs',
+                },
+              },
+            }];
+          }
+
+        Why it satisfies the rule:
+          - `en-US`: primary lowercase, region uppercase — valid
+            BCP 47.
+          - `es-MX` already correct; preserved.
+          - URL mapping unchanged.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the remediation:
+            - cites BCP 47 / RFC 5646
+            - shows the corrected sitemap in full
+            - fixes casing (lowercase lang, uppercase region)
+            - preserves other valid tags untouched
+          Score 0.5 when the fix is correct but omits the BCP 47
+          citation.
+          Score 0 when the fix introduces a new invalid tag or
+          removes the language block entirely.

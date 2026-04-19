@@ -1,0 +1,21 @@
+---
+filename: app/sitemap.ts
+reason: CLDR script+region subtags are valid BCP 47.
+---
+import type { MetadataRoute } from 'next';
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    {
+      url: 'https://ex.com/docs',
+      alternates: {
+        languages: {
+          en: 'https://ex.com/docs',
+          'zh-Hans': 'https://ex.com/zh-hans/docs',
+          'zh-Hant': 'https://ex.com/zh-hant/docs',
+          'sr-Cyrl-RS': 'https://ex.com/sr-cyrl/docs',
+        },
+      },
+    },
+  ];
+}
