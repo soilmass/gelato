@@ -41,7 +41,7 @@ metadata:
     - "bun@1.1+"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T06:40:25.808Z"
+    last_run: "2026-04-19T11:54:25.215Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Four tenets (action-binding, uncontrolled inputs,

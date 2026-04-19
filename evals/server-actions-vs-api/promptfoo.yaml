@@ -1,12 +1,12 @@
-# Promptfoo config for server-actions-vs-api LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for server-actions-vs-api LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. A v0.2 `decision-tree-grounded`
-# rubric would judge whether Claude's recommendation ("make this a Server
-# Action" / "make this a route handler") cites the correct criterion from
-# the four-criterion decision tree, rather than simply arriving at the right
-# verdict with handwavy reasoning.
+# One rubric per SKILL.md § Evaluation:
+#   - decision-tree-grounded — judges whether a recommendation
+#     ("this should be a Server Action" / "this should be a route
+#     handler") cites the correct criterion from the four-criterion
+#     decision tree rather than arriving at a verdict by vibes.
 
-description: server-actions-vs-api LLM-as-judge rubrics (deferred to v0.2)
+description: server-actions-vs-api LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -15,6 +15,58 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is a recommendation given by a reviewer for an
+    endpoint in a Next.js 15 codebase — specifically, whether it
+    should be implemented as a Server Action or a route handler.
+    Assess whether the recommendation is grounded in the four-
+    criterion decision tree from the skill (non-React caller,
+    streaming, UI mutation, server-render read) rather than vibes.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: decision-tree-grounded
+    vars:
+      content: |
+        Endpoint under review: POST /api/stripe-webhook
+
+        Recommendation: Route handler (not Server Action).
+
+        Reasoning: The endpoint is a Stripe webhook — the caller is
+        Stripe, not the React app. That satisfies criterion #1 of
+        the decision tree: when the caller is a non-React client
+        (mobile app, CLI, third-party webhook), the endpoint must
+        be a route handler because Server Actions require the React
+        runtime to invoke and don't expose a stable HTTP interface.
+
+        Secondary confirmation from the tree: the endpoint is NOT a
+        UI mutation (criterion #3 fires only for React-form-driven
+        mutations) and NOT a server-render read (criterion #4).
+
+        Implementation: app/api/webhooks/stripe/route.ts with a POST
+        handler that verifies `stripe-signature`, parses the raw
+        body, and branches on `event.type`. No Server Action
+        wrapper, no form binding.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the recommendation:
+            - explicitly identifies which numbered criterion from the
+              four-criterion decision tree triggers the verdict
+              (non-React caller / streaming / UI mutation /
+              server-render read)
+            - names the concrete signal that makes the criterion
+              fire (e.g. "the caller is Stripe", "needs SSE
+              streaming", "form submission in a React tree")
+            - confirms the verdict by noting which other criteria do
+              NOT apply, not just the one that does
+          Score 0 when the recommendation gives a verdict without
+          citing the tree or uses handwavy reasoning ("feels like an
+          API route", "Server Actions seem too magical here").
+          Score 0.5 when the tree is cited but the specific
+          criterion number isn't identified, or when no
+          corroborating negative checks appear.

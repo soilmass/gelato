@@ -1,10 +1,14 @@
-# Promptfoo config for rsc-data-fetching LLM-as-judge rubrics (deferred to v0.2).
+# Promptfoo config for rsc-data-fetching LLM-as-judge rubrics.
 #
-# v0.1 ships the deterministic classifier only. A v0.2 `cross-file-tag-audit`
-# rubric would judge whether declared tags have matching revalidateTag
-# callers anywhere in the project (cross-file ts-morph territory).
+# Invoked by packages/eval-harness's judgeWithPromptfoo() wrapper.
+#
+# One rubric per SKILL.md § Evaluation:
+#   - cross-file-tag-audit — judges whether every cache tag declared
+#     on a `fetch(..., { next: { tags: [...] } })` call has a matching
+#     `revalidateTag(...)` caller somewhere in the project. Cross-file
+#     reasoning is the LLM's job; regex can't tell.
 
-description: rsc-data-fetching LLM-as-judge rubrics (deferred to v0.2)
+description: rsc-data-fetching LLM-as-judge rubrics
 
 providers:
   - anthropic:messages:claude-sonnet-4-5-20250929
@@ -13,6 +17,57 @@ defaultTest:
   options:
     cache: true
 
-prompts: []
+prompts:
+  - |
+    The following is a cross-file audit snapshot of cache-tag usage
+    in a Next.js 15 App Router codebase. Each declared tag is paired
+    with the caller sites that invalidate it. Assess whether the
+    project's tag discipline is sound.
 
-tests: []
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: cross-file-tag-audit
+    vars:
+      content: |
+        Declared tags (from `fetch(..., { next: { tags: [...] } })`):
+
+          - 'posts'                 declared in app/posts/page.tsx:18
+          - 'posts-by-user:${userId}'  declared in app/users/[id]/page.tsx:24
+          - 'invoice:${invoiceId}'  declared in app/billing/[id]/page.tsx:31
+
+        revalidateTag callers:
+
+          - revalidateTag('posts')
+              called in app/actions/create-post.ts:42
+              called in app/actions/delete-post.ts:28
+          - revalidateTag(`posts-by-user:${authorId}`)
+              called in app/actions/create-post.ts:44
+          - revalidateTag(`invoice:${id}`)
+              called in app/webhooks/stripe/route.ts:58
+
+        Coverage:
+          posts              → 2 callers ✓
+          posts-by-user:*    → 1 caller ✓ (parameterized form)
+          invoice:*          → 1 caller ✓ (parameterized form)
+
+        No tag is declared without at least one revalidate caller;
+        no revalidate call targets an undeclared tag. Parameterized
+        tags match on the prefix convention.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the audit shows:
+            - every declared tag has at least one matching
+              revalidateTag caller (literal OR parameterized form
+              on the same prefix)
+            - every revalidateTag caller targets a tag that is
+              declared somewhere
+            - parameterized tags (`${id}` template) are matched on
+              prefix, not literal
+          Score 0 when any declared tag lacks a caller OR any
+          caller targets an undeclared tag. Score 0.5 when the
+          coverage is partial (some tags paired, some not) or when
+          parameterized matching is ambiguous.

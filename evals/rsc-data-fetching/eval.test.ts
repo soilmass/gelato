@@ -10,10 +10,11 @@
 
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadFixtures } from '@gelato/eval-harness';
+import { isJudgeAvailable, judgeWithPromptfoo, loadFixtures } from '@gelato/eval-harness';
 import { describe, expect, it } from 'vitest';
 
 const here = dirname(fileURLToPath(import.meta.url));
+const PROMPTFOO_CONFIG = resolve(here, 'promptfoo.yaml');
 const SAFE_DIR = resolve(here, 'fixtures/safe');
 const VIOLATIONS_DIR = resolve(here, 'fixtures/violations');
 const HELD_OUT_DIR = resolve(here, 'fixtures/held-out');
@@ -262,5 +263,18 @@ describe('rsc-data-fetching', () => {
     for (const c of CLASSES) {
       expect(byClass.get(c) ?? 0, `class ${c} has ≥ 1 fixture`).toBeGreaterThan(0);
     }
+  });
+
+  describe.skipIf(!isJudgeAvailable())('qualitative — LLM-as-judge', () => {
+    it('"cross-file-tag-audit" rubric scores ≥ 0.85', async () => {
+      const result = await judgeWithPromptfoo({
+        config: PROMPTFOO_CONFIG,
+        rubric: 'cross-file-tag-audit',
+      });
+      expect(
+        result.score,
+        `n=${result.nCases} reasons=${result.reasons.join(' | ')}`,
+      ).toBeGreaterThanOrEqual(0.85);
+    });
   });
 });
