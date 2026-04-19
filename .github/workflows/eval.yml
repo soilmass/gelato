@@ -3,9 +3,10 @@ name: Eval
 # Per EVAL_SPEC.md § CI behavior: runs on PRs touching skills/** or evals/**,
 # and nightly on main. The orchestrator (scripts/eval.ts) writes pass rates
 # back into each SKILL.md frontmatter; scripts/validate-skills.ts ensures no
-# one hand-edits the three runner-owned fields. Regression gating (fail if
-# any skill's pass_rate drops by more than 0.05) lands in a follow-up
-# workflow step once baseline pass rates are stable on main.
+# one hand-edits the three runner-owned fields. The post-eval step runs
+# scripts/check-pass-rate-regression.ts which fails the workflow if any
+# skill's pass_rate dropped by more than REGRESSION_LIMIT (default 0.05)
+# vs. the base branch, or if a skill lost its numeric pass rate entirely.
 
 on:
   pull_request:
@@ -24,6 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history so the regression gate can `git show` the base
+          # branch's SKILL.md for each shipped skill.
+          fetch-depth: 0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -63,3 +68,13 @@ jobs:
         run: bun run eval
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Pass-rate regression gate
+        # Compares each SKILL.md's post-eval pass_rate against origin/main's
+        # last-committed value. Fails if any skill regressed > 0.05 or lost
+        # a previously-numeric pass_rate. Skips gracefully when no skills
+        # are common with the base branch (i.e. first landings).
+        if: github.event_name == 'pull_request'
+        run: bun scripts/check-pass-rate-regression.ts
+        env:
+          BASE_REF: origin/${{ github.base_ref }}
