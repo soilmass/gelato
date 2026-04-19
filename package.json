@@ -9,7 +9,7 @@
   "engines": {
     "bun": ">=1.1.0"
   },
-  "workspaces": ["packages/*"],
+  "workspaces": ["packages/*", "docs"],
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
@@ -19,6 +19,9 @@
     "eval": "bun run scripts/eval.ts",
     "new-skill": "bun run scripts/new-skill.ts",
     "validate": "bun run scripts/validate-skills.ts",
+    "docs:generate": "bun run scripts/generate-docs.ts",
+    "docs:dev": "bun --cwd docs run dev",
+    "docs:build": "bun --cwd docs run build",
     "prepare": "lefthook install || true"
   },
   "devDependencies": {
