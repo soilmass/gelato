@@ -1,0 +1,19 @@
+---
+filename: app/posts/page.tsx
+has_loading_sibling: false
+reason: Page wraps the awaiting subtree in <Suspense fallback=...>.
+---
+import { Suspense } from 'react';
+import { PostList } from '@/components/post-list';
+import { PostsSkeleton } from '@/components/posts-skeleton';
+
+export default function Page() {
+  return (
+    <>
+      <h1>Recent posts</h1>
+      <Suspense fallback={<PostsSkeleton />}>
+        <PostList />
+      </Suspense>
+    </>
+  );
+}

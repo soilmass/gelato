@@ -1,0 +1,13 @@
+---
+class: async-server-component-no-suspense
+filename: app/posts/page.tsx
+has_loading_sibling: false
+reason: async Page awaits getPosts without Suspense or sibling loading.tsx.
+---
+import { getPosts } from '@/lib/posts';
+import { PostList } from '@/components/post-list';
+
+export default async function Page() {
+  const posts = await getPosts();
+  return <PostList posts={posts} />;
+}

@@ -1,0 +1,16 @@
+---
+class: suspense-missing-fallback
+filename: app/dashboard/page.tsx
+has_loading_sibling: false
+reason: <Suspense> open tag has no fallback prop.
+---
+import { Suspense } from 'react';
+import { Chart } from '@/components/chart';
+
+export default function Page() {
+  return (
+    <Suspense>
+      <Chart />
+    </Suspense>
+  );
+}

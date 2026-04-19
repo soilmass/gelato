@@ -1,0 +1,9 @@
+---
+class: loading-tsx-fetches-data
+filename: app/marketing/loading.tsx
+reason: loading.tsx calls fetch synchronously inside the body — still a violation.
+---
+export default function Loading() {
+  fetch('/api/telemetry/loading-shown');
+  return <div>…</div>;
+}

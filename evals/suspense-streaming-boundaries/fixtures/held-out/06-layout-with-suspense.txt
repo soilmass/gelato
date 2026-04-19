@@ -1,0 +1,17 @@
+---
+class: safe
+filename: app/docs/layout.tsx
+reason: Layout wraps children in a labelled Suspense — valid discipline.
+---
+import { Suspense } from 'react';
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <div>
+      <aside>Sidebar</aside>
+      <Suspense fallback={<div>Loading chapter…</div>}>
+        {children}
+      </Suspense>
+    </div>
+  );
+}
