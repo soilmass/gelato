@@ -1,0 +1,209 @@
+---
+name: eval-harness-pattern
+description: >
+  Enforce Gelato's EVAL_SPEC.md Type-A / Type-B contract on a
+  candidate `evals/<name>/eval.test.ts`. Five violation classes:
+  no quantitative test over a `VIOLATIONS_DIR` fixture set, no
+  reference to a `SAFE_DIR`, no reference to a `HELD_OUT_DIR`, no
+  numeric pass-threshold in any quantitative assertion, and an
+  LLM-as-judge test (`judgeWithPromptfoo`) that isn't wrapped in
+  `describe.skipIf(!isJudgeAvailable())` — which would break CI on
+  branches without an `ANTHROPIC_API_KEY`.
+  Use when: adding `evals/<name>/eval.test.ts` to Gelato, reviewing
+  a PR that introduces an eval, auditing an existing eval for
+  drift from EVAL_SPEC.md, vetting a contribution.
+  Do NOT use for: SKILL.md frontmatter / body (→ new-skill-review),
+  promptfoo.yaml rubric shape (prose-only quality check; out of
+  scope), plugin manifest (→ plugin-manifest-validity).
+license: MIT
+metadata:
+  version: "1.0"
+  core: meta
+  subsystem: extensibility
+  phase: verify
+  type: procedural
+  methodology_source:
+    - name: "Gelato EVAL_SPEC.md"
+      authority: "Gelato project / Neopolitan"
+      url: "https://github.com/soilmass/gelato/blob/main/EVAL_SPEC.md"
+      version: "EVAL_SPEC.md v1.0 (2026)"
+      verified: "2026-04-19"
+  stack_assumptions:
+    - "Vitest 2.x"
+    - "@gelato/eval-harness"
+    - "bun@1.1+"
+  eval:
+    pass_rate: 1
+    last_run: "2026-04-19T16:43:01.548Z"
+    n_cases: 4
+  changelog: >
+    v1.0 — initial. Procedural skill over Gelato's own EVAL_SPEC.md.
+    Five mechanical violation classes detectable from a single
+    eval.test.ts file.
+---
+
+# eval-harness-pattern
+
+Encodes Gelato's own eval contract from EVAL_SPEC.md. Every skill ships an eval; this skill's classifier enforces the shape every eval must carry so CI remains honest across the whole suite.
+
+---
+
+## Methodology Attribution
+
+- **Primary:** Gelato EVAL_SPEC.md
+  - Source: [https://github.com/soilmass/gelato/blob/main/EVAL_SPEC.md](https://github.com/soilmass/gelato/blob/main/EVAL_SPEC.md)
+  - Authority: Gelato project / Neopolitan
+  - Version: EVAL_SPEC.md v1.0 (2026)
+  - Verified: 2026-04-19
+- **Drift-check:** _planned (v0.2 H7)._
+
+Encoded: the five mechanical rules every Gelato eval.test.ts must satisfy — quantitative half over violations, safe-directory coverage, held-out coverage, pass-threshold assertion, LLM-judge gating. NOT encoded: whether the classifier is correct (that's the eval's own job — it runs against fixtures), whether the fixtures cover the right violation classes (human review), whether the promptfoo rubric scores reasonably (separate concern).
+
+---
+
+## Stack Assumptions
+
+- Vitest 2.x as the test runner
+- `@gelato/eval-harness` for `loadFixtures`, `judgeWithPromptfoo`, `isJudgeAvailable`
+- `bun@1.1+`
+
+If your test runner isn't Vitest, fork the suite.
+
+---
+
+## When to Use
+
+Activate when any of the following is true:
+- Adding an eval alongside a new skill
+- Reviewing a PR that introduces `evals/<name>/eval.test.ts`
+- Auditing an existing eval for drift from EVAL_SPEC.md
+
+## When NOT to Use
+
+Do NOT activate for:
+- **SKILL.md shape** → `new-skill-review`
+- **Promptfoo rubric quality (prose)** — out of scope; human review
+- **Plugin manifest** → `plugin-manifest-validity`
+- **Marketplace submission** → `marketplace-submission`
+- **Non-Gelato test frameworks** — out of scope
+
+---
+
+## Procedure
+
+### Step 1 — Quantitative test over `VIOLATIONS_DIR`
+
+Every eval must include at least one `it(...)` block whose body calls `loadFixtures(VIOLATIONS_DIR)` (or an equivalent constant path). This is the "Type-A quantitative" half of EVAL_SPEC.md.
+
+```ts
+// RIGHT
+it('classifies violation fixtures at ≥ 95%', async () => {
+  const fixtures = await loadFixtures(VIOLATIONS_DIR);
+  // ... classifier + accuracy assertion
+});
+
+// WRONG — only the qualitative LLM-judge half
+describe.skipIf(!isJudgeAvailable())('qualitative', () => {
+  it('rubric scores ≥ 0.85', async () => { ... });
+});
+```
+
+### Step 2 — Safe-fixture coverage
+
+The eval must reference a `SAFE_DIR` via `loadFixtures(SAFE_DIR)`. Safe fixtures catch false positives — an eval that never runs against canonical-correct fixtures will silently approve over-aggressive classifiers.
+
+### Step 3 — Held-out coverage
+
+The eval must reference a `HELD_OUT_DIR` via `loadFixtures(HELD_OUT_DIR)`. Held-out fixtures measure generalization — a classifier that memorizes the primary violations set but fails on adversarial variants is flagged.
+
+### Step 4 — Pass-threshold assertion
+
+Every quantitative `expect(acc).toBeGreaterThanOrEqual(<N>)` must use a numeric threshold (`0.95` for the primary set, `0.9` for held-out per EVAL_SPEC.md). An assertion like `toBeGreaterThanOrEqual(0)` is a violation — it passes trivially.
+
+Acceptable thresholds: `0.95`, `0.9`, `0.85` (rubric), `0.8` (advisory-only). Anything below `0.8` must justify in the eval file's comments; the classifier will flag bare `0`/`0.5`/`0.7`.
+
+### Step 5 — LLM-judge tests must be gated on `isJudgeAvailable()`
+
+Tests that call `judgeWithPromptfoo(...)` depend on `ANTHROPIC_API_KEY`. Without gating, CI breaks on any branch without the secret.
+
+```ts
+// RIGHT
+describe.skipIf(!isJudgeAvailable())('qualitative — LLM-as-judge', () => {
+  it('rubric scores ≥ 0.85', async () => {
+    const result = await judgeWithPromptfoo({ config, rubric });
+    expect(result.score).toBeGreaterThanOrEqual(0.85);
+  });
+});
+
+// WRONG — bare it() calling the judge
+it('rubric', async () => {
+  const result = await judgeWithPromptfoo({ config, rubric });
+  expect(result.score).toBeGreaterThanOrEqual(0.85);
+});
+```
+
+Rule: any `judgeWithPromptfoo(` call must be inside a `describe.skipIf(!isJudgeAvailable())` block.
+
+---
+
+## Tool Integration
+
+No CLI. The classifier lives in this skill's eval; Vitest runs it alongside every other skill's eval on `bun run eval`.
+
+## Examples
+
+### Example 1 — `eval-judge-not-gated`
+
+**Input:** `evals/foo/eval.test.ts` calls `judgeWithPromptfoo` inside a top-level `it()`.
+**Output:** on a branch without `ANTHROPIC_API_KEY`, CI fails the entire eval. Fix: wrap the `it()` in `describe.skipIf(!isJudgeAvailable())(...)`.
+
+### Example 2 — `eval-missing-threshold`
+
+**Input:** eval asserts `expect(acc).toBeGreaterThanOrEqual(0);`.
+**Output:** assertion is vacuous; any classifier including one that returns `'safe'` for everything will pass. Fix: use `0.95` for the primary violations test and `0.9` for held-out per EVAL_SPEC.md.
+
+---
+
+## Edge Cases
+
+- **Metric-type skills** (e.g. `core-web-vitals-audit`) don't use `VIOLATIONS_DIR` / `SAFE_DIR` / `HELD_OUT_DIR`; they run real tools (Lighthouse CI). The classifier detects metric-type evals via the presence of `runLighthouse` / `runSkillWithClaude` imports and exempts them from Steps 1-3. Steps 4-5 still apply.
+- **Evals that import but don't call `judgeWithPromptfoo`:** rule #5 only activates when the function is invoked, not merely imported.
+- **Evals using alternate fixture-directory names** (e.g. `GOOD_DIR`, `VIOLATION_DIR_SINGULAR`): currently flagged — EVAL_SPEC.md canonicalizes the three constant names. Teams choosing different names should align to the spec.
+
+---
+
+## Evaluation
+
+See `/evals/eval-harness-pattern/`.
+
+**Quantitative:** ≥ 5 violation fixtures at ≥ 95%, 0 false positives on ≥ 4 safe, held-out ≥ 90%.
+**Qualitative:** Promptfoo rubric `eval-contract-thoroughness` ≥ 0.85.
+
+---
+
+## Handoffs
+
+Scoped to `eval.test.ts` shape. NOT absorbed:
+
+- SKILL.md contract → `new-skill-review`
+- Plugin manifest → `plugin-manifest-validity`
+- Marketplace submission → `marketplace-submission`
+- Drift-check workflow → `drift-check-workflow`
+
+---
+
+## Dependencies
+
+- **External skills:** `new-skill-review`
+- **MCP servers:** none
+- **Tools required in environment:** `@gelato/eval-harness`, Vitest
+
+---
+
+## References
+
+- `references/eval-spec-contract.md` — condensed EVAL_SPEC.md Type-A / Type-B contract with per-rule rationale
+
+## Scripts
+
+- _(none — classifier lives in `evals/eval-harness-pattern/eval.test.ts`)_

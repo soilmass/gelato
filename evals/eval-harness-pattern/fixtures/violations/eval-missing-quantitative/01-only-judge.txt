@@ -1,0 +1,15 @@
+---
+class: eval-missing-quantitative
+reason: Eval has only the LLM-judge half; no VIOLATIONS_DIR loadFixtures.
+---
+import { isJudgeAvailable, judgeWithPromptfoo } from '@gelato/eval-harness';
+import { describe, expect, it } from 'vitest';
+
+describe('skill-x', () => {
+  describe.skipIf(!isJudgeAvailable())('qualitative', () => {
+    it('rubric scores high', async () => {
+      const result = await judgeWithPromptfoo({ config: 'x', rubric: 'r' });
+      expect(result.score).toBeGreaterThanOrEqual(0.85);
+    });
+  });
+});

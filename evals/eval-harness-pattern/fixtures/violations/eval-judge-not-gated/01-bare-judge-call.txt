@@ -1,0 +1,29 @@
+---
+class: eval-judge-not-gated
+reason: judgeWithPromptfoo called inside a bare it() — breaks CI without ANTHROPIC_API_KEY.
+---
+import { judgeWithPromptfoo, loadFixtures } from '@gelato/eval-harness';
+import { describe, expect, it } from 'vitest';
+
+const VIOLATIONS_DIR = './fixtures/violations';
+const SAFE_DIR = './fixtures/safe';
+const HELD_OUT_DIR = './fixtures/held-out';
+
+describe('skill-x', () => {
+  it('violations', async () => {
+    const fixtures = await loadFixtures(VIOLATIONS_DIR);
+    expect(fixtures.length).toBeGreaterThanOrEqual(0.95);
+  });
+  it('safe', async () => {
+    const fixtures = await loadFixtures(SAFE_DIR);
+    expect(fixtures.length).toBeGreaterThanOrEqual(0.95);
+  });
+  it('held', async () => {
+    const fixtures = await loadFixtures(HELD_OUT_DIR);
+    expect(fixtures.length).toBeGreaterThanOrEqual(0.9);
+  });
+  it('rubric scores high', async () => {
+    const result = await judgeWithPromptfoo({ config: 'x', rubric: 'r' });
+    expect(result.score).toBeGreaterThanOrEqual(0.85);
+  });
+});

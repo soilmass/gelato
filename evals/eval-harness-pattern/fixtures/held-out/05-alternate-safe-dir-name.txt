@@ -1,0 +1,25 @@
+---
+class: eval-missing-safe-dir
+reason: Uses GOOD_DIR instead of canonical SAFE_DIR — Step 2 flags.
+---
+import { loadFixtures } from '@gelato/eval-harness';
+import { describe, expect, it } from 'vitest';
+
+const VIOLATIONS_DIR = './fixtures/violations';
+const GOOD_DIR = './fixtures/good';
+const HELD_OUT_DIR = './fixtures/held-out';
+
+describe('x', () => {
+  it('v', async () => {
+    await loadFixtures(VIOLATIONS_DIR);
+    expect(1).toBeGreaterThanOrEqual(0.95);
+  });
+  it('g', async () => {
+    await loadFixtures(GOOD_DIR);
+    expect(1).toBeGreaterThanOrEqual(0.95);
+  });
+  it('h', async () => {
+    await loadFixtures(HELD_OUT_DIR);
+    expect(1).toBeGreaterThanOrEqual(0.9);
+  });
+});

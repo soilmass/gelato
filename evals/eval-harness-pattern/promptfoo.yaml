@@ -1,0 +1,54 @@
+description: eval-harness-pattern LLM-as-judge rubric
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a review of a candidate eval.test.ts file
+    against Gelato's EVAL_SPEC.md Type-A / Type-B contract. Judge
+    whether the review identifies each violation, cites EVAL_SPEC.md,
+    and gives actionable fixes.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: eval-contract-thoroughness
+    vars:
+      content: |
+        Violations in candidate `evals/my-skill/eval.test.ts`:
+
+        1. `eval-missing-safe-dir` (EVAL_SPEC.md § canonical constant
+           names). The file references VIOLATIONS_DIR + HELD_OUT_DIR
+           but no SAFE_DIR. Safe fixtures catch false positives.
+           Fix: add
+             const SAFE_DIR = resolve(here, 'fixtures/safe');
+             it('zero false positives on safe fixtures', async () => {
+               const fixtures = await loadFixtures(SAFE_DIR);
+               expect(...).toEqual([]);
+             });
+
+        2. `eval-judge-not-gated` (EVAL_SPEC.md § Type-B contract).
+           The file calls judgeWithPromptfoo inside a bare it(). Wrap
+           in describe.skipIf(!isJudgeAvailable())(...) so CI without
+           ANTHROPIC_API_KEY skips the block instead of failing.
+
+        No schema-level errors beyond those above.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the review:
+            - names each violation class by its Gelato identifier
+            - cites EVAL_SPEC.md as the source
+            - gives a copy-pasteable fix per violation
+            - distinguishes Type-A (fixture) from Type-B (judge) rules
+          Score 0.5 when the review lists violations but skips
+          citations or concrete fixes.
+          Score 0 when a violation is misclassified, an invented rule
+          is cited, or a stated violation is skipped.
