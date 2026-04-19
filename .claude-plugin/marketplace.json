@@ -1,0 +1,16 @@
+{
+  "name": "gelato-marketplace",
+  "description": "Single-plugin marketplace for Gelato — the dogmatic Claude Code kit for modern full-stack TypeScript. A Neopolitan product.",
+  "owner": {
+    "name": "Neopolitan"
+  },
+  "plugins": [
+    {
+      "name": "gelato",
+      "source": ".",
+      "description": "The dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript.",
+      "version": "0.1.0",
+      "license": "MIT"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+---
+expected: pass
+reason: Bug fix with concrete scope and explained consequence.
+---
+fix(eval-runner): handle empty Lighthouse CI output
+
+Lighthouse CI emits an empty JSON array when it fails to load a
+page before any metric is captured. The pass-rate writer was
+crashing on `result.audits[0]` when the array was empty.
+
+Now the writer records a 0.0 pass rate and moves on, so the
+orchestrator does not abort the remaining skills.
+
+Closes: #41

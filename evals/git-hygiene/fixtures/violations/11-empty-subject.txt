@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: Type with colon but no subject.
+---
+feat:

@@ -1,0 +1,5 @@
+---
+expected: pass
+reason: style type for format-only change, no behavior delta.
+---
+style: reformat scripts/ per biome 1.9.4 defaults

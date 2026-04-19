@@ -1,0 +1,9 @@
+---
+expected: pass
+reason: Renovate-style batched dep bump; the subject looks long but stays under 72.
+---
+chore(deps): bump vitest, promptfoo, and @lhci/cli to latest minor
+
+Renovate batched these because they share a devDependencies group
+and all three passed CI together. Individual changelogs linked in
+the Renovate PR body.

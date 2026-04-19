@@ -11,7 +11,7 @@ You are building **Gelato**, a Claude Code plugin. This repo contains briefing d
 3. `SKILLS.md` — locked v0.1 skill list; build the two marked "✅ REF", use the one marked "📦 PRE"
 4. `EVAL_SPEC.md` — eval runner architecture and format
 5. `TOOL_MANIFEST.md` — exact tools to install; do not substitute alternatives
-6. **`.claude/skills/git-hygiene/SKILL.md`** — the pre-built, auto-loaded skill you follow from commit 1 onward
+6. **`skills/git-hygiene/SKILL.md`** — the pre-built, auto-loaded skill you follow from commit 1 onward (moved from `.claude/skills/` to top-level `skills/` during Step 1; the handoff tarball still places it under `.claude/skills/`, so read it from whichever path exists when the repo opens)
 
 Note: `.claude/CLAUDE.md` is auto-loaded by Claude Code; you may have already read it. Treat it as a quick-reference supplement to BRIEF.md.
 
@@ -29,7 +29,7 @@ When you start, follow the build order in BRIEF.md step by step. **Stop after ea
 
 Specifically:
 
-- Step 1: Repo scaffolding + all tooling from TOOL_MANIFEST.md. Create `.claude-plugin/plugin.json`. Decide final skill path (keep at `.claude/skills/` or move to top-level `skills/`) and update all path references in the same commit. Stop.
+- Step 1: Repo scaffolding + all tooling from TOOL_MANIFEST.md. Create `.claude-plugin/plugin.json`. (Resolved: moved git-hygiene to top-level `skills/` per Claude Code plugin convention and updated all path references in the same commit.) Stop.
 - Step 2: Eval runner + scaffolder + validator scripts. Run `git-hygiene`'s eval first once the runner works. Stop.
 - Step 3: Reference skill #1, `core-web-vitals-audit`, with passing eval. Stop.
 - Step 4: Reference skill #2, `rsc-boundary-audit`, with passing eval. Stop and hand back to me.
@@ -37,7 +37,7 @@ Specifically:
 Non-negotiables:
 
 - Use every tool in TOOL_MANIFEST.md. Do not substitute. If something is missing, pause and ask.
-- Follow `.claude/skills/git-hygiene/SKILL.md` for every commit including the first one (`chore: initial scaffolding` is the only exception, allowed for commit 0 — but commit 0 already exists, so your first commit is commit 1 and follows the full discipline).
+- Follow `skills/git-hygiene/SKILL.md` for every commit including the first one (`chore: initial scaffolding` is the only exception, allowed for commit 0 — but commit 0 already exists, so your first commit is commit 1 and follows the full discipline).
 - Every skill must have a passing eval before merge. No placeholders.
 - Never hand-edit `metadata.eval.pass_rate`, `last_run`, or `n_cases` — the runner owns those fields.
 - Do not build skills 1–15 from SKILLS.md in this handoff. Only the two marked "✅ REF".

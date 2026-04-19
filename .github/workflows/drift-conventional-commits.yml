@@ -1,0 +1,31 @@
+name: Drift — Conventional Commits
+
+# Weekly drift-check for skills/git-hygiene/SKILL.md.
+# Per TEMPLATE.md, every skill names a drift-check workflow; this one fetches
+# the canonical Conventional Commits 1.0.0 spec and the Beams essay, diffs
+# against the last-verified snapshots, and opens a PR if either source has
+# changed. Snapshots land in skills/git-hygiene/references/ in a later step.
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+
+jobs:
+  drift:
+    name: Fetch and compare canonical sources
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch Conventional Commits 1.0.0
+        run: curl -fsSL https://www.conventionalcommits.org/en/v1.0.0/ -o /tmp/cc.html
+
+      - name: Fetch Beams essay
+        run: curl -fsSL https://cbea.ms/git-commit/ -o /tmp/beams.html
+
+      - name: Compare against snapshots
+        run: |
+          echo "Snapshot-diff step lands alongside the git-hygiene eval (Step 2)."
+          echo "Fetched sources:"
+          wc -c /tmp/cc.html /tmp/beams.html

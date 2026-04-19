@@ -1,0 +1,12 @@
+---
+expected: pass
+reason: Canonical Conventional Commits shape with scope, imperative subject, explained body, reference footer.
+---
+feat(skills): add core-web-vitals-audit skill
+
+Encodes web.dev Core Web Vitals methodology (2024-Q4 revision,
+post-INP) for Next.js 15+ App Router apps. Includes threshold
+enforcement via Lighthouse CI and a fixture-app-driven eval that
+regressions must pass before merge.
+
+Refs: #3

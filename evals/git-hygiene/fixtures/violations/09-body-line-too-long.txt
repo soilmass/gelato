@@ -1,0 +1,7 @@
+---
+expected: fail
+reason: Body line exceeds the 72-char body-max-line-length rule.
+---
+feat: add new thing
+
+This body line is intentionally very long and definitely exceeds the seventy-two character body-max-line-length rule that commitlint enforces.

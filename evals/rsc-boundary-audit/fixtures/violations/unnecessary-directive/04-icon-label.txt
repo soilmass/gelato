@@ -1,0 +1,14 @@
+---
+class: unnecessary-directive
+reason: Renders an icon glyph plus a text label. Pure composition of its props.
+---
+'use client';
+
+export function IconLabel({ glyph, label }: { glyph: string; label: string }) {
+  return (
+    <span className="icon-label">
+      <span aria-hidden>{glyph}</span>
+      <span>{label}</span>
+    </span>
+  );
+}

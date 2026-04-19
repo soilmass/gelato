@@ -1,0 +1,14 @@
+---
+expected: pass
+reason: feat with BREAKING CHANGE footer — legitimate Conventional Commits pattern.
+---
+feat(schema)!: drop support for single-object methodology_source
+
+Every shipped skill now uses the array form. Removing the union
+narrows the Zod type and lets validate-skills.ts generate a
+better error message when a new skill scaffolds with the wrong
+shape.
+
+BREAKING CHANGE: methodology_source now requires an array even
+for single-source skills. Wrap existing entries in `[ ... ]` to
+migrate.

@@ -1,0 +1,22 @@
+---
+class: server-only-import-in-client
+reason: Drizzle client imported directly into a client component; the browser bundle would include the db driver.
+---
+'use client';
+import { db } from '@/lib/db';
+import { users } from '@/lib/schema';
+import { useState } from 'react';
+
+export function UserSearch() {
+  const [results, setResults] = useState<unknown[]>([]);
+  const go = async () => {
+    const rows = await db.select().from(users);
+    setResults(rows);
+  };
+  return (
+    <div>
+      <button onClick={go}>Search</button>
+      <pre>{JSON.stringify(results)}</pre>
+    </div>
+  );
+}

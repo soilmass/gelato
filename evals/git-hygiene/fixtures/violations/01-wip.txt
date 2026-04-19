@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: Forbidden vague subject; no type prefix.
+---
+wip

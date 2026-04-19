@@ -1,0 +1,13 @@
+---
+class: non-serializable-prop
+reason: Map instance passed from server to client; not serializable across the RSC wire format.
+---
+// app/dashboard/page.tsx — Server Component
+import MetricsGrid from './metrics-grid';
+
+export default async function Dashboard() {
+  const metrics = new Map<string, number>();
+  metrics.set('revenue', 42000);
+  metrics.set('mrr', 3800);
+  return <MetricsGrid metrics={metrics} />;
+}

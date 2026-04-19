@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":semanticCommits", ":dependencyDashboard"],
+  "timezone": "UTC",
+  "schedule": ["before 6am on Monday"],
+  "commitMessagePrefix": "chore(deps):",
+  "packageRules": [
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "groupName": "devDependencies (non-major)"
+    }
+  ],
+  "rangeStrategy": "bump"
+}

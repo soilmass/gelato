@@ -1,0 +1,16 @@
+---
+expected: pass
+reason: feat with explanatory body, issue refs, and Co-Authored-By trailer per SKILL Step 9.
+---
+feat(eval-runner): cache Promptfoo responses by input hash
+
+LLM-as-judge calls were running twice per eval — once during
+test collection and once during execution. Caching at the hash
+layer (rather than the Promptfoo config layer) survives both.
+
+Drops average eval runtime from 45s to 18s locally and cuts
+Anthropic API spend per CI run by ~60%.
+
+Refs: #14
+
+Co-Authored-By: Claude <noreply@anthropic.com>

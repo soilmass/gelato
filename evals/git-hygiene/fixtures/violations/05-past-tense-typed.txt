@@ -1,0 +1,5 @@
+---
+expected: fail
+reason: Past-tense subject after valid type; commitlint's subject-case rule catches the leading capital.
+---
+feat: Added new skill

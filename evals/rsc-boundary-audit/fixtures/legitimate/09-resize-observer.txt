@@ -1,0 +1,21 @@
+---
+expected: legitimate
+reason: ResizeObserver is a browser-only API (criterion 2). useRef + useEffect for setup (criterion 3).
+---
+'use client';
+import { useEffect, useRef, useState } from 'react';
+
+export function MeasuredBox() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    if (!ref.current) return;
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) setWidth(entry.contentRect.width);
+    });
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+  return <div ref={ref}>Width: {Math.round(width)}px</div>;
+}

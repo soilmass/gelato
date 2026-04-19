@@ -1,0 +1,21 @@
+---
+class: server-only-import-in-client
+reason: Node filesystem module imported inside a 'use client' file; browser bundle cannot execute this.
+---
+'use client';
+import { readFileSync } from 'node:fs';
+import { useState } from 'react';
+
+export function ConfigViewer() {
+  const [config, setConfig] = useState('');
+  const load = () => {
+    const raw = readFileSync('/etc/app.config', 'utf8');
+    setConfig(raw);
+  };
+  return (
+    <div>
+      <button onClick={load}>Load config</button>
+      <pre>{config}</pre>
+    </div>
+  );
+}

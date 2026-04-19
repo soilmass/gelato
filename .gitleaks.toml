@@ -1,0 +1,14 @@
+# Gitleaks configuration.
+# Default ruleset covers AWS keys, GitHub tokens, Anthropic API keys, etc.
+# Invoked by Lefthook as a pre-commit hook — see lefthook.yml.
+
+[extend]
+useDefault = true
+
+# Allowlist: tokens we expect to appear in docs/fixtures.
+[allowlist]
+description = "Gelato allowlist"
+paths = [
+  '''.*\.md$''',
+  '''evals/.*/fixtures/.*''',
+]

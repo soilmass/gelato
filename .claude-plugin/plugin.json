@@ -1,0 +1,22 @@
+{
+  "name": "gelato",
+  "description": "The dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript. A Neopolitan product.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "homepage": "https://gelato.dev",
+  "repository": "https://github.com/neopolitan/gelato",
+  "author": {
+    "name": "Neopolitan"
+  },
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "typescript",
+    "nextjs",
+    "full-stack",
+    "skills",
+    "evals",
+    "web-vitals",
+    "rsc"
+  ]
+}

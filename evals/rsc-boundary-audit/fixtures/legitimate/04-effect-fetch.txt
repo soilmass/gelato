@@ -1,0 +1,16 @@
+---
+expected: legitimate
+reason: useEffect triggers criterion 3. Legitimate fetch-on-mount pattern for data that cannot be pre-fetched at the server.
+---
+'use client';
+import { useEffect, useState } from 'react';
+
+export function LiveStatus() {
+  const [status, setStatus] = useState<'loading' | 'ok' | 'down'>('loading');
+  useEffect(() => {
+    fetch('/api/health')
+      .then((r) => (r.ok ? setStatus('ok') : setStatus('down')))
+      .catch(() => setStatus('down'));
+  }, []);
+  return <span>Status: {status}</span>;
+}

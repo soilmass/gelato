@@ -1,0 +1,23 @@
+---
+expected: legitimate
+reason: IntersectionObserver is a browser-only API (criterion 2). Lazy-reveal pattern is explicitly client-side.
+---
+'use client';
+import { useEffect, useRef, useState } from 'react';
+
+export function LazyReveal({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    if (!ref.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) {
+        setSeen(true);
+        observer.disconnect();
+      }
+    });
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+  return <div ref={ref}>{seen ? children : null}</div>;
+}

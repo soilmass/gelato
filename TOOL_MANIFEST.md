@@ -14,7 +14,7 @@ curl -fsSL https://bun.sh/install | bash
 ```
 - Version: `1.1.x` or later
 - Usage: all scripts, package management, monorepo workspaces
-- Lockfile: `bun.lockb`
+- Lockfile: `bun.lock` (text format, Bun 1.2+ default). Older Bun versions wrote `bun.lockb` (binary); the text format is strictly better for code review and diffing. Both are ignored by Biome.
 - `package.json` must have `"packageManager": "bun@1.1.0"` and `"engines": { "bun": ">=1.1.0" }`
 
 ### Turborepo — monorepo pipeline

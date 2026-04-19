@@ -1,0 +1,26 @@
+# Gelato
+
+> The dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript.
+> A Neopolitan product.
+
+Gelato is an opinionated Claude Code plugin for full-stack TypeScript developers. Every skill it ships encodes an external methodology (web.dev, OWASP, Next.js docs, React docs, Conventional Commits, …) rather than inventing guidance. Every skill has a runnable eval whose pass rate is published back into the skill's frontmatter by the runner.
+
+## v0.1 skills
+
+| Skill | Phase | Type | Methodology |
+| --- | --- | --- | --- |
+| [git-hygiene](/skills/git-hygiene) | build | procedural | Conventional Commits 1.0 + Chris Beams |
+| [core-web-vitals-audit](/skills/core-web-vitals-audit) | verify | metric | web.dev Core Web Vitals (2024-Q4) |
+| [rsc-boundary-audit](/skills/rsc-boundary-audit) | verify | judgment | Next.js App Router + React 19 docs |
+
+Twelve more skills are scoped for v0.2+. See the [v0.1 skill list](https://github.com/neopolitan/gelato/blob/main/SKILLS.md) on GitHub.
+
+## The differentiator
+
+Every skill has a **published, runnable, passing eval**. That is the claim that separates Gelato from every other Claude Code skill suite. See the [Eval Spec](https://github.com/neopolitan/gelato/blob/main/EVAL_SPEC.md) for the runner architecture.
+
+## The dogmatic stack
+
+Bun · Next.js 15+ App Router · Turborepo · Biome · Drizzle · Supabase/Neon · Upstash Redis · Auth.js · Zod · shadcn/ui + Radix · Tailwind v4 · Vitest · Playwright · Lighthouse CI · Sentry · Axiom · PostHog · Vercel · Renovate · Doppler · Semgrep · Socket.dev · Arcjet.
+
+See the [tool manifest](https://github.com/neopolitan/gelato/blob/main/TOOL_MANIFEST.md) for exact versions. Don't substitute.

@@ -1,0 +1,25 @@
+---
+expected: legitimate
+reason: Server component that renders a code snippet containing the string "'use client'". The directive check must not be fooled by the string appearing later in the file.
+---
+// app/docs/rsc-example/page.tsx — Server Component
+
+export default function Page() {
+  const example = `
+    'use client';
+    import { useState } from 'react';
+
+    export function Counter() {
+      const [n, setN] = useState(0);
+      return <button onClick={() => setN(n + 1)}>{n}</button>;
+    }
+  `;
+  return (
+    <article>
+      <h1>Example client component</h1>
+      <pre>
+        <code>{example}</code>
+      </pre>
+    </article>
+  );
+}

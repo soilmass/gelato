@@ -1,0 +1,39 @@
+# Promptfoo config for git-hygiene qualitative eval (deferred to Step 4).
+#
+# The judgeWithPromptfoo harness call lands in Step 4 of BRIEF.md alongside
+# rsc-boundary-audit's first real LLM-as-judge rubric. Until then this file
+# exists so the eval test's rubric references resolve to a known path.
+
+description: git-hygiene LLM-as-judge rubrics
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+prompts: []
+
+defaultTest:
+  options:
+    cache: true
+
+tests:
+  - description: '"explains the why" rubric (placeholder)'
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0-1. 1 means the commit body explains why the change
+          was made (motivation, constraints, consequences). 0 means
+          the body only restates what the diff shows.
+  - description: '"<type>/<kebab-slug>" branch naming rubric (placeholder)'
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0-1. 1 means the suggested branch name follows
+          <type>/<kebab-slug> exactly (one of the 11 locked types,
+          then `/`, then lowercase kebab-case). 0 means any deviation.
+  - description: 'PR description completeness (placeholder)'
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0-1. 1 means the PR description has all five
+          mandatory fields: What, Why, How, Testing, Rollback.
+          Partial coverage scores proportionally.

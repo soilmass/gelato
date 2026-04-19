@@ -1,0 +1,20 @@
+---
+expected: legitimate
+reason: Drag/drop pointer handlers trigger criterion 1. useState maintains drag state (criterion 3).
+---
+'use client';
+import { useState } from 'react';
+
+export function DragBox() {
+  const [dragging, setDragging] = useState(false);
+  return (
+    <div
+      onPointerDown={() => setDragging(true)}
+      onPointerUp={() => setDragging(false)}
+      onPointerLeave={() => setDragging(false)}
+      className={dragging ? 'dragging' : ''}
+    >
+      {dragging ? 'Dragging' : 'Idle'}
+    </div>
+  );
+}

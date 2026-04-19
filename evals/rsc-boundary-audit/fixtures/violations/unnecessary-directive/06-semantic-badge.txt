@@ -1,0 +1,11 @@
+---
+class: unnecessary-directive
+reason: Badge with a tone prop that drives a classname. All logic runs at render and ships nothing.
+---
+'use client';
+
+type Tone = 'info' | 'success' | 'warning' | 'danger';
+
+export function Badge({ tone, children }: { tone: Tone; children: string }) {
+  return <span className={`badge badge-${tone}`}>{children}</span>;
+}

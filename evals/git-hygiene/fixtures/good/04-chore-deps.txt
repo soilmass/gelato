@@ -1,0 +1,8 @@
+---
+expected: pass
+reason: Renovate-shaped chore(deps) commit with version in subject.
+---
+chore(deps): bump vitest to 2.1.4
+
+Picks up the new --reporter=json stable ordering guarantee that
+the eval orchestrator relies on to aggregate by skill.

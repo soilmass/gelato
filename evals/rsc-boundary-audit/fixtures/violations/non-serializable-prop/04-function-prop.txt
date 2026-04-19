@@ -1,0 +1,14 @@
+---
+class: non-serializable-prop
+reason: Arbitrary function passed as a prop from server to client; not tagged as a Server Action, so the serializer throws.
+---
+// app/page.tsx — Server Component
+import FilterForm from './filter-form';
+
+export default async function Page() {
+  const onSubmit = (formData: FormData) => {
+    // not a Server Action — no 'use server' here
+    console.log(formData);
+  };
+  return <FilterForm onSubmit={onSubmit} />;
+}

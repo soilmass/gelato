@@ -1,0 +1,9 @@
+---
+expected: pass
+reason: build type for build-system change, exact pin called out.
+---
+build(deps): pin biome to 1.9.4
+
+Biome's formatter output is version-sensitive for JSON with
+trailing commas. Pinning to the exact patch avoids dev/CI drift
+until we upgrade across the monorepo as one change.

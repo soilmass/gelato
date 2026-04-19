@@ -1,0 +1,16 @@
+---
+expected: legitimate
+reason: document.addEventListener triggers criterion 2; useEffect triggers criterion 3.
+---
+'use client';
+import { useEffect, useState } from 'react';
+
+export function KeyLogger() {
+  const [last, setLast] = useState('');
+  useEffect(() => {
+    const handle = (e: KeyboardEvent) => setLast(e.key);
+    document.addEventListener('keydown', handle);
+    return () => document.removeEventListener('keydown', handle);
+  }, []);
+  return <p>Last key: {last}</p>;
+}

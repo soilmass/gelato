@@ -1,0 +1,5 @@
+---
+expected: pass
+reason: Changesets-generated release commit; exact subject the workflow uses.
+---
+chore(release): version packages

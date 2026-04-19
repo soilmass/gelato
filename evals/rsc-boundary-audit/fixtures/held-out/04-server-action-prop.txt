@@ -1,0 +1,17 @@
+---
+expected: legitimate
+reason: File-level 'use server' directive marks every exported async function as a Server Action. Passing one as a prop is explicitly legal across the boundary.
+---
+'use server';
+
+import SignupForm from './signup-form';
+
+export async function createUser(formData: FormData) {
+  const email = formData.get('email');
+  // ... persist user, return id
+  return { ok: true, email };
+}
+
+export default function Wrapper() {
+  return <SignupForm action={createUser} />;
+}

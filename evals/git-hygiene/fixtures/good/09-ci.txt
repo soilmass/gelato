@@ -1,0 +1,9 @@
+---
+expected: pass
+reason: ci type for CI-config change, no scope needed.
+---
+ci: run semgrep only on pull requests, not on main pushes
+
+Semgrep on every main push was re-scanning unchanged code and
+slowing the release pipeline. Restricting to pull_request keeps
+the signal without burning minutes on no-op scans.

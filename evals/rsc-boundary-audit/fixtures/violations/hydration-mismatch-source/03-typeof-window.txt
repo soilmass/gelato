@@ -1,0 +1,8 @@
+---
+class: hydration-mismatch-source
+reason: Branch on typeof window — server sees 'undefined', client sees 'object'. The two renders disagree.
+---
+export function Greeting() {
+  const suffix = typeof window === 'undefined' ? 'server' : 'browser';
+  return <p>Hello from {suffix}</p>;
+}

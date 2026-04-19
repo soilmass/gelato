@@ -52,9 +52,7 @@ This skill is used during Gelato's own construction. Claude Code follows its pro
 Deferred to Build Step 2. The eval runner does not exist yet at commit 0, so the skill ships with `pass_rate: null`. When Step 2 completes, git-hygiene's eval runs first as validation that the runner works end-to-end.
 
 ### Where it lives in the handoff
-Already placed at `.claude/skills/git-hygiene/SKILL.md`. Claude Code auto-loads it the moment the repo opens — no install step required. Do not modify during v0.1 work unless the reference skills reveal a template problem (in which case, pause and report per BRIEF.md).
-
-If Step 1 scaffolding moves it to a different path (e.g., top-level `skills/git-hygiene/` for plugin distribution), update all path references in the briefing docs in the same commit.
+Lives at `skills/git-hygiene/SKILL.md` — moved from `.claude/skills/` to top-level `skills/` during Step 1 scaffolding, matching Claude Code plugin distribution convention (plugin-bundled skills live at the plugin root; content under `.claude/` is project-local and excluded from distribution). Claude Code auto-loads it the moment the repo opens — no install step required. Do not modify during v0.1 work unless the reference skills reveal a template problem (in which case, pause and report per BRIEF.md).
 
 ---
 

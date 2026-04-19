@@ -1,0 +1,25 @@
+---
+class: server-only-import-in-client
+reason: Drizzle query helpers imported directly; the helpers import the schema and the connection. Classic accidental-server-ship.
+---
+'use client';
+import { eq } from 'drizzle-orm';
+import { db } from '@/server/db';
+import { orders } from '@/server/schema';
+import { useState } from 'react';
+
+export function OrderLookup() {
+  const [id, setId] = useState('');
+  const [order, setOrder] = useState<unknown>(null);
+  const lookup = async () => {
+    const rows = await db.select().from(orders).where(eq(orders.id, id));
+    setOrder(rows[0]);
+  };
+  return (
+    <div>
+      <input value={id} onChange={(e) => setId(e.target.value)} />
+      <button onClick={lookup}>Lookup</button>
+      <pre>{JSON.stringify(order, null, 2)}</pre>
+    </div>
+  );
+}
