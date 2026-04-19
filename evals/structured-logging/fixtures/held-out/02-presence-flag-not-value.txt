@@ -1,0 +1,14 @@
+---
+class: safe
+reason: "Payload has `hasPassword: true` — a presence flag, not the password value. Not a sensitive-field leak."
+---
+import { logger } from '@/lib/logger';
+
+export async function POST(req: Request) {
+  const body = await req.json() as { email: string; password: string };
+  logger.info(
+    { email: body.email, hasPassword: body.password.length > 0 },
+    'login attempt',
+  );
+  return Response.json({ ok: true });
+}

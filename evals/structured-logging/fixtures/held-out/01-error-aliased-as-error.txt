@@ -1,0 +1,17 @@
+---
+class: safe
+reason: Error logged under key `error` (not `err` / `cause`) — classifier accepts either alias.
+---
+import { logger } from '@/lib/logger';
+
+export async function POST(req: Request) {
+  try {
+    await process(req);
+    return Response.json({ ok: true });
+  } catch (error) {
+    logger.error({ error, route: '/api/process' }, 'process failed');
+    return Response.json({ ok: false }, { status: 500 });
+  }
+}
+
+async function process(_req: Request): Promise<void> {}

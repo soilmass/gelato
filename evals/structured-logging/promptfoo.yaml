@@ -1,0 +1,18 @@
+# Promptfoo config for structured-logging LLM-as-judge rubrics (deferred to v0.2).
+#
+# v0.1 ships the deterministic classifier only. A v0.2 `log-design-quality`
+# rubric would judge whether log messages are useful during incident response
+# (consistent verbs, right cardinality, no log-spam at info level).
+
+description: structured-logging LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []

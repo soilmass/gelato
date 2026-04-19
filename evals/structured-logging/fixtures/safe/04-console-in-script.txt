@@ -1,0 +1,20 @@
+---
+expected: safe
+reason: console.log in a top-level script file — not in a handler. Classifier only enforces on server code, not scripts.
+---
+#!/usr/bin/env bun
+// scripts/seed.ts — one-off seeder.
+
+import { db, users } from '@/lib/db';
+
+async function main() {
+  const count = await db.$count(users);
+  console.log('seeding; current user count:', count);
+  await db.insert(users).values({ email: 'seed@example.com' });
+  console.log('done');
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

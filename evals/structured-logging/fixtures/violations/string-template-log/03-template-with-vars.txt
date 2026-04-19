@@ -1,0 +1,11 @@
+---
+class: string-template-log
+reason: Template literal embedding two variables — each should be a searchable field, not inline string.
+---
+'use server';
+import { logger } from '@/lib/logger';
+
+export async function subscribe(email: string, planId: string) {
+  logger.info(`user ${email} subscribed to plan ${planId}`);
+  return { ok: true };
+}

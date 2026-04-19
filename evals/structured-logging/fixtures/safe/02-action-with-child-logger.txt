@@ -1,0 +1,28 @@
+---
+expected: safe
+reason: Server Action with child logger, presence-flag for sensitive field, error object in catch.
+---
+'use server';
+import { logger } from '@/lib/logger';
+import { db, users } from '@/lib/db';
+
+export async function login(formData: FormData) {
+  const email = String(formData.get('email') ?? '');
+  const password = String(formData.get('password') ?? '');
+  const log = logger.child({ action: 'login' });
+
+  log.info({ email, hasPassword: password.length > 0 }, 'login attempt');
+
+  try {
+    const user = await authenticate(email, password);
+    log.info({ userId: user.id }, 'login success');
+    return { ok: true };
+  } catch (err) {
+    log.warn({ err, email }, 'login failed');
+    return { ok: false };
+  }
+}
+
+async function authenticate(_email: string, _password: string): Promise<{ id: string }> {
+  return { id: 'placeholder' };
+}

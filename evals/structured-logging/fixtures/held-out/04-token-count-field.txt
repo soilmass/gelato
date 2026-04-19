@@ -1,0 +1,16 @@
+---
+class: safe
+reason: "Field name `tokenCount` contains `token` substring but is a count, not the value. Classifier must exact-match banned keys."
+---
+import { logger } from '@/lib/logger';
+
+export async function POST(req: Request) {
+  const { prompt } = await req.json();
+  const tokenCount = estimateTokens(prompt);
+  logger.info({ tokenCount, promptLength: prompt.length }, 'prompt received');
+  return Response.json({ ok: true });
+}
+
+function estimateTokens(s: string): number {
+  return Math.ceil(s.length / 4);
+}

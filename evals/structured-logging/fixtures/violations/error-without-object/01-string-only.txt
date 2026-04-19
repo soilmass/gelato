@@ -1,0 +1,17 @@
+---
+class: error-without-object
+reason: logger.error with only a string — stack trace lost, cause not captured.
+---
+import { logger } from '@/lib/logger';
+import { db, posts } from '@/lib/db';
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    await db.insert(posts).values(body);
+    return Response.json({ ok: true });
+  } catch (err) {
+    logger.error('posts.create failed');
+    return Response.json({ ok: false }, { status: 500 });
+  }
+}

@@ -1,0 +1,20 @@
+---
+class: error-without-object
+reason: Payload has context but no err / error / cause key — Pino serializer never sees the Error.
+---
+'use server';
+import { logger } from '@/lib/logger';
+
+export async function submitTicket(subject: string, userId: string) {
+  try {
+    await sendToSupport(subject);
+    return { ok: true };
+  } catch (_err) {
+    logger.error({ userId, subject }, 'submitTicket failed');
+    return { ok: false };
+  }
+}
+
+async function sendToSupport(_subject: string): Promise<void> {
+  throw new Error('nope');
+}

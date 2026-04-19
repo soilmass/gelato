@@ -1,0 +1,11 @@
+---
+class: sensitive-data-logged
+reason: Logs the full authorization header — bearer token leaks into log stream.
+---
+import { logger } from '@/lib/logger';
+
+export async function GET(req: Request) {
+  const authorization = req.headers.get('authorization') ?? '';
+  logger.info({ authorization, path: req.url }, 'api call');
+  return Response.json({ ok: true });
+}

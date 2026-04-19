@@ -1,0 +1,12 @@
+---
+expected: safe
+reason: Info-level logs with structured payloads only — no error logs, no sensitive fields, no console.
+---
+import { logger } from '@/lib/logger';
+
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const limit = Number(url.searchParams.get('limit') ?? '10');
+  logger.info({ path: url.pathname, limit }, 'list posts');
+  return Response.json({ posts: [] });
+}

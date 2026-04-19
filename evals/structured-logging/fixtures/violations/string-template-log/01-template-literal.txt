@@ -1,0 +1,11 @@
+---
+class: string-template-log
+reason: Template literal with interpolation — unsearchable at aggregator. Use structured object.
+---
+import { logger } from '@/lib/logger';
+
+export async function GET(req: Request) {
+  const userId = req.headers.get('x-user-id') ?? 'anon';
+  logger.info(`user ${userId} fetched posts`);
+  return Response.json({ posts: [] });
+}

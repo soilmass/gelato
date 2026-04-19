@@ -1,0 +1,10 @@
+---
+class: safe
+reason: "logger.info without an err object — info level does not require an Error. Classifier only enforces err presence on error/fatal."
+---
+import { logger } from '@/lib/logger';
+
+export async function GET() {
+  logger.info({ route: '/api/health' }, 'health check ok');
+  return Response.json({ ok: true });
+}
