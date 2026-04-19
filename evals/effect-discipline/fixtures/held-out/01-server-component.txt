@@ -1,0 +1,12 @@
+---
+class: safe
+reason: No 'use client' — classifier short-circuits to safe.
+---
+export async function ServerForm({ defaultName }: { defaultName: string }) {
+  const posts = await fetchPosts();
+  return <div>{defaultName} · {posts.length}</div>;
+}
+
+async function fetchPosts() {
+  return fetch('/api').then((r) => r.json());
+}

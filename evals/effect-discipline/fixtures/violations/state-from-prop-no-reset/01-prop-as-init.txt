@@ -1,0 +1,11 @@
+---
+class: state-from-prop-no-reset
+reason: useState initialized from defaultName prop; no useEffect syncing it.
+---
+'use client';
+import { useState } from 'react';
+
+export function Form({ defaultName }: { defaultName: string }) {
+  const [name, setName] = useState(defaultName);
+  return <input value={name} onChange={(e) => setName(e.target.value)} />;
+}

@@ -1,0 +1,17 @@
+---
+class: effect-as-event-handler
+reason: Effect fires side-effect when submitted=true, then resets — belongs in the submit handler.
+---
+'use client';
+import { useEffect, useState } from 'react';
+
+export function AnalyticsForm({ data }: { data: Record<string, unknown> }) {
+  const [submitted, setSubmitted] = useState(false);
+  useEffect(() => {
+    if (submitted) {
+      fetch('/api/analytics', { method: 'POST', body: JSON.stringify(data) });
+      setSubmitted(false);
+    }
+  }, [submitted]);
+  return <button onClick={() => setSubmitted(true)}>Submit</button>;
+}
