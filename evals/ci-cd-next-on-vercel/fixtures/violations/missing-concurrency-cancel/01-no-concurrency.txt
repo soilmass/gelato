@@ -1,0 +1,16 @@
+---
+class: missing-concurrency-cancel
+reason: Workflow has no top-level concurrency block — every push spawns a fresh stale run.
+---
+name: CI
+on: pull_request
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - run: bun install --frozen-lockfile
+      - run: bun run validate

@@ -1,0 +1,34 @@
+---
+expected: safe
+reason: Canonical CI workflow — pinned actions, concurrency cancel-in-progress, timeout on every job, no secret echoing.
+---
+name: CI
+on: pull_request
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.1.x
+      - run: bun install --frozen-lockfile
+      - run: bun run validate
+      - run: bun run typecheck
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.1.x
+      - run: bun install --frozen-lockfile
+      - run: bun run build

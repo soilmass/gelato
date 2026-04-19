@@ -1,0 +1,19 @@
+# Promptfoo config for ci-cd-next-on-vercel LLM-as-judge rubrics (deferred to v0.2).
+#
+# v0.1 ships the deterministic classifier only. A v0.2 `pipeline-design`
+# rubric would judge whether test / deploy / rollback stages are wired
+# correctly across multiple workflow files — cross-file analysis beyond
+# the four single-YAML shape checks encoded here.
+
+description: ci-cd-next-on-vercel LLM-as-judge rubrics (deferred to v0.2)
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts: []
+
+tests: []

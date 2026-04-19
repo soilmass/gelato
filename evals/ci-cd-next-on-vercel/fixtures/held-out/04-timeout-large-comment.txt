@@ -1,0 +1,23 @@
+---
+class: safe
+reason: Large timeout (60 min) with a comment explaining why — still satisfies the rule.
+---
+name: Nightly E2E
+on:
+  schedule:
+    - cron: '0 3 * * *'
+
+concurrency:
+  group: nightly-e2e
+  cancel-in-progress: true
+
+jobs:
+  e2e-full:
+    runs-on: ubuntu-latest
+    # Full cross-browser matrix on production-like data takes ~45 min.
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - run: bun install --frozen-lockfile
+      - run: bun run test:e2e:full

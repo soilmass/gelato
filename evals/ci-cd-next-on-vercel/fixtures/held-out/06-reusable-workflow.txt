@@ -1,0 +1,28 @@
+---
+class: safe
+reason: "Reusable workflow invoked with @v1 version — pinning rule applies cross-repo too, and this one is pinned correctly."
+---
+name: Release
+on:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    uses: soilmass/shared-workflows/.github/workflows/build.yml@v1
+    with:
+      bun-version: 1.1.x
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: bun publish --token="$NPM_TOKEN"

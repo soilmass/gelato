@@ -1,0 +1,22 @@
+---
+class: secret-echoed-in-run
+reason: echo of GITHUB_TOKEN — default ephemeral token but still a log leak.
+---
+name: Release
+on:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log auth
+        run: echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
+      - run: gh release create ${{ github.ref_name }} --generate-notes
