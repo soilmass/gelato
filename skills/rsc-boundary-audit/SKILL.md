@@ -67,7 +67,7 @@ This skill encodes guidance from two primary sources:
   - Source: <https://react.dev/reference/rsc/use-client>
   - Version: React 19 docs (2025)
   - Verified: 2026-04-18
-- **Drift-check:** `.github/workflows/drift-rsc-docs.yml`
+- **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
 Encoded: when a component *requires* `'use client'` (the four criteria), what crosses the Server/Client boundary (serialization rules for props), and the five named classes of violations the audit detects.
 

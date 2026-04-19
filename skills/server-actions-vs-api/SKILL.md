@@ -67,7 +67,7 @@ Two primary sources:
   - Source: [https://nextjs.org/docs/app/building-your-application/routing/route-handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
   - Version: Next.js 15 docs (2025)
   - Verified: 2026-04-18
-- **Drift-check:** `.github/workflows/drift-next-server-actions.yml`
+- **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
 Encoded: the four decision criteria that determine when each tool is right, the tag-revalidation pairing requirement for mutating Server Actions, the separation-of-concerns rule that a single endpoint must pick one audience.
 

@@ -68,7 +68,7 @@ Two primary sources:
   - Source: [https://nextjs.org/docs/app/building-your-application/data-fetching/patterns](https://nextjs.org/docs/app/building-your-application/data-fetching/patterns)
   - Version: Next.js 15 docs (2025)
   - Verified: 2026-04-18
-- **Drift-check:** `.github/workflows/drift-next-caching.yml`
+- **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
 Encoded: the four caching layers and how each is addressed (request memoization is automatic, Data Cache via `fetch({ cache, next })`, Full Route Cache via route segment config, Router Cache via client-side prefetch hints), the Next 15 shift to opt-in caching, the four classes of cache-correctness bugs the audit catches.
 

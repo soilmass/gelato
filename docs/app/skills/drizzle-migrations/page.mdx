@@ -23,7 +23,7 @@ This skill encodes guidance from two primary sources:
   - Source: [https://orm.drizzle.team/docs/migrations](https://orm.drizzle.team/docs/migrations)
   - Version: Drizzle 1.x docs (2025)
   - Verified: 2026-04-18
-- **Drift-check:** `.github/workflows/drift-drizzle-migrations.yml`
+- **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
 Encoded: the expand/contract sequence structure (add → dual-write → backfill → switch reads → drop), the migration-file naming and per-file safety constraints, the Drizzle-specific mechanics (`drizzle-kit generate` vs. `drizzle-kit migrate`, the snapshot/journal pair, schema.ts → SQL flow).
 

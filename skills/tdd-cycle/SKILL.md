@@ -68,7 +68,7 @@ Two primary sources:
   - Source: [https://testing-library.com/docs/guiding-principles](https://testing-library.com/docs/guiding-principles)
   - Authority: Kent C. Dodds / Testing Library team
   - Verified: 2026-04-18
-- **Drift-check:** `.github/workflows/drift-testing-trophy.yml`
+- **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
 Encoded: the four mechanically detectable anti-patterns that fail the "test behavior, not implementation" principle. NOT encoded: test-quality judgments (is this test *meaningful*?), arrange-act-assert structure, mock strategy (context-specific), coverage %. A v0.2 `test-meaningfulness` LLM rubric will attempt the fuzzy half.
 

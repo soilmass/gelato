@@ -58,7 +58,7 @@ This skill encodes the **Core Web Vitals** methodology from **web.dev (Google Ch
 - **Source:** <https://web.dev/articles/vitals>
 - **Version:** 2024-Q4 revision — INP replaced FID as the responsiveness metric in March 2024
 - **Verified:** 2026-04-18
-- **Drift-check:** `.github/workflows/drift-web-vitals.yml`
+- **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
 Encoded: the three-metric threshold set (LCP, INP, CLS), their canonical "good" boundaries, and the leverage-ordered fix-list ordering (images → fonts → bundle → caching) documented by Addy Osmani as the general guidance for addressing failures.
 

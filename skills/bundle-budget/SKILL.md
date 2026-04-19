@@ -64,7 +64,7 @@ Two primary sources:
   - Source: [https://www.npmjs.com/package/@next/bundle-analyzer](https://www.npmjs.com/package/@next/bundle-analyzer)
   - Authority: Vercel / Next.js team
   - Verified: 2026-04-18
-- **Drift-check:** `.github/workflows/drift-next-bundle-analyzer.yml`
+- **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
 Encoded: the four mechanical budget checks (per-route size, shared-chunk total, known-heavy deps, server-only leaks). NOT encoded: subjective "feels slow" judgments, runtime performance (→ `core-web-vitals-audit`), server response time, HTTP/2 or caching tuning.
 

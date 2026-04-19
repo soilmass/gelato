@@ -68,7 +68,7 @@ Two primary sources:
   - Source: [https://posthog.com/docs/data/events](https://posthog.com/docs/data/events)
   - Authority: PostHog
   - Verified: 2026-04-18
-- **Drift-check:** `.github/workflows/drift-posthog-amplitude.yml`
+- **Drift-check:** _planned (v0.2 H7). Until the generic drift workflow lands, refresh the `verified` dates above when the upstream docs are re-read._
 
 Encoded: the four mechanical rules detectable from a single instrumentation call site — name shape, properties shape, PII exclusion, distinct-ID discipline. NOT encoded: KPI / North Star metric selection, funnel design, dashboard layout, A/B test primitives, warehouse ETL routing.
 
