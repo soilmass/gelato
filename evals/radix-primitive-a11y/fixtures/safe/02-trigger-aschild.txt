@@ -1,0 +1,19 @@
+---
+reason: Popover.Trigger uses asChild to merge behaviour into custom Button.
+---
+'use client';
+import * as Popover from '@radix-ui/react-popover';
+import { Button } from '@/components/ui/button';
+
+export function FilterMenu() {
+  return (
+    <Popover.Root>
+      <Popover.Trigger asChild>
+        <Button variant="ghost">Filter</Button>
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Content>Filter options</Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
+  );
+}

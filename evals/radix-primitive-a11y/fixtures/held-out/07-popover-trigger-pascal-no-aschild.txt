@@ -1,0 +1,20 @@
+---
+class: trigger-without-aschild-role
+reason: Popover.Trigger directly wraps <Button> (PascalCase) without asChild.
+---
+'use client';
+import * as Popover from '@radix-ui/react-popover';
+import { Button } from '@/components/ui/button';
+
+export function HelpMenu() {
+  return (
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button size="icon">?</Button>
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Content>Help</Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
+  );
+}

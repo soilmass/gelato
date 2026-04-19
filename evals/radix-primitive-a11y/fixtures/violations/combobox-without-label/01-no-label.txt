@@ -1,0 +1,24 @@
+---
+class: combobox-without-label
+reason: Select.Trigger without aria-label and no <Label> sibling in the source.
+---
+'use client';
+import * as Select from '@radix-ui/react-select';
+
+export function CountryPicker() {
+  return (
+    <Select.Root>
+      <Select.Trigger>
+        <Select.Value placeholder="Choose a country" />
+      </Select.Trigger>
+      <Select.Portal>
+        <Select.Content>
+          <Select.Viewport>
+            <Select.Item value="us"><Select.ItemText>US</Select.ItemText></Select.Item>
+            <Select.Item value="ca"><Select.ItemText>Canada</Select.ItemText></Select.Item>
+          </Select.Viewport>
+        </Select.Content>
+      </Select.Portal>
+    </Select.Root>
+  );
+}

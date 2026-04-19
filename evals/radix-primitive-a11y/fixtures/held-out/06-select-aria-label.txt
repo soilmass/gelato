@@ -1,0 +1,23 @@
+---
+class: safe
+reason: Select.Trigger uses aria-label — satisfies combobox-without-label rule.
+---
+'use client';
+import * as Select from '@radix-ui/react-select';
+
+export function TimezonePicker() {
+  return (
+    <Select.Root>
+      <Select.Trigger aria-label="Timezone">
+        <Select.Value placeholder="Pick timezone" />
+      </Select.Trigger>
+      <Select.Portal>
+        <Select.Content>
+          <Select.Viewport>
+            <Select.Item value="utc"><Select.ItemText>UTC</Select.ItemText></Select.Item>
+          </Select.Viewport>
+        </Select.Content>
+      </Select.Portal>
+    </Select.Root>
+  );
+}

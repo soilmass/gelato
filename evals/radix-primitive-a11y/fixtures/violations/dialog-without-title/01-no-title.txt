@@ -1,0 +1,20 @@
+---
+class: dialog-without-title
+reason: Dialog.Content has no Dialog.Title descendant and no aria-labelledby.
+---
+'use client';
+import * as Dialog from '@radix-ui/react-dialog';
+
+export function SettingsDialog() {
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger>Settings</Dialog.Trigger>
+      <Dialog.Portal>
+        <Dialog.Overlay />
+        <Dialog.Content>
+          <form>...</form>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}

@@ -1,0 +1,25 @@
+---
+reason: Select.Trigger paired with external <Label htmlFor> binding.
+---
+'use client';
+import * as Select from '@radix-ui/react-select';
+
+export function CountryPicker() {
+  return (
+    <div>
+      <label htmlFor="country">Country</label>
+      <Select.Root>
+        <Select.Trigger id="country">
+          <Select.Value placeholder="Choose a country" />
+        </Select.Trigger>
+        <Select.Portal>
+          <Select.Content>
+            <Select.Viewport>
+              <Select.Item value="us"><Select.ItemText>US</Select.ItemText></Select.Item>
+            </Select.Viewport>
+          </Select.Content>
+        </Select.Portal>
+      </Select.Root>
+    </div>
+  );
+}

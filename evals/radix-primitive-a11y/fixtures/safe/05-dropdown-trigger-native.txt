@@ -1,0 +1,19 @@
+---
+reason: DropdownMenu.Trigger with native text child — no asChild required.
+---
+'use client';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+
+export function UserMenu() {
+  return (
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger>Account</DropdownMenu.Trigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content>
+          <DropdownMenu.Item>Profile</DropdownMenu.Item>
+          <DropdownMenu.Item>Sign out</DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
+  );
+}

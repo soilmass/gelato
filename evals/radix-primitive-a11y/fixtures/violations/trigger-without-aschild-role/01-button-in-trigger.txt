@@ -1,0 +1,20 @@
+---
+class: trigger-without-aschild-role
+reason: Popover.Trigger wraps a custom Button without asChild — nested buttons.
+---
+'use client';
+import * as Popover from '@radix-ui/react-popover';
+import { Button } from '@/components/ui/button';
+
+export function FilterMenu() {
+  return (
+    <Popover.Root>
+      <Popover.Trigger>
+        <Button variant="ghost">Filter</Button>
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Content>Filter options</Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
+  );
+}
