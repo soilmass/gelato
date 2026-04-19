@@ -1,0 +1,18 @@
+---
+class: safe
+reason: Inline expression-body reducer is pure; wrapped in form action.
+---
+'use client';
+import { useOptimistic } from 'react';
+
+export function Tags({ tags }: { tags: string[] }) {
+  const [optimistic, addOptimistic] = useOptimistic(tags, (s, v: string) => [...s, v]);
+  return (
+    <form action={async (fd) => {
+      addOptimistic(String(fd.get('tag')));
+      await fetch('/api/tags', { method: 'POST', body: fd });
+    }}>
+      <button>Add</button>
+    </form>
+  );
+}

@@ -1,0 +1,22 @@
+---
+reason: addOptimistic wrapped in startTransition — valid non-form shape.
+---
+'use client';
+import { useOptimistic, useTransition } from 'react';
+
+export function LikeButton({ post }: { post: { id: string; likes: number } }) {
+  const [isPending, startTransition] = useTransition();
+  const [optimistic, addOptimistic] = useOptimistic(
+    post,
+    (state, delta: number) => ({ ...state, likes: state.likes + delta }),
+  );
+
+  function onClick() {
+    startTransition(async () => {
+      addOptimistic(1);
+      await fetch(`/api/likes/${post.id}`, { method: 'POST' });
+    });
+  }
+
+  return <button type="button" onClick={onClick} disabled={isPending}>♥ {optimistic.likes}</button>;
+}

@@ -1,0 +1,24 @@
+---
+class: direct-mutation
+reason: Reducer mutates state.push(...) instead of returning a new array.
+---
+'use client';
+import { useOptimistic } from 'react';
+
+export function TodoList({ todos }: { todos: string[] }) {
+  const [optimistic, addOptimistic] = useOptimistic(todos, (state, value: string) => {
+    state.push(value);
+    return state;
+  });
+
+  return (
+    <form action={async (fd) => {
+      const v = String(fd.get('text'));
+      addOptimistic(v);
+      await fetch('/api/todos', { method: 'POST', body: fd });
+    }}>
+      <button>Add</button>
+      <ul>{optimistic.map((t) => <li key={t}>{t}</li>)}</ul>
+    </form>
+  );
+}

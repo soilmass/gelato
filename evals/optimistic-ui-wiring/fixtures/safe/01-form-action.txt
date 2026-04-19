@@ -1,0 +1,26 @@
+---
+reason: addOptimistic inside a form action callback — canonical shape.
+---
+'use client';
+import { useOptimistic } from 'react';
+
+export function TodoList({ todos }: { todos: string[] }) {
+  const [optimistic, addOptimistic] = useOptimistic(
+    todos,
+    (state, value: string) => [...state, value],
+  );
+
+  return (
+    <form
+      action={async (formData) => {
+        const text = String(formData.get('text'));
+        addOptimistic(text);
+        await fetch('/api/todos', { method: 'POST', body: formData });
+      }}
+    >
+      <input name="text" />
+      <button>Add</button>
+      <ul>{optimistic.map((t) => <li key={t}>{t}</li>)}</ul>
+    </form>
+  );
+}

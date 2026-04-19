@@ -1,0 +1,97 @@
+description: optimistic-ui-wiring LLM-as-judge rubric
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a remediation for an optimistic-ui-wiring
+    violation in a React 19 client component. Judge whether the
+    fix conforms to React 19's useOptimistic contract (transition/
+    action boundary, pure reducer, no mutation).
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: optimistic-remediation-implementability
+    vars:
+      content: |
+        Violation class: addoptimistic-fire-and-forget
+
+        Rule cited: React 19 useOptimistic docs — "addOptimistic
+        must be called inside a transition or action".
+
+        Original:
+          'use client';
+          import { useOptimistic } from 'react';
+
+          export function LikeButton({ post }) {
+            const [optimistic, addOptimistic] = useOptimistic(
+              post,
+              (state, delta) => ({ ...state, likes: state.likes + delta }),
+            );
+
+            return (
+              <button onClick={() => addOptimistic(1)}>
+                ♥ {optimistic.likes}
+              </button>
+            );
+          }
+
+        Fix: pull in useTransition and wrap the addOptimistic +
+        server call in startTransition. Disable the button while
+        the transition is pending so users don't double-fire.
+
+          'use client';
+          import { useOptimistic, useTransition } from 'react';
+
+          export function LikeButton({ post }) {
+            const [isPending, startTransition] = useTransition();
+            const [optimistic, addOptimistic] = useOptimistic(
+              post,
+              (state, delta) => ({ ...state, likes: state.likes + delta }),
+            );
+
+            function onClick() {
+              startTransition(async () => {
+                addOptimistic(1);
+                await fetch(`/api/likes/${post.id}`, { method: 'POST' });
+              });
+            }
+
+            return (
+              <button onClick={onClick} disabled={isPending}>
+                ♥ {optimistic.likes}
+              </button>
+            );
+          }
+
+        Why it's correct:
+          - addOptimistic now lives inside startTransition's
+            callback; React groups the optimistic update with the
+            async server call in one transition.
+          - isPending disables the button during flight — no
+            double-submit, consistent UI.
+          - The reducer stays pure (spread, no side effects).
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the remediation:
+            - cites the useOptimistic + useTransition React docs
+            - shows the corrected component in full
+            - places addOptimistic inside startTransition (or a
+              form action — both valid)
+            - keeps the reducer pure and immutable
+            - handles pending state via isPending or disabled
+          Score 0.5 when the fix compiles and places the call in
+          a transition but omits the isPending / disabled wiring
+          or doesn't cite the docs.
+          Score 0 when the fix introduces a new violation (impure
+          reducer, mutation) or still calls addOptimistic outside
+          a transition/action.

@@ -1,0 +1,25 @@
+---
+class: impure-reducer
+reason: Reducer calls fetch — violates purity contract.
+---
+'use client';
+import { useOptimistic } from 'react';
+
+function reducer(state: { items: unknown[] }, newItem: unknown) {
+  fetch('/api/log', { method: 'POST', body: JSON.stringify(newItem) });
+  return { items: [...state.items, newItem] };
+}
+
+export function Inbox({ items }: { items: unknown[] }) {
+  const [optimistic, addOptimistic] = useOptimistic({ items }, reducer);
+  return (
+    <form action={async (fd) => {
+      const item = fd.get('item');
+      addOptimistic(item);
+      await fetch('/api/save', { method: 'POST', body: fd });
+    }}>
+      <button>Add</button>
+      <p>{optimistic.items.length}</p>
+    </form>
+  );
+}

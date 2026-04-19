@@ -1,0 +1,14 @@
+---
+class: addoptimistic-fire-and-forget
+reason: Setter renamed to enqueue — still must be inside transition/action.
+---
+'use client';
+import { useOptimistic } from 'react';
+
+export function List({ items }: { items: string[] }) {
+  const [optimistic, enqueue] = useOptimistic(
+    items,
+    (state, v: string) => [...state, v],
+  );
+  return <button onClick={() => enqueue('new')}>{optimistic.length}</button>;
+}
