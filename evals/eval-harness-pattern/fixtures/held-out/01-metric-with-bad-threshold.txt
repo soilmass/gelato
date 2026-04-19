@@ -1,0 +1,13 @@
+---
+class: eval-missing-threshold
+reason: Metric eval but with trivial 0 threshold — Step 4 still applies.
+---
+import { runLighthouse } from '@gelato/eval-harness';
+import { describe, expect, it } from 'vitest';
+
+describe('cwv', () => {
+  it('lcp', async () => {
+    const r = await runLighthouse('http://localhost:3000/');
+    expect(r.lcp).toBeGreaterThanOrEqual(0);
+  });
+});

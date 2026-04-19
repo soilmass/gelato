@@ -1,0 +1,28 @@
+---
+class: safe
+reason: judgeWithPromptfoo imported but never called — Step 5 only activates on call.
+---
+import { judgeWithPromptfoo, loadFixtures } from '@gelato/eval-harness';
+import { describe, expect, it } from 'vitest';
+
+const VIOLATIONS_DIR = './fixtures/violations';
+const SAFE_DIR = './fixtures/safe';
+const HELD_OUT_DIR = './fixtures/held-out';
+
+// judgeWithPromptfoo imported for future use but not called yet.
+export type JudgeFn = typeof judgeWithPromptfoo;
+
+describe('x', () => {
+  it('v', async () => {
+    await loadFixtures(VIOLATIONS_DIR);
+    expect(1).toBeGreaterThanOrEqual(0.95);
+  });
+  it('s', async () => {
+    await loadFixtures(SAFE_DIR);
+    expect(1).toBeGreaterThanOrEqual(0.95);
+  });
+  it('h', async () => {
+    await loadFixtures(HELD_OUT_DIR);
+    expect(1).toBeGreaterThanOrEqual(0.9);
+  });
+});

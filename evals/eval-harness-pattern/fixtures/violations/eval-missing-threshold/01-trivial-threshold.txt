@@ -1,0 +1,26 @@
+---
+class: eval-missing-threshold
+reason: Pass threshold is 0 — passes trivially for any classifier.
+---
+import { loadFixtures } from '@gelato/eval-harness';
+import { describe, expect, it } from 'vitest';
+
+const VIOLATIONS_DIR = './fixtures/violations';
+const SAFE_DIR = './fixtures/safe';
+const HELD_OUT_DIR = './fixtures/held-out';
+
+describe('skill-x', () => {
+  it('violations', async () => {
+    const fixtures = await loadFixtures(VIOLATIONS_DIR);
+    const acc = 0.5;
+    expect(acc).toBeGreaterThanOrEqual(0);
+  });
+  it('safe', async () => {
+    const fixtures = await loadFixtures(SAFE_DIR);
+    expect(fixtures.length).toBeGreaterThanOrEqual(0);
+  });
+  it('held', async () => {
+    const fixtures = await loadFixtures(HELD_OUT_DIR);
+    expect(fixtures.length).toBeGreaterThanOrEqual(0.5);
+  });
+});

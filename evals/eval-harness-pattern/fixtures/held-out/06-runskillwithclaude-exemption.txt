@@ -1,0 +1,13 @@
+---
+class: safe
+reason: Uses runSkillWithClaude — metric-type exemption applies.
+---
+import { runSkillWithClaude } from '@gelato/eval-harness';
+import { describe, expect, it } from 'vitest';
+
+describe('claude-based', () => {
+  it('runs', async () => {
+    const r = await runSkillWithClaude({ skill: 'x', input: '' });
+    expect(r.ok).toBeGreaterThanOrEqual(0.9);
+  });
+});

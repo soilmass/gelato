@@ -1,0 +1,24 @@
+---
+reason: Eval with no LLM-judge at all (pure Type-A).
+---
+import { loadFixtures } from '@gelato/eval-harness';
+import { describe, expect, it } from 'vitest';
+
+const VIOLATIONS_DIR = './fixtures/violations';
+const SAFE_DIR = './fixtures/safe';
+const HELD_OUT_DIR = './fixtures/held-out';
+
+describe('skill-z', () => {
+  it('v', async () => {
+    await loadFixtures(VIOLATIONS_DIR);
+    expect(1).toBeGreaterThanOrEqual(0.95);
+  });
+  it('s', async () => {
+    await loadFixtures(SAFE_DIR);
+    expect([]).toEqual([]);
+  });
+  it('h', async () => {
+    await loadFixtures(HELD_OUT_DIR);
+    expect(1).toBeGreaterThanOrEqual(0.9);
+  });
+});

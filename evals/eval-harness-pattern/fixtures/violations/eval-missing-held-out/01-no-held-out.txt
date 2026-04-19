@@ -1,0 +1,20 @@
+---
+class: eval-missing-held-out
+reason: Eval has VIOLATIONS_DIR + SAFE_DIR but no HELD_OUT_DIR.
+---
+import { loadFixtures } from '@gelato/eval-harness';
+import { describe, expect, it } from 'vitest';
+
+const VIOLATIONS_DIR = './fixtures/violations';
+const SAFE_DIR = './fixtures/safe';
+
+describe('skill-x', () => {
+  it('violations', async () => {
+    const fixtures = await loadFixtures(VIOLATIONS_DIR);
+    expect(fixtures.length).toBeGreaterThanOrEqual(0.95);
+  });
+  it('safe', async () => {
+    const fixtures = await loadFixtures(SAFE_DIR);
+    expect(fixtures.length).toBeGreaterThanOrEqual(0.95);
+  });
+});

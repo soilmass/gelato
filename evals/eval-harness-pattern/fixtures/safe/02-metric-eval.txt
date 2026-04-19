@@ -1,0 +1,16 @@
+---
+reason: Metric-type eval using runLighthouse — exempt from fixture-dir rules.
+---
+import { runLighthouse } from '@gelato/eval-harness';
+import { describe, expect, it } from 'vitest';
+
+describe('core-web-vitals-audit', () => {
+  it('LCP ≤ 2.5s', async () => {
+    const result = await runLighthouse('http://localhost:3000/');
+    expect(result.lcp).toBeGreaterThanOrEqual(0.9);
+  });
+  it('CLS ≤ 0.1', async () => {
+    const result = await runLighthouse('http://localhost:3000/');
+    expect(result.cls).toBeGreaterThanOrEqual(0.95);
+  });
+});

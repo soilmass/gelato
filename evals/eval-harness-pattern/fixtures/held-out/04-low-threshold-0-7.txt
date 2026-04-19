@@ -1,0 +1,25 @@
+---
+class: eval-missing-threshold
+reason: All thresholds are 0.7 — below the 0.8 floor; Step 4 flags.
+---
+import { loadFixtures } from '@gelato/eval-harness';
+import { describe, expect, it } from 'vitest';
+
+const VIOLATIONS_DIR = './fixtures/violations';
+const SAFE_DIR = './fixtures/safe';
+const HELD_OUT_DIR = './fixtures/held-out';
+
+describe('lax', () => {
+  it('v', async () => {
+    await loadFixtures(VIOLATIONS_DIR);
+    expect(0.7).toBeGreaterThanOrEqual(0.7);
+  });
+  it('s', async () => {
+    await loadFixtures(SAFE_DIR);
+    expect(0.7).toBeGreaterThanOrEqual(0.7);
+  });
+  it('h', async () => {
+    await loadFixtures(HELD_OUT_DIR);
+    expect(0.7).toBeGreaterThanOrEqual(0.7);
+  });
+});

@@ -1,0 +1,34 @@
+---
+reason: LLM-judge wrapped in describe.skipIf(!isJudgeAvailable()).
+---
+import {
+  isJudgeAvailable,
+  judgeWithPromptfoo,
+  loadFixtures,
+} from '@gelato/eval-harness';
+import { describe, expect, it } from 'vitest';
+
+const VIOLATIONS_DIR = './fixtures/violations';
+const SAFE_DIR = './fixtures/safe';
+const HELD_OUT_DIR = './fixtures/held-out';
+
+describe('skill-y', () => {
+  it('v', async () => {
+    await loadFixtures(VIOLATIONS_DIR);
+    expect(1).toBeGreaterThanOrEqual(0.95);
+  });
+  it('s', async () => {
+    await loadFixtures(SAFE_DIR);
+    expect(1).toBeGreaterThanOrEqual(0.95);
+  });
+  it('h', async () => {
+    await loadFixtures(HELD_OUT_DIR);
+    expect(1).toBeGreaterThanOrEqual(0.9);
+  });
+  describe.skipIf(!isJudgeAvailable())('judge', () => {
+    it('r', async () => {
+      const r = await judgeWithPromptfoo({ config: 'c', rubric: 'x' });
+      expect(r.score).toBeGreaterThanOrEqual(0.85);
+    });
+  });
+});
