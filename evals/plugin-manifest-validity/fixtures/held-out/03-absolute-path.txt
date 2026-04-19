@@ -1,0 +1,9 @@
+---
+class: plugin-component-path-not-relative
+reason: Absolute path never works — plugin cache location is not user-predictable.
+---
+{
+  "name": "abs-path",
+  "version": "1.0.0",
+  "skills": "/home/user/plugins/skills/"
+}

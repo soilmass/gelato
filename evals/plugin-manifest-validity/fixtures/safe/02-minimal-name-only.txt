@@ -1,0 +1,6 @@
+---
+reason: "Only `name` is required. A one-field manifest is valid."
+---
+{
+  "name": "bare-minimum"
+}

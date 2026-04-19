@@ -1,0 +1,8 @@
+---
+class: plugin-name-not-kebab-case
+reason: "`MyCoolPlugin` is camelCase — Claude Code namespace requires kebab-case."
+---
+{
+  "name": "MyCoolPlugin",
+  "version": "1.0.0"
+}

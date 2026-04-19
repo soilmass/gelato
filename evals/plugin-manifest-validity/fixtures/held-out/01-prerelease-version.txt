@@ -1,0 +1,8 @@
+---
+class: safe
+reason: "`2.0.0-beta.1` is valid semver (pre-release suffix)."
+---
+{
+  "name": "prerelease",
+  "version": "2.0.0-beta.1"
+}

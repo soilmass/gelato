@@ -1,0 +1,9 @@
+---
+class: plugin-component-path-not-relative
+reason: "`custom/skills/` is missing the leading `./` — Plugin Reference requires it."
+---
+{
+  "name": "my-plugin",
+  "version": "1.0.0",
+  "skills": "custom/skills/"
+}

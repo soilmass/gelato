@@ -1,0 +1,9 @@
+---
+class: plugin-component-path-not-relative
+reason: Parent-traversal path is blocked by plugin cache — files outside the plugin root aren't copied.
+---
+{
+  "name": "traversal",
+  "version": "1.0.0",
+  "commands": ["../sibling/commands/foo.md"]
+}

@@ -1,0 +1,17 @@
+---
+reason: "Inline `hooks` object form is exempt from the ./ path rule — it's embedded config, not a path."
+---
+{
+  "name": "inline-hooks",
+  "version": "1.0.0",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/scripts/format.sh" }
+        ]
+      }
+    ]
+  }
+}

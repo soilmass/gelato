@@ -1,0 +1,8 @@
+---
+class: plugin-version-not-semver
+reason: "`1.0` is missing the PATCH segment."
+---
+{
+  "name": "my-plugin",
+  "version": "1.0"
+}

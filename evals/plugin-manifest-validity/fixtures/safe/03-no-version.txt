@@ -1,0 +1,8 @@
+---
+reason: "Version is optional — marketplace entry may supply it."
+---
+{
+  "name": "no-version",
+  "description": "Version comes from the marketplace entry",
+  "license": "MIT"
+}

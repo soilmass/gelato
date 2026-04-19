@@ -1,0 +1,57 @@
+description: plugin-manifest-validity LLM-as-judge rubric
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a review of a candidate `.claude-plugin/plugin.json`
+    against Anthropic's Plugin Reference. Judge whether the review
+    identifies each violation, cites the Plugin Reference, and gives
+    actionable fixes.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: plugin-manifest-thoroughness
+    vars:
+      content: |
+        Violations in candidate `.claude-plugin/plugin.json`:
+
+        1. `plugin-name-not-kebab-case` (Plugin Reference § Required
+           fields). The manifest sets `"name": "MyCoolPlugin"`. Claude
+           Code namespaces components as `MyCoolPlugin:<component>`,
+           which leaks camelCase into every `/agents` and `/plugin`
+           reference. Fix:
+             "name": "my-cool-plugin"
+
+        2. `plugin-component-path-not-relative` (Plugin Reference §
+           Path behavior rules — "All paths must be relative to the
+           plugin root and start with `./`"). The manifest sets
+           `"skills": "custom/skills/"`. Fix:
+             "skills": "./custom/skills/"
+
+        3. `plugin-version-not-semver` (Plugin Reference § Version
+           management). The manifest sets `"version": "1.0"`. Semver
+           requires MAJOR.MINOR.PATCH. Fix:
+             "version": "1.0.0"
+
+        No other schema-level errors.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the review:
+            - names each violation class by its Gelato identifier
+            - cites the Anthropic Plugin Reference as the source
+            - gives a copy-pasteable fix per violation
+            - does NOT invent rules not present in the Plugin Reference
+          Score 0.5 when the review lists violations but skips
+          citations or concrete fixes.
+          Score 0 when a violation is misclassified, a non-existent
+          rule is cited, or a stated violation is skipped.

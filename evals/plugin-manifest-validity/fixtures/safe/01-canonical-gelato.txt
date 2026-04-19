@@ -1,0 +1,16 @@
+---
+reason: Gelato's own manifest — canonical passing case.
+---
+{
+  "name": "gelato",
+  "description": "The dogmatic, eval-verified Claude Code kit for modern full-stack TypeScript. A Neopolitan product.",
+  "version": "0.3.0",
+  "license": "MIT",
+  "homepage": "https://gelato.dev",
+  "repository": "https://github.com/soilmass/gelato",
+  "author": {
+    "name": "Neopolitan",
+    "url": "https://github.com/soilmass/gelato"
+  },
+  "keywords": ["claude-code", "claude-code-plugin", "typescript", "nextjs"]
+}

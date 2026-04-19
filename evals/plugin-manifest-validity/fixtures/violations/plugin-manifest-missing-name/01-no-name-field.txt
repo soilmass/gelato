@@ -1,0 +1,9 @@
+---
+class: plugin-manifest-missing-name
+reason: The manifest has every field except the required `name`.
+---
+{
+  "version": "1.0.0",
+  "description": "Deployment automation tools",
+  "license": "MIT"
+}
