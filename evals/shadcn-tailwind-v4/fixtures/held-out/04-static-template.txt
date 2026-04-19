@@ -1,0 +1,7 @@
+---
+class: safe
+reason: Template literal without interpolated expressions — equivalent to a plain string. cn() is not required.
+---
+export function Divider() {
+  return <hr className={`my-6 h-px bg-border`} />;
+}

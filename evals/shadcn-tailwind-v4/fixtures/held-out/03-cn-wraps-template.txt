@@ -1,0 +1,18 @@
+---
+class: safe
+reason: Template literal is wrapped in cn(). tailwind-merge still runs on the final string. Not a violation of the cn() rule.
+---
+import { cn } from '@/lib/utils';
+
+export function Tag({ tone, className }: { tone: 'neutral' | 'warn'; className?: string }) {
+  return (
+    <span
+      className={cn(
+        `inline-flex items-center rounded-full px-2 py-0.5 ${tone === 'warn' ? 'bg-yellow-100' : 'bg-neutral-100'}`,
+        className,
+      )}
+    >
+      hello
+    </span>
+  );
+}

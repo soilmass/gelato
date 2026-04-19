@@ -1,0 +1,10 @@
+---
+expected: safe
+reason: Minimal tailwind.config.ts with only a plugins array — v4-compatible (config is optional in v4; plugins-only is legal).
+---
+import type { Config } from 'tailwindcss';
+import typography from '@tailwindcss/typography';
+
+export default {
+  plugins: [typography],
+} satisfies Config;

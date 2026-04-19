@@ -1,0 +1,11 @@
+---
+class: string-concat-classname
+reason: String concatenation with + operator — tailwind-merge never runs, so conflicting classes both ship.
+---
+export function Badge({ extraClass }: { extraClass?: string }) {
+  return (
+    <span className={'inline-flex items-center rounded-full px-2 py-0.5 ' + (extraClass ?? '')}>
+      hello
+    </span>
+  );
+}

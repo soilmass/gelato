@@ -1,0 +1,9 @@
+---
+class: old-postcss-plugin
+reason: postcss.config.cjs with just tailwindcss plugin — legacy v3 plugin name.
+---
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+  },
+};

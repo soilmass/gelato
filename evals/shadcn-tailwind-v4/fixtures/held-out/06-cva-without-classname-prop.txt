@@ -1,0 +1,20 @@
+---
+class: safe
+reason: Component uses cva to build a class string and passes it as-is — no conditional merge needed, no cn() required.
+---
+import { cva } from 'class-variance-authority';
+
+const alertVariants = cva('rounded-md border p-4 text-sm', {
+  variants: {
+    tone: {
+      info: 'border-blue-200 bg-blue-50 text-blue-900',
+      warning: 'border-yellow-200 bg-yellow-50 text-yellow-900',
+      error: 'border-red-200 bg-red-50 text-red-900',
+    },
+  },
+  defaultVariants: { tone: 'info' },
+});
+
+export function Alert({ tone }: { tone?: 'info' | 'warning' | 'error' }) {
+  return <div role="alert" className={alertVariants({ tone })}>heads up</div>;
+}

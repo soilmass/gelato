@@ -1,0 +1,13 @@
+---
+class: string-concat-classname
+reason: Variant selection via ternary inside a template literal — no cn() anywhere; conflicting padding classes both emit.
+---
+export function Panel({ size }: { size: 'sm' | 'md' | 'lg' }) {
+  return (
+    <div
+      className={`rounded border ${size === 'sm' ? 'p-2 text-sm' : size === 'lg' ? 'p-6 text-lg' : 'p-4 text-base'}`}
+    >
+      content
+    </div>
+  );
+}

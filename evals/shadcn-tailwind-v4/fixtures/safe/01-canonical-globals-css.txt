@@ -1,0 +1,18 @@
+---
+expected: safe
+reason: Canonical v4 globals.css — single @import, @theme block, no legacy @tailwind directives.
+---
+@import "tailwindcss";
+
+@theme {
+  --color-background: oklch(100% 0 0);
+  --color-foreground: oklch(15% 0 0);
+  --color-primary: oklch(60% 0.15 260);
+  --color-primary-foreground: oklch(98% 0 0);
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+}

@@ -1,0 +1,12 @@
+---
+expected: safe
+reason: Static classNames — no conditional, no interpolation. cn() not required for a single literal.
+---
+export function Hero() {
+  return (
+    <section className="py-24 bg-background text-foreground">
+      <h1 className="text-5xl font-semibold tracking-tight">Welcome.</h1>
+      <p className="mt-4 text-muted-foreground">Get started below.</p>
+    </section>
+  );
+}

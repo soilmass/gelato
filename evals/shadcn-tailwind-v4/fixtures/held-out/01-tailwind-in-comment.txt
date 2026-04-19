@@ -1,0 +1,10 @@
+---
+class: safe
+reason: "@tailwind mention appears inside a CSS comment explaining the migration — not an actual directive. Classifier must ignore CSS comments."
+---
+/* Migration note: previously used @tailwind base; etc. Moved to v4 single-import. */
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #ff0080;
+}

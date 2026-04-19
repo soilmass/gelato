@@ -1,0 +1,368 @@
+---
+name: shadcn-tailwind-v4
+description: >
+  Apply Tailwind v4 migration rules and shadcn/ui idioms on Next.js 15.
+  v4 shape: single `@import "tailwindcss";`, CSS-first `@theme` config,
+  `@tailwindcss/postcss` plugin. shadcn shape: `components/ui/`, `cva`
+  for variants, `cn()` for class merging. Flags four violations:
+  pre-v4 `@tailwind` directives, v3-shaped `tailwind.config.*`, legacy
+  `tailwindcss` PostCSS plugin, string-concat `className` without `cn()`.
+  Use when: setting up Tailwind v4, migrating v3 → v4, adding a shadcn
+  component, reviewing a Tailwind/PostCSS config, "my classes aren't
+  merging", "@tailwind base not working".
+  Do NOT use for: visual design / palette / spacing (product judgment),
+  form UI (→ form-with-server-action), route layout (→ rsc-boundary-audit).
+license: MIT
+metadata:
+  version: "1.0"
+  core: web-dev
+  subsystem: ui
+  phase: build
+  type: procedural
+  methodology_source:
+    - name: "Tailwind CSS v4 — Upgrade Guide"
+      authority: "Tailwind Labs"
+      url: "https://tailwindcss.com/docs/upgrade-guide"
+      version: "Tailwind CSS v4.0 (2025)"
+      verified: "2026-04-18"
+    - name: "shadcn/ui — Introduction & Components"
+      authority: "shadcn (Tommy Smith)"
+      url: "https://ui.shadcn.com/docs"
+      version: "shadcn/ui — current docs (2025)"
+      verified: "2026-04-18"
+  stack_assumptions:
+    - "tailwindcss@4+"
+    - "@tailwindcss/postcss@4+"
+    - "next@15+ App Router"
+    - "react@19+"
+    - "bun@1.1+"
+  eval:
+    pass_rate: 1
+    last_run: "2026-04-19T06:49:49.540Z"
+    n_cases: 4
+  changelog: >
+    v1.0 — initial. Four mechanical violations (v3 CSS directives,
+    v3 config shape, legacy PostCSS plugin, string-concat className)
+    detected by a deterministic classifier over CSS / JS-config /
+    TSX fixtures.
+---
+
+# shadcn-tailwind-v4
+
+Encodes the Tailwind CSS v4 migration rules and shadcn/ui component idioms for a Next.js 15 App Router codebase. Tailwind v4 moves config from JavaScript into CSS (`@theme` block), collapses the three `@tailwind` directives into a single `@import "tailwindcss";`, and renames the PostCSS plugin to `@tailwindcss/postcss`. shadcn/ui remains a copy-paste component convention: owned source in `components/ui/`, `cn()` for class merging, `cva` for variants.
+
+---
+
+## Methodology Attribution
+
+Two primary sources:
+
+- **Primary:** Tailwind CSS v4 — Upgrade Guide
+  - Source: [https://tailwindcss.com/docs/upgrade-guide](https://tailwindcss.com/docs/upgrade-guide)
+  - Version: Tailwind CSS v4.0 (2025)
+  - Verified: 2026-04-18
+- **Secondary:** shadcn/ui — Introduction & Components
+  - Source: [https://ui.shadcn.com/docs](https://ui.shadcn.com/docs)
+  - Version: shadcn/ui — current docs (2025)
+  - Verified: 2026-04-18
+- **Drift-check:** `.github/workflows/drift-tailwind-shadcn.yml`
+
+Encoded: the four mechanical migration rules that break a codebase if done wrong (CSS directives, config shape, PostCSS plugin name, className merging). NOT encoded: visual design decisions, color palette choices, typography scale, spacing systems — those are product judgments, not stack rules. Advanced theming (`@layer`, `@variant`) is out of scope — a v0.2 `tailwind-theming` skill will cover those.
+
+---
+
+## Stack Assumptions
+
+- `tailwindcss@4+` with CSS-first config
+- `@tailwindcss/postcss@4+` (the Next.js 15 + PostCSS integration)
+- `next@15+` App Router
+- `react@19+`
+- `bun@1.1+`
+
+If your stack is on Tailwind v3, fork the suite — the migration rules are the point.
+
+---
+
+## When to Use
+
+Activate when any of the following is true:
+- Setting up a new Next.js + Tailwind v4 project
+- Migrating an existing project from Tailwind v3 to v4
+- Adding a shadcn/ui component
+- Reviewing a `tailwind.config.*` or `postcss.config.*` file
+- "My classes aren't merging" / "Tailwind directives not recognized"
+- "Why is `@tailwind base` not working?"
+
+## When NOT to Use
+
+Do NOT activate for:
+- **Design decisions** — color palette, type scale, spacing — product judgment, not stack rules.
+- **Form UI wiring** — `form-with-server-action`.
+- **Route / layout boundaries** — `rsc-boundary-audit`.
+- **Variant patterns beyond cva** — v0.2 candidate `component-variants` skill.
+
+---
+
+## Procedure
+
+### Step 1 — Entry CSS: single `@import "tailwindcss";`
+
+```css
+/* app/globals.css */
+@import "tailwindcss";
+
+@theme {
+  --color-brand: oklch(65% 0.2 30);
+  --font-sans: 'Inter', sans-serif;
+}
+```
+
+Do NOT use the v3 three-directive form:
+
+```css
+/* WRONG — pre-v4 syntax */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+Tailwind v4 processes `@import "tailwindcss";` and splits it into its layers internally.
+
+### Step 2 — PostCSS plugin: `@tailwindcss/postcss`
+
+```js
+// postcss.config.js
+export default {
+  plugins: {
+    '@tailwindcss/postcss': {},
+  },
+};
+```
+
+Do NOT use the v3 plugin name:
+
+```js
+/* WRONG — v3 plugin name */
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};
+```
+
+Tailwind v4 ships its own PostCSS plugin under the `@tailwindcss/postcss` export; `autoprefixer` is no longer needed separately (v4 bundles it).
+
+### Step 3 — Config: CSS-first via `@theme`
+
+Tailwind v4 reads theme values from CSS custom properties declared in a `@theme` block. A `tailwind.config.{js,ts}` file is **optional** in v4 — use it only when you need plugins or legacy options. If present, it should NOT have the v3 `content` + `theme: { extend: {} }` shape:
+
+```js
+/* WRONG — v3 config shape */
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        brand: '#ff0080',
+      },
+    },
+  },
+  plugins: [],
+};
+```
+
+v4 discovers source files automatically (via `@source` in CSS when needed) and reads theme values from `@theme`. Delete the file unless you're adding plugins; move color definitions into `@theme`:
+
+```css
+@theme {
+  --color-brand: oklch(65% 0.2 30);
+}
+```
+
+### Step 4 — shadcn components: `components/ui/` with `cn()` + `cva`
+
+shadcn/ui is not an npm package — components are copied into your repo. Canonical shape:
+
+```tsx
+// components/ui/button.tsx
+import * as React from 'react';
+import { Slot } from '@radix-ui/react-slot';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+
+const buttonVariants = cva(
+  'inline-flex items-center justify-center rounded-md text-sm font-medium',
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+        outline: 'border border-input bg-background hover:bg-accent',
+      },
+      size: {
+        default: 'h-10 px-4 py-2',
+        sm: 'h-9 px-3',
+        lg: 'h-11 px-8',
+      },
+    },
+    defaultVariants: { variant: 'default', size: 'default' },
+  },
+);
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+}
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'button';
+    return <Comp ref={ref} className={cn(buttonVariants({ variant, size }), className)} {...props} />;
+  },
+);
+Button.displayName = 'Button';
+```
+
+Three invariants:
+1. File lives at `@/components/ui/<name>.tsx`.
+2. All className merging goes through `cn()` from `@/lib/utils` (which wraps `tailwind-merge` + `clsx`).
+3. Variant branches live in `cva(...)`, not in an inline `if` ladder.
+
+### Step 5 — className merging: always `cn()`
+
+```tsx
+// RIGHT
+<div className={cn('rounded-md border', isSelected && 'ring-2 ring-primary', className)} />
+```
+
+Tailwind-merge inside `cn()` resolves conflicts (e.g., `p-4 p-6` → `p-6`). Template-literal concatenation does not:
+
+```tsx
+// WRONG — classes conflict and both emit to the DOM
+<div className={`rounded-md border ${isSelected ? 'ring-2 ring-primary' : ''}`} />
+```
+
+For a single static className, `cn()` is unnecessary — but as soon as the className is conditional or mixed with a prop `className`, `cn()` is the rule.
+
+---
+
+## Tool Integration
+
+**Canonical `app/globals.css`:**
+
+```css
+@import "tailwindcss";
+
+@theme {
+  --color-background: oklch(100% 0 0);
+  --color-foreground: oklch(15% 0 0);
+  --color-primary: oklch(60% 0.15 260);
+  --color-primary-foreground: oklch(98% 0 0);
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+```
+
+**Canonical `postcss.config.mjs`:**
+
+```js
+export default {
+  plugins: {
+    '@tailwindcss/postcss': {},
+  },
+};
+```
+
+**Canonical `lib/utils.ts`:**
+
+```ts
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
+}
+```
+
+---
+
+## Examples
+
+### Example 1 — Pre-v4 CSS directives (`pre-v4-css-directives`)
+
+**Input:** `app/globals.css` contains `@tailwind base; @tailwind components; @tailwind utilities;`.
+
+**Output:** replace all three with a single `@import "tailwindcss";` at the top of the file. The three-directive form is a v3 artifact; v4 processes the single import and generates the correct cascade internally.
+
+### Example 2 — V3 config shape (`v3-config-shape`)
+
+**Input:** `tailwind.config.ts` exports `{ content: ['./src/**/*.{ts,tsx}'], theme: { extend: { colors: { brand: '#ff0080' } } } }`.
+
+**Output:** delete the file (v4 doesn't need it for this shape) and move colors into a `@theme` block in `globals.css` as CSS custom properties (`--color-brand: #ff0080;`). Tailwind v4 auto-discovers sources; explicit `content` is no longer required.
+
+### Example 3 — Legacy PostCSS plugin (`old-postcss-plugin`)
+
+**Input:** `postcss.config.js` has `plugins: { tailwindcss: {}, autoprefixer: {} }`.
+
+**Output:** replace with `plugins: { '@tailwindcss/postcss': {} }`. Autoprefixer is bundled; the `tailwindcss` plugin name is v3.
+
+### Example 4 — String-concatenated className (`string-concat-classname`)
+
+**Input:** `<div className={\`rounded-md border ${isSelected ? 'ring-2 ring-primary' : ''}\`} />`.
+
+**Output:** `<div className={cn('rounded-md border', isSelected && 'ring-2 ring-primary')} />`. `cn()` resolves conflicts via tailwind-merge and coerces falsy values; a template literal does neither.
+
+---
+
+## Edge Cases
+
+- **Tailwind plugins** — `@tailwindcss/typography`, `@tailwindcss/forms` etc. still work in v4, loaded via the CSS `@plugin` directive: `@plugin "@tailwindcss/typography";`. No config file needed.
+- **Custom `content` patterns** — use `@source` in CSS when auto-discovery misses a file: `@source "../packages/ui/src/**/*.tsx";`.
+- **Arbitrary values** — `class="w-[257px]"` still works; tailwind-merge inside `cn()` handles conflicts with utility classes.
+- **Dark mode** — v4 uses `@variant dark` in CSS. The component's className stays the same (`dark:bg-slate-900`).
+- **Component libraries that import Tailwind v3 utilities** — need updates. If a third-party component ships v3-era classes, the v4 merge behavior may surprise you. Track the dep's v4 compatibility.
+
+---
+
+## Evaluation
+
+See `/evals/shadcn-tailwind-v4/`.
+
+### Pass criteria
+
+**Quantitative (deterministic classifier):**
+- ≥ 95% of violation fixtures classified across 4 classes
+- Zero false positives on 5 safe fixtures
+- Held-out ≥ 90%
+
+No LLM-as-judge half for v0.1. A v0.2 `cva-idiom` rubric would judge whether variant-branching structures use `cva` cleanly versus a hand-written `if` ladder.
+
+---
+
+## Handoffs
+
+- **Form UI** → `form-with-server-action`
+- **RSC boundaries** → `rsc-boundary-audit`
+- **Component variants beyond cva** → v0.2 candidate `component-variants` skill
+- **Design token system** → v0.2+ candidate `design-tokens` skill
+
+---
+
+## Dependencies
+
+- **External skills:** none
+- **MCP servers:** none
+- **Tools required in environment:** Bun, Next.js 15+, Tailwind CSS v4+, PostCSS
+
+---
+
+## References
+
+- `references/migration-checklist.md` — three-step v3 → v4 upgrade walkthrough
+- `references/violation-classes.md` — four-class taxonomy with canonical examples
+
+## Scripts
+
+- _(none in v0.1 — eval ships the classifier; a `scripts/migrate-to-v4.ts` codemod is a v0.2 candidate)_
