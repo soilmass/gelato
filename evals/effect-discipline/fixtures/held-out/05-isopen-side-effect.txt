@@ -1,0 +1,15 @@
+---
+class: effect-as-event-handler
+reason: Boolean dep (isOpen) + fetch inside body — classic handler-as-effect.
+---
+'use client';
+import { useEffect, useState } from 'react';
+
+export function TelemetryModal({ isOpen }: { isOpen: boolean }) {
+  useEffect(() => {
+    if (isOpen) {
+      fetch('/api/log', { method: 'POST', body: JSON.stringify({ event: 'modal-open' }) });
+    }
+  }, [isOpen]);
+  return null;
+}

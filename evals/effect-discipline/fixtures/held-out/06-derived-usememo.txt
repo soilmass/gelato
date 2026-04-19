@@ -1,0 +1,11 @@
+---
+class: safe
+reason: Expensive derivation via useMemo — correct pattern, no effect.
+---
+'use client';
+import { useMemo } from 'react';
+
+export function Report({ rows }: { rows: number[] }) {
+  const summary = useMemo(() => rows.reduce((a, b) => a + b, 0), [rows]);
+  return <span>{summary}</span>;
+}

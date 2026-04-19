@@ -1,0 +1,14 @@
+---
+class: setstate-in-effect-no-guard
+reason: Effect with no dep array calling setCount(count+1) — infinite loop.
+---
+'use client';
+import { useEffect, useState } from 'react';
+
+export function Counter() {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    setCount(count + 1);
+  });
+  return <span>{count}</span>;
+}

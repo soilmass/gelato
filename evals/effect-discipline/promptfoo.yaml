@@ -1,0 +1,83 @@
+description: effect-discipline LLM-as-judge rubric
+
+providers:
+  - anthropic:messages:claude-sonnet-4-5-20250929
+
+defaultTest:
+  options:
+    cache: true
+
+prompts:
+  - |
+    The following is a remediation for an effect-discipline
+    violation in a React 19 client component. Judge whether the
+    fix implements one of the patterns recommended in the
+    "You Might Not Need an Effect" essay and compiles cleanly.
+
+    ---
+    {{content}}
+    ---
+
+tests:
+  - description: refactor-to-derived-value-implementability
+    vars:
+      content: |
+        Violation class: effect-for-derived-value
+
+        Rule cited: "You Might Not Need an Effect" (react.dev)
+        — "Calculating derived data" section. An effect whose
+        body is a pure derivation runs an extra render cycle.
+        Compute the value at render time instead.
+
+        Original:
+          'use client';
+          import { useEffect, useState } from 'react';
+
+          export function Greeting({
+            first,
+            last,
+          }: { first: string; last: string }) {
+            const [fullName, setFullName] = useState('');
+            useEffect(() => {
+              setFullName(`${first} ${last}`);
+            }, [first, last]);
+            return <h1>{fullName}</h1>;
+          }
+
+        Fix: drop the useState + useEffect, replace with a
+        plain const. (useMemo only if the derivation is
+        demonstrably expensive.)
+
+          'use client';
+          export function Greeting({
+            first,
+            last,
+          }: { first: string; last: string }) {
+            const fullName = `${first} ${last}`;
+            return <h1>{fullName}</h1>;
+          }
+
+        Why it's correct:
+          - The expression `${first} ${last}` is cheap; a const
+            is enough. The extra render the effect caused is
+            eliminated.
+          - Props change → function re-runs → const recomputes.
+            No state; no stale value.
+          - The essay ("Calculating derived data") explicitly
+            recommends this transformation.
+    assert:
+      - type: llm-rubric
+        value: |
+          Score 0.0 to 1.0. Return 1 when the fix:
+            - cites the "You Might Not Need an Effect" essay
+              (react.dev)
+            - shows the corrected component in full
+            - uses a const (or useMemo when expensive);
+              explicitly not a useEffect
+            - removes both the useState AND useEffect; does not
+              leave dead state hanging
+          Score 0.5 if the fix compiles but omits the essay
+          citation or leaves unused useState.
+          Score 0 if useEffect is kept, the fix introduces a
+          new violation, or useMemo is used without justifying
+          the expense.

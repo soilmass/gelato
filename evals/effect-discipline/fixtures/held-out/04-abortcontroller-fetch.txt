@@ -1,0 +1,18 @@
+---
+class: safe
+reason: AbortController + fetch cleanup — legitimate effect pattern.
+---
+'use client';
+import { useEffect, useState } from 'react';
+
+export function Feed() {
+  const [items, setItems] = useState<unknown[]>([]);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/api/feed', { signal: controller.signal })
+      .then((r) => r.json())
+      .then(setItems);
+    return () => controller.abort();
+  }, []);
+  return <ul>{items.length}</ul>;
+}

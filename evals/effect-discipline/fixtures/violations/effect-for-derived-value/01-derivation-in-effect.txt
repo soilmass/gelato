@@ -1,0 +1,14 @@
+---
+class: effect-for-derived-value
+reason: Effect body is a single setState computing a pure derivation.
+---
+'use client';
+import { useEffect, useState } from 'react';
+
+export function Greeting({ first, last }: { first: string; last: string }) {
+  const [fullName, setFullName] = useState('');
+  useEffect(() => {
+    setFullName(`${first} ${last}`);
+  }, [first, last]);
+  return <h1>{fullName}</h1>;
+}

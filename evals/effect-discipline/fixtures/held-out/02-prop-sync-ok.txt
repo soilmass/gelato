@@ -1,0 +1,14 @@
+---
+class: safe
+reason: useState(prop) is OK because a useEffect syncs on [prop].
+---
+'use client';
+import { useEffect, useState } from 'react';
+
+export function Tag({ label }: { label: string }) {
+  const [name, setName] = useState(label);
+  useEffect(() => {
+    setName(label);
+  }, [label]);
+  return <span>{name}</span>;
+}

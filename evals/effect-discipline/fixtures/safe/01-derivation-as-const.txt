@@ -1,0 +1,8 @@
+---
+reason: Derived value computed as a const at render — no effect needed.
+---
+'use client';
+export function Greeting({ first, last }: { first: string; last: string }) {
+  const fullName = `${first} ${last}`;
+  return <h1>{fullName}</h1>;
+}

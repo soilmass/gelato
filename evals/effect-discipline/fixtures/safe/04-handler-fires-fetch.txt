@@ -1,0 +1,16 @@
+---
+reason: Fetch called directly in the submit handler — canonical shape.
+---
+'use client';
+import { useState, type FormEvent } from 'react';
+
+export function AnalyticsForm({ data }: { data: Record<string, unknown> }) {
+  const [pending, setPending] = useState(false);
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setPending(true);
+    await fetch('/api/analytics', { method: 'POST', body: JSON.stringify(data) });
+    setPending(false);
+  }
+  return <form onSubmit={handleSubmit}><button>Submit</button></form>;
+}

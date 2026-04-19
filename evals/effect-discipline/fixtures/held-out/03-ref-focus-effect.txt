@@ -1,0 +1,14 @@
+---
+class: safe
+reason: Ref-based DOM focus — exempt via subscription-shape detection.
+---
+'use client';
+import { useEffect, useRef } from 'react';
+
+export function AutoFocus() {
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    ref.current?.focus();
+  }, []);
+  return <input ref={ref} />;
+}
