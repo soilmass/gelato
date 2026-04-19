@@ -34,7 +34,7 @@ metadata:
     - "Plugin installed via marketplace OR --plugin-dir"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T16:53:13.636Z"
+    last_run: "2026-04-19T17:15:27.772Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Procedural skill over Anthropic's Plugin

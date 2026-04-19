@@ -37,7 +37,7 @@ metadata:
     - "Marketplace hosted on GitHub, Git URL, or local path"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T17:01:21.037Z"
+    last_run: "2026-04-19T17:15:27.772Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Procedural skill over Anthropic's Plugin

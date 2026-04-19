@@ -34,7 +34,7 @@ metadata:
     - "bun@1.1+"
   eval:
     pass_rate: 1
-    last_run: "2026-04-19T16:43:01.548Z"
+    last_run: "2026-04-19T17:15:27.771Z"
     n_cases: 4
   changelog: >
     v1.0 — initial. Procedural skill over Gelato's own EVAL_SPEC.md.

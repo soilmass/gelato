@@ -1,6 +1,6 @@
-# Gelato Core 1 Skill List
+# Gelato Skill List
 
-Core 1 — the **Web Dev** core — ships 32 skills with passing evals at v0.3.0. Every skill below has a deterministic classifier eval at `pass_rate = 1.0`, and every skill carries a live LLM-as-judge rubric. Methodology is cited upstream in each SKILL.md's `methodology_source` field.
+Gelato ships 37 skills at v0.4.0 across two cores — **Web Dev** (Core 1, 32 skills) and **Meta** (Core 6, 5 skills). Every skill below has a deterministic classifier eval at `pass_rate = 1.0`, and every skill carries a live LLM-as-judge rubric. Methodology is cited upstream in each SKILL.md's `methodology_source` field. Cores 2–5 (Brand & Content, Growth & Distribution, Founder Ops, Research & Synthesis) land in v0.5 → v0.8.
 
 ---
 
@@ -11,7 +11,7 @@ Core 1 — the **Web Dev** core — ships 32 skills with passing evals at v0.3.0
 
 ---
 
-## The 32 shipped skills
+## Core 1 — Web Dev (32 skills)
 
 | # | Skill | Subsystem | Phase | Type | Methodology Source |
 |---|---|---|---|---|---|
@@ -47,6 +47,18 @@ Core 1 — the **Web Dev** core — ships 32 skills with passing evals at v0.3.0
 | 30 | [`sentry-setup`](./skills/sentry-setup/SKILL.md) | observability | run | procedural | Sentry Next.js official guide |
 | 31 | [`event-taxonomy-and-instrumentation`](./skills/event-taxonomy-and-instrumentation/SKILL.md) | analytics | run | judgment | Amplitude North Star + PostHog |
 | 32 | [`ci-cd-next-on-vercel`](./skills/ci-cd-next-on-vercel/SKILL.md) | deployment | run | procedural | Vercel deployment + DORA metrics |
+
+---
+
+## Core 6 — Meta (5 skills, v0.4.0)
+
+| # | Skill | Subsystem | Phase | Type | Methodology Source |
+|---|---|---|---|---|---|
+| 33 | [`new-skill-review`](./skills/new-skill-review/SKILL.md) | extensibility | verify | procedural | Gelato TEMPLATE.md + schema contract |
+| 34 | [`eval-harness-pattern`](./skills/eval-harness-pattern/SKILL.md) | extensibility | verify | procedural | Gelato EVAL_SPEC.md Type-A / Type-B |
+| 35 | [`plugin-manifest-validity`](./skills/plugin-manifest-validity/SKILL.md) | distribution | build | procedural | Anthropic Plugin Reference |
+| 36 | [`marketplace-submission`](./skills/marketplace-submission/SKILL.md) | distribution | build | procedural | Anthropic Plugin Marketplaces reference |
+| 37 | [`drift-check-workflow`](./skills/drift-check-workflow/SKILL.md) | maintenance | build | procedural | Gelato drift pattern (self-hosted) |
 
 ---
 

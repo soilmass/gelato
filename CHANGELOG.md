@@ -5,6 +5,71 @@ All notable changes to Gelato are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] — 2026-04-19
+
+**Core 6 — Meta.** 5 new skills that encode Gelato's own extensibility contracts, taking the suite from 32 → 37. This release also opens the schema to Cores 2–6: `core` is now a discriminated union (`web-dev` | `brand-content` | `growth-distribution` | `founder-ops` | `research-synthesis` | `meta`) with per-core `subsystem` enums, and the docs site moves from flat `/skills/<name>` to nested per-core routes `docs/app/<core>/skills/<name>/` with a 301 redirect for the prior paths.
+
+### Added — new skills (5)
+
+- `new-skill-review` — enforces `SKILL.md` frontmatter + body against TEMPLATE.md and the Zod `SkillMetadata` schema. Five violation classes (`frontmatter-schema-invalid`, `missing-mandated-section`, `missing-methodology-citation`, `skill-name-kebab-case-violation`, `skill-body-over-limit`). Classifier parses the candidate's own frontmatter (two-layer: the outer fixture wrapper and the inner SKILL.md content).
+- `eval-harness-pattern` — enforces `evals/<name>/eval.test.ts` against the EVAL_SPEC.md Type-A / Type-B contract. Five violation classes (`eval-missing-quantitative`, `eval-missing-safe-dir`, `eval-missing-held-out`, `eval-missing-threshold`, `eval-judge-not-gated`). Metric-type evals (`runLighthouse` / `runSkillWithClaude`) are exempt from the fixture-directory rules but still subject to threshold and judge-gating rules.
+- `plugin-manifest-validity` — enforces `.claude-plugin/plugin.json` against Anthropic's Plugin Reference. Five violation classes (`plugin-manifest-invalid-json`, `plugin-manifest-missing-name`, `plugin-name-not-kebab-case`, `plugin-version-not-semver`, `plugin-component-path-not-relative`). Inline object forms for `hooks` / `mcpServers` / `lspServers` are exempt from the `./`-prefix rule.
+- `marketplace-submission` — enforces `.claude-plugin/marketplace.json` against Anthropic's Plugin Marketplaces reference. Five violation classes (`marketplace-missing-required-field`, `marketplace-name-reserved`, `marketplace-plugin-duplicate-name`, `marketplace-plugin-missing-source`, `marketplace-plugin-source-path-traversal`). Encodes the reserved-name list from the Plugin Marketplaces docs.
+- `drift-check-workflow` — enforces `.github/workflows/drift-*.yml` against Gelato's own drift pattern (`drift-conventional-commits.yml` + BRIEF.md § build-tree + TEMPLATE.md § drift-check). Five violation classes (`drift-workflow-missing-schedule`, `drift-workflow-missing-dispatch`, `drift-workflow-missing-fetch`, `drift-workflow-missing-checkout`, `drift-workflow-missing-concurrency`). `curl`, `wget`, and `actions/checkout` are all accepted as pinned (`@v4`, full SHA).
+
+### Added — infrastructure (prep PR)
+
+- **`packages/schema/src/skill-frontmatter.ts`** — `core` migrated from `z.literal('web-dev')` to a discriminated union over all six cores. Each core carries its own `subsystem` enum (per-core scoping: no cross-core leakage). Exported new `CORES` tuple.
+- **`scripts/generate-docs.ts`** — reads `metadata.core` and outputs to `docs/app/<core>/skills/<name>/page.mdx`.
+- **`docs/next.config.mjs`** — 301 redirect from `/skills/:name` → `/web-dev/skills/:name` for external links to Core 1 pages to survive the routing migration.
+- **`TEMPLATE.md`** — per-core subsystem enum table inlined.
+- **`docs/app/<core>/` tree** — `meta/`, plus Core 1 skills now under `web-dev/`. `docs/app/page.mdx` still lists Core 1 only; Cores 2–5 sections appear per release.
+
+### Changed
+
+- `README.md` badge 32/32 → 37/37; Core 6 Meta section added.
+- `SKILLS.md` rewritten as a two-core roster (Core 1 Web Dev × 32 + Core 6 Meta × 5).
+- `.claude-plugin/plugin.json` + `.claude-plugin/marketplace.json` version bumped to `0.4.0`; marketplace description extended to mention the Meta core.
+
+### Fixed
+
+_(no code fixes in v0.4.0; all changes are additive.)_
+
+### Methodology source ledger (new)
+
+Every new skill cites:
+
+- **Gelato TEMPLATE.md** + `SkillMetadata` Zod schema — `new-skill-review`
+- **Gelato EVAL_SPEC.md** — `eval-harness-pattern`
+- **Anthropic Claude Code — Plugins Reference** (2026) — `plugin-manifest-validity`
+- **Anthropic Claude Code — Plugin Marketplaces** (2026) — `marketplace-submission`
+- **Gelato drift pattern** (`drift-conventional-commits.yml` + BRIEF § build-tree) — `drift-check-workflow`
+
+Every source has a `verified: 2026-04-19` ISO date in its SKILL.md frontmatter.
+
+### Stack assumptions (unchanged)
+
+Still locked: `bun@1.1+`, `next@15+` App Router, `react@19+`, `typescript@5+`, `tailwindcss@4+`. Claude Code `v2.1+` called out explicitly for the plugin + marketplace skills (which encode Anthropic's current reference).
+
+### Known gaps (v0.4+)
+
+- **Cores 2–5 not yet shipped** — Brand & Content (12), Growth & Distribution (8), Founder Ops (7), Research & Synthesis (6). Plan is one minor release per core (v0.5 → v0.8), ending at v1.0.0 with 70 total skills.
+- **Drift snapshots not yet committed** — the drift workflows fetch but only commit a sanity-check; `skills/<name>/references/` snapshots land in v0.5.0.
+- **`drift-check-workflow` self-referential exemption** — the skill's own `methodology_source` is Gelato's repo file, so no external drift is needed. This is noted in the SKILL.md.
+- **Plugin marketplace submission (external)** — the Gelato marketplace is ready to be listed in Anthropic's plugin marketplace, but that's a separate out-of-repo action. Tracked in follow-ups.
+
+### Verification
+
+- `bun run validate` — 38 skills (32 Core 1 + 5 Core 6 + `git-hygiene`) pass Zod-frontmatter validation
+- `bun run eval` — every skill at `pass_rate = 1.0` across 120+ quantitative assertions
+- `bun run docs:generate` — 36 pages regenerate cleanly into per-core subdirectories
+- `bun run publint` — `@neopolitan/gelato`, `@gelato/schema`, `@gelato/eval-harness` all "All good!"
+- `bun --cwd docs run build` — all static routes prerender
+
+[0.4.0]: https://github.com/soilmass/gelato/compare/v0.3.0...v0.4.0
+
+---
+
 ## [0.3.0] — 2026-04-19
 
 **Frontend hardening pass.** 13 new skills shipped across five coordinated waves, taking Gelato from 19 → 32. Every new skill cites a canonical external authority (WCAG 2.2, WAI-ARIA APG, Deque axe-core, Next.js 15 docs, React 19 docs, Google Search Central, schema.org, sitemaps.org, BCP 47, Radix UI), ships a deterministic regex/AST classifier at `pass_rate = 1.0`, and carries a live LLM-as-judge rubric gated on `ANTHROPIC_API_KEY`.
